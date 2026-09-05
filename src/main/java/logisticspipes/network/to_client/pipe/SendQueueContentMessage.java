@@ -10,6 +10,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConstants;
 import logisticspipes.interfaces.ISendQueueContentRecieiver;
 import logisticspipes.network.TargetLookup;
@@ -19,7 +21,7 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 /**
  * What a pipe still has queued to send, for the players watching its HUD.
  */
-public record SendQueueContentMessage(BlockPos pos, List<ItemIdentifierStack> queued)
+public record SendQueueContentMessage(BlockPos pos, List<@Nullable ItemIdentifierStack> queued)
         implements CustomPacketPayload {
 
     public static final Type<SendQueueContentMessage> TYPE = new Type<>(LPConstants.rl("send_queue_content"));
@@ -27,7 +29,7 @@ public record SendQueueContentMessage(BlockPos pos, List<ItemIdentifierStack> qu
     public static final StreamCodec<RegistryFriendlyByteBuf, SendQueueContentMessage> STREAM_CODEC =
             StreamCodec.composite(
                     BlockPos.STREAM_CODEC, SendQueueContentMessage::pos,
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                    ItemIdentifierStack.NULLABLE_LIST_STREAM_CODEC,
                     SendQueueContentMessage::queued,
                     SendQueueContentMessage::new);
 

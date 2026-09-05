@@ -10,6 +10,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConstants;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.pipes.PipeLogisticsChassis;
@@ -18,7 +20,7 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 /**
  * The modules a chassis pipe holds, for the players watching its HUD.
  */
-public record ChassisModuleContentMessage(BlockPos pos, List<ItemIdentifierStack> modules)
+public record ChassisModuleContentMessage(BlockPos pos, List<@Nullable ItemIdentifierStack> modules)
         implements CustomPacketPayload {
 
     public static final Type<ChassisModuleContentMessage> TYPE =
@@ -27,7 +29,7 @@ public record ChassisModuleContentMessage(BlockPos pos, List<ItemIdentifierStack
     public static final StreamCodec<RegistryFriendlyByteBuf, ChassisModuleContentMessage> STREAM_CODEC =
             StreamCodec.composite(
                     BlockPos.STREAM_CODEC, ChassisModuleContentMessage::pos,
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                    ItemIdentifierStack.NULLABLE_LIST_STREAM_CODEC,
                     ChassisModuleContentMessage::modules,
                     ChassisModuleContentMessage::new);
 

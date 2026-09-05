@@ -9,6 +9,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConstants;
 import logisticspipes.interfaces.IModuleInventoryReceive;
 import logisticspipes.network.ModuleTarget;
@@ -20,7 +22,7 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  * <p>Sent whenever the inventory changes and again to each player as they start watching, which
  * is what makes a dropped one harmless.
  */
-public record ModuleInventoryMessage(ModuleTarget target, List<ItemIdentifierStack> contents)
+public record ModuleInventoryMessage(ModuleTarget target, List<@Nullable ItemIdentifierStack> contents)
         implements CustomPacketPayload {
 
     public static final Type<ModuleInventoryMessage> TYPE =
@@ -29,7 +31,7 @@ public record ModuleInventoryMessage(ModuleTarget target, List<ItemIdentifierSta
     public static final StreamCodec<RegistryFriendlyByteBuf, ModuleInventoryMessage> STREAM_CODEC =
             StreamCodec.composite(
                     ModuleTarget.STREAM_CODEC, ModuleInventoryMessage::target,
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                    ItemIdentifierStack.NULLABLE_LIST_STREAM_CODEC,
                     ModuleInventoryMessage::contents,
                     ModuleInventoryMessage::new);
 

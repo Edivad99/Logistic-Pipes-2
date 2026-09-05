@@ -8,6 +8,8 @@
 package logisticspipes.utils.item;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -40,6 +42,21 @@ public final class ItemIdentifierStack implements Comparable<ItemIdentifierStack
             ItemIdentifier.STREAM_CODEC, ItemIdentifierStack::getItem,
             ByteBufCodecs.INT, ItemIdentifierStack::getStackSize,
             ItemIdentifierStack::new);
+
+    /**
+     * A list that may hold gaps, for contents addressed by position.
+     *
+     * <p>{@link #getListFromInventory(Container)} puts a null in for every empty slot, and the
+     * receivers copy the list into their slots by index, so dropping the gaps would slide every
+     * item into the wrong slot. A plain list codec cannot write a null element -- it throws inside
+     * the encoder, which kills the connection rather than the packet -- so the gaps travel as an
+     * empty optional.
+     */
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<@Nullable ItemIdentifierStack>>
+        NULLABLE_LIST_STREAM_CODEC = ByteBufCodecs.optional(STREAM_CODEC).apply(ByteBufCodecs.list())
+            .map(
+                optionals -> optionals.stream().map(item -> item.orElse(null)).toList(),
+                items -> items.stream().map(Optional::ofNullable).toList());
 
     private final Object[] ccTypeHolder = new Object[1];
     @Getter
@@ -81,12 +98,13 @@ public final class ItemIdentifierStack implements Comparable<ItemIdentifierStack
             .orElse(null);
     }
 
-    public static LinkedList<ItemIdentifierStack> getListFromInventory(Container inv) {
+    /** The inventory's contents by slot, with a null standing in for every empty slot. */
+    public static LinkedList<@Nullable ItemIdentifierStack> getListFromInventory(Container inv) {
         return ItemIdentifierStack.getListFromInventory(inv, false);
     }
 
-    public static LinkedList<ItemIdentifierStack> getListFromInventory(Container inv, boolean removeNull) {
-        LinkedList<ItemIdentifierStack> list = new LinkedList<>();
+    public static LinkedList<@Nullable ItemIdentifierStack> getListFromInventory(Container inv, boolean removeNull) {
+        LinkedList<@Nullable ItemIdentifierStack> list = new LinkedList<>();
         for (int i = 0; i < inv.getContainerSize(); i++) {
             if (inv.getItem(i).isEmpty()) {
                 if (!removeNull) {
@@ -99,9 +117,9 @@ public final class ItemIdentifierStack implements Comparable<ItemIdentifierStack
         return list;
     }
 
-    public static LinkedList<ItemIdentifierStack> getListSendQueue(
+    public static LinkedList<@Nullable ItemIdentifierStack> getListSendQueue(
         LinkedList<Triplet<IRoutedItem, Direction, ItemSendMode>> sendQueue) {
-        LinkedList<ItemIdentifierStack> list = new LinkedList<>();
+        LinkedList<@Nullable ItemIdentifierStack> list = new LinkedList<>();
         for (Triplet<IRoutedItem, Direction, ItemSendMode> part : sendQueue) {
             if (part == null) {
                 list.add(null);
