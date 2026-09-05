@@ -513,6 +513,15 @@ public final class ItemIdentifier implements Comparable<ItemIdentifier>, ILPCCTy
     }
 
     /**
+     * The canonical rendering of {@link #components} as sorted {@code type=value} pairs, empty when
+     * this identity carries none. This is what makes two look-alike stacks separate identities, so
+     * it is the answer to "why does LP not treat these as the same item".
+     */
+    public String describeComponents() {
+        return sortKey();
+    }
+
+    /**
      * A deterministic rendering of {@link #components}, used to give the component half of the
      * identity a stable sort position.
      * <p>

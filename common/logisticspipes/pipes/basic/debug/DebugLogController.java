@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import logisticspipes.network.to_client.debug.SendLogLineMessage;
-import logisticspipes.network.to_client.debug.SendLogWindowMessage;
+import logisticspipes.network.to_client.debug.OpenPipeLogMessage;
 import logisticspipes.network.to_client.debug.UpdateStatusEntriesMessage;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.utils.PlayerCollectionList;
@@ -55,7 +55,7 @@ public class DebugLogController {
 		List<StatusEntry> status = new ArrayList<>();
 		pipe.addStatusInformation(status);
 		if (player instanceof ServerPlayer serverPlayer) {
-			PacketDistributor.sendToPlayer(serverPlayer, new SendLogWindowMessage(ID, pipe.toString()));
+			PacketDistributor.sendToPlayer(serverPlayer, new OpenPipeLogMessage(ID, pipe.toString()));
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			PacketDistributor.sendToPlayer(serverPlayer, new UpdateStatusEntriesMessage(ID, status));

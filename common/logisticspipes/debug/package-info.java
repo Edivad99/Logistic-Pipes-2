@@ -1,4 +1,4 @@
 @NullMarked
-package logisticspipes.commands.commands.wrapper;
+package logisticspipes.debug;
 
 import org.jspecify.annotations.NullMarked;

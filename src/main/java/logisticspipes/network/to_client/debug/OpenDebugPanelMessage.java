@@ -8,7 +8,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.commands.commands.debug.DebugGuiController;
+import logisticspipes.debug.DebugGuiController;
 
 /**
  * Opens the object inspector for something the player asked to watch.

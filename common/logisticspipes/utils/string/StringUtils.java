@@ -1,13 +1,8 @@
 package logisticspipes.utils.string;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.gui.Font;
 
 public final class StringUtils {
-	public static final List<String> UNTRANSLATED_STRINGS = new ArrayList<>();
-
 	private StringUtils() {}
 
 	public static String getWithMaxWidth(String name, int width, Font font) {

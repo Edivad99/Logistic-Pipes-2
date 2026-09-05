@@ -8,21 +8,21 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.pipes.basic.debug.LogWindow;
+import logisticspipes.client.debug.PipeLogBuffer;
 
 /**
- * One more line for a pipe's log window.
+ * One more line for a pipe's log.
  *
- * <p>The window is a Swing frame the client opens outside the game; the id says which one, since a
- * player can follow several pipes at once.
+ * <p>The id says which pipe, since a player can follow several at once. The client keeps the lines
+ * whether or not the log screen is open.
  */
-public record SendLogLineMessage(int windowId, String line) implements CustomPacketPayload {
+public record SendLogLineMessage(int logId, String line) implements CustomPacketPayload {
 
     public static final Type<SendLogLineMessage> TYPE = new Type<>(LPConstants.rl("log_line"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SendLogLineMessage> STREAM_CODEC =
             StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, SendLogLineMessage::windowId,
+                    ByteBufCodecs.VAR_INT, SendLogLineMessage::logId,
                     ByteBufCodecs.STRING_UTF8, SendLogLineMessage::line,
                     SendLogLineMessage::new);
 
@@ -32,6 +32,6 @@ public record SendLogLineMessage(int windowId, String line) implements CustomPac
     }
 
     public static void handle(SendLogLineMessage message, IPayloadContext context) {
-        LogWindow.getWindow(message.windowId).newLine(message.line);
+        PipeLogBuffer.of(message.logId).addLine(message.line);
     }
 }

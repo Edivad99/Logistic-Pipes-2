@@ -9,20 +9,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.commands.chathelper.LPChatListener;
+import logisticspipes.commands.Confirmations;
 import logisticspipes.network.DebugTarget;
 import logisticspipes.network.TargetLookup;
-import logisticspipes.network.to_client.gui.OpenChatGuiMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.routing.ServerRouter;
 import logisticspipes.routing.debug.DebugController;
-import logisticspipes.commands.commands.debug.DebugGuiController;
+import logisticspipes.debug.DebugGuiController;
 
 /**
  * What the player was pointing at, in answer to
@@ -87,11 +85,12 @@ public record DebugTargetMessage(Purpose purpose, DebugTarget target) implements
                     Component.literal("No routed pipe at " + block.pos()).withStyle(ChatFormatting.RED));
             return;
         }
-        confirm(player, "Start a routing table debug update on the pipe at " + block.pos(), () -> {
-            player.sendSystemMessage(Component.literal("Starting routing table debug update.")
-                    .withStyle(ChatFormatting.GREEN));
-            DebugController.instance(player).debug(router);
-        });
+        Confirmations.ask(player, "Start a routing table debug update on the pipe at " + block.pos(),
+                asked -> {
+                    asked.sendSystemMessage(Component.literal("Starting routing table debug update.")
+                            .withStyle(ChatFormatting.GREEN));
+                    DebugController.instance(asked).debug(router);
+                });
     }
 
     private static void openPipeLog(ServerPlayer player, DebugTarget target) {
@@ -137,29 +136,18 @@ public record DebugTargetMessage(Purpose purpose, DebugTarget target) implements
                         Component.literal("No block entity at " + block.pos()).withStyle(ChatFormatting.RED));
                 return;
             }
-            confirm(player, "Start debugging block entity " + be.getClass().getSimpleName(),
-                    () -> DebugGuiController.instance().startWatchingOf(be, player));
+            Confirmations.ask(player, "Start debugging block entity " + be.getClass().getSimpleName(),
+                    asked -> DebugGuiController.instance().startWatchingOf(be, asked));
         } else if (target instanceof DebugTarget.Entity wanted) {
             final Entity entity = player.level().getEntity(wanted.entityId());
             if (entity == null) {
                 player.sendSystemMessage(Component.literal("No entity found").withStyle(ChatFormatting.RED));
                 return;
             }
-            confirm(player, "Start debugging entity " + entity.getClass().getSimpleName(),
-                    () -> DebugGuiController.instance().startWatchingOf(entity, player));
+            Confirmations.ask(player, "Start debugging entity " + entity.getClass().getSimpleName(),
+                    asked -> DebugGuiController.instance().startWatchingOf(entity, asked));
         } else {
             player.sendSystemMessage(Component.literal("No target found").withStyle(ChatFormatting.RED));
         }
-    }
-
-    /** Asks in chat, and runs the action once the player types yes. */
-    private static void confirm(ServerPlayer player, String question, Runnable action) {
-        LPChatListener.addTask(() -> {
-            action.run();
-            PacketDistributor.sendToPlayer(player, new OpenChatGuiMessage());
-            return true;
-        }, player);
-        player.sendSystemMessage(Component.literal(question + "? <yes/no>").withStyle(ChatFormatting.AQUA));
-        PacketDistributor.sendToPlayer(player, new OpenChatGuiMessage());
     }
 }

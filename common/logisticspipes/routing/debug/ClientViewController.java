@@ -1,12 +1,16 @@
 package logisticspipes.routing.debug;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IDebugHUDProvider;
 import logisticspipes.interfaces.IHeadUpDisplayRendererProvider;
@@ -24,10 +28,11 @@ public class ClientViewController implements IDebugHUDProvider {
 
 	private ClientViewController() {}
 
-	private DoubleCoordinates mainPipe = null;
+	private @Nullable DoubleCoordinates mainPipe = null;
 	private int tick = 0;
 	private final List<DoubleCoordinates> canidates = new ArrayList<>();
-	private DebugWindow debugWindow;
+	/** The candidate list as the debug screen shows it, rebuilt on every step. */
+	private final List<Component> candidateLines = new ArrayList<>();
 
 	private List<IHeadUpDisplayRendererProvider> listHUD = new ArrayList<>();
 	private HashMap<DoubleCoordinates, DebugInformation> HUDPositions = new HashMap<>();
@@ -93,15 +98,16 @@ public class ClientViewController implements IDebugHUDProvider {
 	}
 
 	public void init() {
-		debugWindow = new DebugWindow("Debug Code", 500, 250);
+		candidateLines.clear();
 		LogisticsHUDRenderer.instance().debugHUD = this;
 	}
 
+	public List<Component> candidateLines() {
+		return List.copyOf(candidateLines);
+	}
+
 	public void done() {
-		if (debugWindow != null) {
-			debugWindow.setVisible(false);
-			debugWindow = null;
-		}
+		candidateLines.clear();
 		LogisticsHUDRenderer.instance().debugHUD = null;
 		listHUD.clear();
 		HUDPositions.clear();
@@ -116,18 +122,14 @@ public class ClientViewController implements IDebugHUDProvider {
 	}
 
 	public void updateList(List<RouteDebugInfo> routes) {
-		debugWindow.clear();
+		candidateLines.clear();
 		int i = 0;
 		for (RouteDebugInfo route : routes) {
 			i++;
-			Color color = route.newlyAddedCandidate() ? Color.BLUE : Color.BLACK;
-			debugWindow.showInfo(route.destinationName(), color);
-			debugWindow.showInfo("\n", color);
-			for (int j = 0; j < 2; j++) {
-				debugWindow.showInfo("\t", color);
-			}
-			debugWindow.showInfo(route.networkDescription(), color);
-			debugWindow.showInfo("\n", color);
+			candidateLines.add(Component.literal(route.destinationName())
+					.withStyle(route.newlyAddedCandidate() ? ChatFormatting.AQUA : ChatFormatting.WHITE));
+			candidateLines.add(Component.literal("    " + route.networkDescription())
+					.withStyle(ChatFormatting.GRAY));
 			DoubleCoordinates pos = new DoubleCoordinates(route.destination().getX(),
 					route.destination().getY(), route.destination().getZ());
 			getDebugInformation(pos).routes.add(route);

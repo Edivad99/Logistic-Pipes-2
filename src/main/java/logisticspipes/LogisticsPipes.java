@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 
 import logisticspipes.blocks.powertile.LogisticsRFPowerProviderTileEntity;
 import logisticspipes.client.ClientManager;
+import logisticspipes.commands.Confirmations;
 import logisticspipes.commands.LogisticsPipesCommand;
-import logisticspipes.commands.chathelper.LPChatListener;
 import logisticspipes.data.LPParticleProvider;
 import logisticspipes.data.LPSpriteSourceProvider;
 import logisticspipes.data.models.LPModelProvider;
@@ -168,8 +168,8 @@ public class LogisticsPipes {
         NeoForge.EVENT_BUS.register(new LPTickHandler());
         NeoForge.EVENT_BUS.register(new QueuedTasks());
         NeoForge.EVENT_BUS.register(new LogisticsEventListener());
-        NeoForge.EVENT_BUS.register(new LPChatListener());
         NeoForge.EVENT_BUS.register(new BlockChangeListener());
+        NeoForge.EVENT_BUS.register(Confirmations.INSTANCE);
         NeoForge.EVENT_BUS.register(PropertyUpdaterEventListener.INSTANCE);
 
         for (int i = 0; i < LPConfigs.COMMON.MULTI_THREAD_NUMBER.getAsInt(); i++) {
@@ -249,7 +249,7 @@ public class LogisticsPipes {
 
     @SubscribeEvent
     public void registerCommands(RegisterCommandsEvent event) {
-        new LogisticsPipesCommand().register(event.getDispatcher());
+        LogisticsPipesCommand.register(event.getDispatcher(), event.getBuildContext());
     }
 
     public static boolean isTesting() {

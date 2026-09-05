@@ -17,6 +17,7 @@ import logisticspipes.network.to_client.config.PlayerConfigMessage;
 import logisticspipes.network.to_client.crafting.LikelyRecipeComponentsMessage;
 import logisticspipes.network.to_client.debug.AskForDebugTargetMessage;
 import logisticspipes.network.to_client.debug.OpenDebugPanelMessage;
+import logisticspipes.network.to_client.debug.OpenDebugScreenMessage;
 import logisticspipes.network.to_client.debug.RoutingDebugCandidateListMessage;
 import logisticspipes.network.to_client.debug.RoutingDebugCandidateMessage;
 import logisticspipes.network.to_client.debug.RoutingDebugClearMessage;
@@ -26,10 +27,9 @@ import logisticspipes.network.to_client.debug.RoutingDebugFiltersMessage;
 import logisticspipes.network.to_client.debug.RoutingDebugInitMessage;
 import logisticspipes.network.to_client.debug.RoutingDebugSourceMessage;
 import logisticspipes.network.to_client.debug.SendLogLineMessage;
-import logisticspipes.network.to_client.debug.SendLogWindowMessage;
+import logisticspipes.network.to_client.debug.OpenPipeLogMessage;
 import logisticspipes.network.to_client.debug.ToggleClientPipeDebugMessage;
 import logisticspipes.network.to_client.debug.UpdateStatusEntriesMessage;
-import logisticspipes.network.to_client.gui.OpenChatGuiMessage;
 import logisticspipes.network.to_client.module.AdvancedExtractorIncludeMessage;
 import logisticspipes.network.to_client.block.BlockRotationMessage;
 import logisticspipes.network.to_client.module.QuickSortMarkerMessage;
@@ -456,12 +456,12 @@ public class PacketHandler {
                 PlayerConfigMessage.STREAM_CODEC, PlayerConfigMessage::handle);
         registrar.playToClient(AskForDebugTargetMessage.TYPE,
                 AskForDebugTargetMessage.STREAM_CODEC, AskForDebugTargetMessage::handle);
-        registrar.playToClient(OpenChatGuiMessage.TYPE,
-                OpenChatGuiMessage.STREAM_CODEC, OpenChatGuiMessage::handle);
+        registrar.playToClient(OpenDebugScreenMessage.TYPE,
+                OpenDebugScreenMessage.STREAM_CODEC, OpenDebugScreenMessage::handle);
         registrar.playToClient(SendLogLineMessage.TYPE,
                 SendLogLineMessage.STREAM_CODEC, SendLogLineMessage::handle);
-        registrar.playToClient(SendLogWindowMessage.TYPE,
-                SendLogWindowMessage.STREAM_CODEC, SendLogWindowMessage::handle);
+        registrar.playToClient(OpenPipeLogMessage.TYPE,
+                OpenPipeLogMessage.STREAM_CODEC, OpenPipeLogMessage::handle);
         registrar.playToClient(RoutingDebugCandidateListMessage.TYPE,
                 RoutingDebugCandidateListMessage.STREAM_CODEC, RoutingDebugCandidateListMessage::handle);
         registrar.playToClient(RoutingDebugCandidateMessage.TYPE,

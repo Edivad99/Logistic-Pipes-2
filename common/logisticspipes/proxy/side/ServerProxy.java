@@ -31,11 +31,6 @@ public class ServerProxy implements IProxy {
 	@Override
 	public void tickClient() {}
 
-    @Override
-	public boolean checkSinglePlayerOwner(String commandSenderName) {
-		return false;
-	}
-
 	@Override
 	public void openFluidSelectGui(int slotId) {}
 

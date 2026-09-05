@@ -50,12 +50,6 @@ public class ClientProxy implements IProxy {
 		MainProxy.addTick();
 	}
 
-    @Override
-	public boolean checkSinglePlayerOwner(String commandSenderName) {
-		var server = Minecraft.getInstance().getSingleplayerServer();
-		return server != null && !server.isPublished();
-	}
-
 	@Override
 	public void openFluidSelectGui(final int slotId) {
 		if (Minecraft.getInstance().screen instanceof LogisticsBaseGuiScreen<?> gui) {

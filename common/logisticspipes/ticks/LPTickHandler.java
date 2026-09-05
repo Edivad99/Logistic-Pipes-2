@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import logisticspipes.commands.commands.debug.DebugGuiController;
+import logisticspipes.debug.DebugGuiController;
 import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.ticks.ClientTaskQueue;

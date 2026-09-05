@@ -10,7 +10,5 @@ public interface IProxy {
 
 	void tickClient();
 
-    boolean checkSinglePlayerOwner(String commandSenderName);
-
 	void openFluidSelectGui(int slotId);
 }
