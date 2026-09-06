@@ -29,18 +29,25 @@ public class LPTickHandler {
 
 	public static int adjChecksDone = 0;
 
+	/**
+	 * Ticks since the game started, on whichever side is asking. Timers all over LP are expressed
+	 * as an offset from it, so it has to keep counting on both.
+	 */
+	@Getter
+	private static int globalTick;
+
 	@SubscribeEvent
 	public void clientTick(ClientTickEvent.Post event) {
 		FluidIdentifier.initFromNeoForge(true);
 		ClientTaskQueue.runQueued();
-		MainProxy.getProxy(true).tickClient();
+		globalTick++;
 		DebugGuiController.instance().execClient();
 	}
 
 	@SubscribeEvent
 	public void serverTick(ServerTickEvent.Post event) {
 		HudUpdateTick.tick();
-		MainProxy.getProxy(false).tickServer();
+		globalTick++;
 		LPTickHandler.adjChecksDone = 0;
 		DebugGuiController.instance().execServer();
 		ServerTickDispatcher.INSTANCE.tick();

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -24,6 +23,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
+import logisticspipes.client.gui.FluidSelection;
 import logisticspipes.interfaces.IFuzzySlot;
 import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.ISlotCheck;
@@ -275,8 +275,8 @@ public abstract class DummyMenu extends AbstractContainerMenu implements IJeiScr
         }
         final FluidIdentifier current = slot.getItem().isEmpty() ? null
             : FluidIdentifier.get(ItemIdentifier.get(slot.getItem()));
-        if (current == null && player instanceof LocalPlayer) {
-            MainProxy.getProxy(true).openFluidSelectGui(slotId);
+        if (current == null && player.level().isClientSide()) {
+            FluidSelection.open(slotId);
         }
         slot.set(ItemStack.EMPTY);
     }

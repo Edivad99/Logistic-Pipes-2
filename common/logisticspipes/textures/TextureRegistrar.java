@@ -84,9 +84,9 @@ public class TextureRegistrar {
 	private static void collectOnce() {
 		if (collected) return;
 		collected = true;
-		// Runs registerBlockIcons with a null register; ClientProxy.addLogisticsPipesOverride
-		// now forwards each call into record() above.
-		new Textures().registerBlockIcons(null);
+		// Walks the texture table for its side effects: registerBlockIcons hands every entry
+		// straight back to record/recordOverlay/recordNew below.
+		new Textures().registerBlockIcons();
 	}
 
 	@SubscribeEvent

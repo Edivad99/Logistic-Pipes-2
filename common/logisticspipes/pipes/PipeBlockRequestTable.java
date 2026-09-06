@@ -36,6 +36,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jspecify.annotations.Nullable;
 
+import logisticspipes.entity.FakePlayers;
 import logisticspipes.LPConstants;
 import logisticspipes.interfaces.ICraftingRecipeGrid;
 import logisticspipes.interfaces.IPipeMenuProvider;
@@ -488,7 +489,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		craftingInput = CraftingInput.of(3,3, crafter.getItems());
 		result = cache.value().assemble(craftingInput);
 		if (fake == null) {
-			fake = MainProxy.getFakePlayer(getWorld());
+			fake = FakePlayers.of(getWorld());
 		}
 		result = result.copy();
 

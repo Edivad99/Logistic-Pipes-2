@@ -34,6 +34,7 @@ import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 
 import org.jspecify.annotations.Nullable;
 
+import logisticspipes.entity.FakePlayers;
 import logisticspipes.LPConfigs;
 import logisticspipes.api.IRoutedPowerProvider;
 import logisticspipes.interfaces.IBlockEntityMenuProvider;
@@ -354,7 +355,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
         craftingInput = CraftingInput.of(3, 3, crafter.getItems());
         result = recipe.value().assemble(craftingInput);
         if (fake == null) {
-            fake = MainProxy.getFakePlayer(getWorld());
+            fake = FakePlayers.of(getWorld());
         }
         result = result.copy();
         result.onCraftedBy(fake, result.getCount());

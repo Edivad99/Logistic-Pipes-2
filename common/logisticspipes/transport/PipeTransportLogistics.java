@@ -33,6 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jspecify.annotations.Nullable;
 
+import logisticspipes.ticks.LPTickHandler;
 import logisticspipes.LPConstants;
 import logisticspipes.LogisticsPipes;
 import logisticspipes.api.ILogisticsPowerProvider;
@@ -657,10 +658,10 @@ public class PipeTransportLogistics {
 		items.flush();
 		items.scheduleAdd();
 		for (LPTravelingItem item : items) {
-			if (item.lastTicked >= MainProxy.getGlobalTick()) {
+			if (item.lastTicked >= LPTickHandler.getGlobalTick()) {
 				continue;
 			}
-			item.lastTicked = MainProxy.getGlobalTick();
+			item.lastTicked = LPTickHandler.getGlobalTick();
 			item.addAge();
 			item.setPosition(item.getPosition() + item.getSpeed());
 			if (hasReachedEnd(item)) {
@@ -748,7 +749,7 @@ public class PipeTransportLogistics {
 			item.setSpeed(speed);
 			LPTravelingItem.clientList.put(travelId, new WeakReference<>(item));
 			// Prevent double-move only for newly created items (they haven't been ticked yet).
-			item.lastTicked = MainProxy.getGlobalTick();
+			item.lastTicked = LPTickHandler.getGlobalTick();
 		} else {
 			if (item.getContainer() instanceof LogisticsTileGenericPipe oldPipe) {
 				oldPipe.pipe.transport.items.scheduleRemoval(item);

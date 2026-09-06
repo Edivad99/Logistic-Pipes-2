@@ -18,21 +18,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import com.google.common.collect.Maps;
-import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LogisticsEventListener;
-import logisticspipes.entity.FakePlayerLP;
-import logisticspipes.proxy.interfaces.IProxy;
-import logisticspipes.proxy.side.ClientProxy;
-import logisticspipes.proxy.side.ServerProxy;
 import logisticspipes.routing.debug.RoutingTableDebugUpdateThread;
 import logisticspipes.routing.pathfinder.IPipeInformationProvider;
 import logisticspipes.ticks.RoutingTableUpdateThread;
@@ -44,39 +37,8 @@ public class MainProxy {
 
 	private MainProxy() {}
 
-	/**
-	 * Side-specific proxy: ClientProxy on client dist, ServerProxy on dedicated server.
-	 * Replaces 1.12.2 {@code @SidedProxy} annotation.
-	 */
-	// NeoForge 1.20.1: DistExecutor removed — use FMLEnvironment.getDist() check
-    @Deprecated(forRemoval = true)
-	public static IProxy proxy = FMLEnvironment.getDist().isClient()
-			? new logisticspipes.proxy.side.ClientProxy()
-			: new logisticspipes.proxy.side.ServerProxy();
-
-    /**
-     * ClientProxy is {@code }, so the RuntimeDistCleaner refuses to load it
-     * on a dedicated server. Holding it in a nested class defers that load until the first
-     * {@code getProxy(true)} call, which only ever happens in client-side code.
-     */
-    private static final class ClientProxyHolder {
-        private static final ClientProxy INSTANCE = new ClientProxy();
-    }
-
-    private static final ServerProxy serverProxy = new ServerProxy();
-
-    public static IProxy getProxy(boolean client) {
-        if (client) {
-            return ClientProxyHolder.INSTANCE;
-        }
-        return serverProxy;
-    }
-
-	@Getter
-	private static int globalTick;
 
 	private static final WeakHashMap<Thread, LogicalSide> threadSideMap = new WeakHashMap<>();
-	private static final Map<ResourceKey<Level>, FakePlayerLP> fakePlayers = Maps.newHashMap();
 
 	// ── Side detection ────────────────────────────────────────────────────────
 
@@ -171,23 +133,7 @@ public class MainProxy {
 		return list != null && !list.isEmpty();
 	}
 
-	// ── Fake player ──────────────────────────────────────────────────────────
-
-	@Nullable
-	public static FakePlayer getFakePlayer(Level level) {
-		if (!(level instanceof ServerLevel serverLevel)) return null;
-		ResourceKey<Level> dim = level.dimension();
-		if (fakePlayers.containsKey(dim)) return fakePlayers.get(dim);
-		FakePlayerLP fp = new FakePlayerLP(serverLevel);
-		fakePlayers.put(dim, fp);
-		return fp;
-	}
-
 	// ── Misc ─────────────────────────────────────────────────────────────────
-
-	public static void addTick() {
-		MainProxy.globalTick++;
-	}
 
 	public static ItemEntity dropItems(Level level, ItemStack stack, int xCoord, int yCoord, int zCoord) {
 		ItemEntity item = new ItemEntity(level, xCoord, yCoord, zCoord, stack);
@@ -212,13 +158,6 @@ public class MainProxy {
 	public static boolean isPipeControllerEquipped(@Nullable Player player) {
 		return player != null &&
 				player.getItemBySlot(EquipmentSlot.MAINHAND).is(LPItems.PIPE_CONTROLLER.get());
-	}
-
-	@SubscribeEvent
-	public static void onWorldUnload(LevelEvent.Unload event) {
-		if (event.getLevel() instanceof Level level) {
-			fakePlayers.keySet().removeIf(key -> key.equals(level.dimension()));
-		}
 	}
 
 }

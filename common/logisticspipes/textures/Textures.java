@@ -1,10 +1,7 @@
 package logisticspipes.textures;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.renderer.IIconProvider;
 import logisticspipes.textures.provider.LPActionTriggerIconProvider;
 import logisticspipes.textures.provider.LPPipeIconProvider;
@@ -174,70 +171,78 @@ public class Textures {
 		Textures.LPpipeIconProvider = new LPPipeIconProvider();
 	}
 
-	//this gets called with null par1IIconRegister from preinit, and later with non-null from textureprestitch
-	public void registerBlockIcons(Object par1IIconRegister) {
+	/**
+	 * Walks the texture table, assigning every index and handing each entry to
+	 * {@link TextureRegistrar}.
+	 *
+	 * <p>Client only, by its single caller: {@link TextureRegistrar} is registered on the client
+	 * mod bus and nothing else calls this. It used to be safe on either side because the server got
+	 * a no-op proxy implementation; now the calls land in a client class, so calling this from the
+	 * server would fail to resolve it.
+	 */
+	public void registerBlockIcons() {
 		//Register Empty Texture for slot 0
-		MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, 0, "empty", "", true);
-		MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, 1, "empty", "", true);
-		MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, 2, "empty", "", true);
+		TextureRegistrar.record(0, "empty");
+		TextureRegistrar.record(1, "empty");
+		TextureRegistrar.record(2, "empty");
 
 		index = 3;
 		newTextureIndex = 0;
 
 		// Standalone pipes
-		Textures.LOGISTICSPIPE_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_PROVIDER_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_PROVIDER_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_POWERED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_POWERED_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_POWERED_POWERED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_POWERED_POWERED_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_DIRECTION_POWERED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_DIRECTION_POWERED_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_SECURITY_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_SECURITY_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_ROUTED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_ROUTED_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_NOTROUTED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_NOTROUTED_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_ROUTED_POWERED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_ROUTED_POWERED_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_NOTROUTED_POWERED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_NOTROUTED_POWERED_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_SUBPOWER_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_SUBPOWER_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_OPAQUE_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_OPAQUE_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_REQUESTER_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_REQUESTER_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CRAFTER_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CRAFTER_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_SATELLITE_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_SATELLITE_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_SUPPLIER_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_SUPPLIER_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_MK2_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_MK2_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CRAFTERMK2_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CRAFTERMK2_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_REQUESTERMK2_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_REQUESTERMK2_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_PROVIDERMK2_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_PROVIDERMK2_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_REMOTE_ORDERER_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_REMOTE_ORDERER_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_INVSYSCON_CON_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_INVSYSCON_CON_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_INVSYSCON_DIS_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_INVSYSCON_DIS_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_INVSYSCON_MIS_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_INVSYSCON_MIS_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_ENTRANCE_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_ENTRANCE_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_DESTINATION_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_DESTINATION_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CRAFTERMK3_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CRAFTERMK3_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_FIREWALL_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_FIREWALL_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_PROVIDER_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_PROVIDER_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_POWERED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_POWERED_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_POWERED_POWERED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_POWERED_POWERED_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_DIRECTION_POWERED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_DIRECTION_POWERED_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_SECURITY_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_SECURITY_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_ROUTED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_ROUTED_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_NOTROUTED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_NOTROUTED_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_ROUTED_POWERED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_ROUTED_POWERED_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_NOTROUTED_POWERED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_NOTROUTED_POWERED_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_SUBPOWER_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_SUBPOWER_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_OPAQUE_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_OPAQUE_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_REQUESTER_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_REQUESTER_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CRAFTER_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CRAFTER_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_SATELLITE_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_SATELLITE_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_SUPPLIER_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_SUPPLIER_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_MK2_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_LIQUIDSUPPLIER_MK2_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CRAFTERMK2_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CRAFTERMK2_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_REQUESTERMK2_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_REQUESTERMK2_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_PROVIDERMK2_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_PROVIDERMK2_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_REMOTE_ORDERER_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_REMOTE_ORDERER_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_INVSYSCON_CON_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_INVSYSCON_CON_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_INVSYSCON_DIS_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_INVSYSCON_DIS_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_INVSYSCON_MIS_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_INVSYSCON_MIS_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_ENTRANCE_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_ENTRANCE_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_DESTINATION_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_DESTINATION_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CRAFTERMK3_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CRAFTERMK3_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_FIREWALL_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_FIREWALL_TEXTURE_FILE);
 		//Fluid
-		Textures.LOGISTICSPIPE_LIQUID_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_LIQUID_POWERED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_POWERED_TEXTURE_FILE, 2);
-		Textures.LOGISTICSPIPE_LIQUID_CONNECTOR = registerSingleTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_CONNECTOR_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_LIQUID_BASIC = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_BASIC_FILE);
-		Textures.LOGISTICSPIPE_LIQUID_INSERTION = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_INSERTION_FILE);
-		Textures.LOGISTICSPIPE_LIQUID_PROVIDER = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_PROVIDER_FILE);
-		Textures.LOGISTICSPIPE_LIQUID_REQUEST = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_REQUEST_FILE);
-		Textures.LOGISTICSPIPE_LIQUID_EXTRACTOR = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_EXTRACTOR_FILE);
-		Textures.LOGISTICSPIPE_LIQUID_SATELLITE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_SATELLITE_FILE);
-		Textures.LOGISTICSPIPE_LIQUID_TERMINUS = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_LIQUID_TERMINUS_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_LIQUID_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_LIQUID_POWERED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_LIQUID_POWERED_TEXTURE_FILE, 2);
+		Textures.LOGISTICSPIPE_LIQUID_CONNECTOR = registerSingleTexture(Textures.LOGISTICSPIPE_LIQUID_CONNECTOR_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_BASIC = registerTexture(Textures.LOGISTICSPIPE_LIQUID_BASIC_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_INSERTION = registerTexture(Textures.LOGISTICSPIPE_LIQUID_INSERTION_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_PROVIDER = registerTexture(Textures.LOGISTICSPIPE_LIQUID_PROVIDER_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_REQUEST = registerTexture(Textures.LOGISTICSPIPE_LIQUID_REQUEST_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_EXTRACTOR = registerTexture(Textures.LOGISTICSPIPE_LIQUID_EXTRACTOR_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_SATELLITE = registerTexture(Textures.LOGISTICSPIPE_LIQUID_SATELLITE_FILE);
+		Textures.LOGISTICSPIPE_LIQUID_TERMINUS = registerTexture(Textures.LOGISTICSPIPE_LIQUID_TERMINUS_FILE);
 
 		//Chassi
-		Textures.LOGISTICSPIPE_CHASSI_ROUTED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI_ROUTED_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CHASSI_NOTROUTED_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI_NOTROUTED_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CHASSI_DIRECTION_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI_DIRECTION_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CHASSI1_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI1_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CHASSI2_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI2_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CHASSI3_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI3_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CHASSI4_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI4_TEXTURE_FILE);
-		Textures.LOGISTICSPIPE_CHASSI5_TEXTURE = registerTexture(par1IIconRegister, Textures.LOGISTICSPIPE_CHASSI5_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI_ROUTED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI_ROUTED_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI_NOTROUTED_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI_NOTROUTED_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI_DIRECTION_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI_DIRECTION_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI1_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI1_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI2_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI2_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI3_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI3_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI4_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI4_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_CHASSI5_TEXTURE = registerTexture(Textures.LOGISTICSPIPE_CHASSI5_TEXTURE_FILE);
 
 		//Transport
-		Textures.LOGISTICSPIPE_BASIC_TRANSPORT_TEXTURE = registerSmallTexture(par1IIconRegister, Textures.LOGISTICSPIPE_BASIC_TRANSPORT_TEXTURE_FILE);
+		Textures.LOGISTICSPIPE_BASIC_TRANSPORT_TEXTURE = registerSmallTexture(Textures.LOGISTICSPIPE_BASIC_TRANSPORT_TEXTURE_FILE);
 
 		// TODO: rendering deferred — TextureAtlas.registerSprite() removed in 1.20.1;
 		// sprite registration must use TextureStitchEvent.Pre or RegisterSpriteSheetIconEvent
@@ -251,60 +256,52 @@ public class Textures {
 		Textures.LPactionIconProvider.registerIcons(textureMap);
 	}
 
-	private TextureType registerTexture(Object par1IIconRegister, String fileName) {
-		return registerTexture(par1IIconRegister, fileName, 1);
+	private TextureType registerTexture(String fileName) {
+		return registerTexture(fileName, 1);
 	}
 
 	/**
-	 * @param par1IIconRegister - IconRegister
-	 * @param fileName          - name of texture
-	 * @param flag              - 2 - register single texture without overlay, 1/0 register
-	 *                          with overlay
+	 * @param fileName - name of texture
+	 * @param flag     - 2 - register single texture without overlay, 1/0 register with overlay
 	 */
-
-	private TextureType registerTexture(Object par1IIconRegister, String fileName, int flag) {
+	private TextureType registerTexture(String fileName, int flag) {
 		TextureType texture = new TextureType();
 		texture.normal = index++;
 		texture.powered = texture.normal;
 		texture.unpowered = texture.normal;
 		texture.fileName = fileName;
-		boolean isClient = MainProxy.isClient();
-		if (isClient) {
-			MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, texture.normal, fileName, Textures.LOGISTICSPIPE_UN_OVERLAY_TEXTURE_FILE, (flag == 2));
+		if (flag == 2) {
+			TextureRegistrar.record(texture.normal, fileName);
+		} else {
+			TextureRegistrar.recordOverlay(texture.normal, fileName, Textures.LOGISTICSPIPE_UN_OVERLAY_TEXTURE_FILE);
 		}
 		if (flag == 1) {
 			texture.powered = index++;
 			texture.unpowered = index++;
-			if (isClient) {
-				MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, texture.powered, fileName, Textures.LOGISTICSPIPE_OVERLAY_POWERED_TEXTURE_FILE, false);
-				MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, texture.unpowered, fileName, Textures.LOGISTICSPIPE_OVERLAY_UNPOWERED_TEXTURE_FILE, false);
-			}
+			TextureRegistrar.recordOverlay(texture.powered, fileName, Textures.LOGISTICSPIPE_OVERLAY_POWERED_TEXTURE_FILE);
+			TextureRegistrar.recordOverlay(texture.unpowered, fileName, Textures.LOGISTICSPIPE_OVERLAY_UNPOWERED_TEXTURE_FILE);
 			if (!fileName.contains("status_overlay")) {
 				texture.newTexture = newTextureIndex++;
-				MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, texture.newTexture, fileName, "NewPipeTexture", true);
+				TextureRegistrar.recordNew(texture.newTexture, fileName);
 			}
 		}
 		return texture;
 	}
 
-	private SmallTextureType registerSmallTexture(Object par1IIconRegister, String fileName) {
+	private SmallTextureType registerSmallTexture(String fileName) {
 		SmallTextureType texture = new SmallTextureType();
 		texture.normal = index++;
 		texture.fileName = fileName;
-		boolean isClient = MainProxy.isClient();
-		if (isClient) {
-			MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, texture.normal, fileName, "", true);
-		}
+		TextureRegistrar.record(texture.normal, fileName);
 		texture.newTexture = newTextureIndex++;
-		MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, texture.newTexture, fileName, "NewPipeTexture", true);
+		TextureRegistrar.recordNew(texture.newTexture, fileName);
 		return texture;
 	}
 
-	private int registerSingleTexture(Object par1IIconRegister, String fileName) {
+	private int registerSingleTexture(String fileName) {
 		int texture = index++;
-		if (FMLEnvironment.getDist() == Dist.CLIENT) {
-			MainProxy.getProxy(true).addLogisticsPipesOverride(par1IIconRegister, texture, fileName, Textures.LOGISTICSPIPE_UN_OVERLAY_TEXTURE_FILE, true);
-		}
+		// flag was true, which took priority over the overlay name in the old proxy dispatch
+		TextureRegistrar.record(texture, fileName);
 		return texture;
 	}
 

@@ -1,5 +1,6 @@
 package logisticspipes.routing.order;
 
+import logisticspipes.ticks.LPTickHandler;
 import logisticspipes.proxy.MainProxy;
 
 public class DistanceTracker implements IDistanceTracker {
@@ -44,6 +45,6 @@ public class DistanceTracker implements IDistanceTracker {
 
 	@Override
 	public boolean isTimeout() {
-		return delay != 0 && delay <= MainProxy.getGlobalTick();
+		return delay != 0 && delay <= LPTickHandler.getGlobalTick();
 	}
 }

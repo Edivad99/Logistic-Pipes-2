@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import logisticspipes.blocks.powertile.LogisticsRFPowerProviderTileEntity;
 import logisticspipes.client.ClientManager;
 import logisticspipes.commands.Confirmations;
+import logisticspipes.entity.FakePlayers;
 import logisticspipes.commands.LogisticsPipesCommand;
 import logisticspipes.data.LPParticleProvider;
 import logisticspipes.data.LPSpriteSourceProvider;
@@ -170,6 +171,7 @@ public class LogisticsPipes {
         NeoForge.EVENT_BUS.register(new LogisticsEventListener());
         NeoForge.EVENT_BUS.register(new BlockChangeListener());
         NeoForge.EVENT_BUS.register(Confirmations.INSTANCE);
+        NeoForge.EVENT_BUS.register(FakePlayers.INSTANCE);
         NeoForge.EVENT_BUS.register(PropertyUpdaterEventListener.INSTANCE);
 
         for (int i = 0; i < LPConfigs.COMMON.MULTI_THREAD_NUMBER.getAsInt(); i++) {

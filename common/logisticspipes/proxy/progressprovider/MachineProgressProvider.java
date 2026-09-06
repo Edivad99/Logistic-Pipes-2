@@ -10,19 +10,19 @@ import logisticspipes.proxy.interfaces.IGenericProgressProvider;
 
 public class MachineProgressProvider {
 
-	private List<IGenericProgressProvider> providers = new ArrayList<>();
+	private final List<IGenericProgressProvider> providers = new ArrayList<>();
 
 	public void registerProgressProvider(IGenericProgressProvider provider) {
 		providers.add(provider);
 	}
 
-	public byte getProgressForTile(BlockEntity tile) {
-		if (tile instanceof IProgressProvider) {
-			return ((IProgressProvider) tile).getMachineProgressForLP();
+	public byte getProgressForTile(BlockEntity blockEntity) {
+		if (blockEntity instanceof IProgressProvider provider) {
+			return provider.getMachineProgressForLP();
 		}
 		for (IGenericProgressProvider provider : providers) {
-			if (provider.isType(tile)) {
-				return provider.getProgress(tile);
+			if (provider.isType(blockEntity)) {
+				return provider.getProgress(blockEntity);
 			}
 		}
 		return 0;
