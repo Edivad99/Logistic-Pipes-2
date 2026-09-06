@@ -1,13 +1,13 @@
 package logisticspipes.pipes;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -21,6 +21,7 @@ import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
 import logisticspipes.util.ItemStackLoader;
 import logisticspipes.world.inventory.OrdererMk2Menu;
+import logisticspipes.world.item.ItemPipeController;
 import logisticspipes.world.item.LPItems;
 
 public class PipeItemsRequestLogisticsMk2 extends PipeItemsRequestLogistics implements IPipeMenuProvider {
@@ -39,7 +40,7 @@ public class PipeItemsRequestLogisticsMk2 extends PipeItemsRequestLogistics impl
 	@Override
 	public boolean handleClick(Player entityplayer, @Nullable SecuritySettings settings) {
 		//allow using upgrade manager
-		if (MainProxy.isPipeControllerEquipped(entityplayer) && !(entityplayer.isCrouching())) {
+		if (ItemPipeController.isHeldBy(entityplayer) && !(entityplayer.isCrouching())) {
 			return false;
 		}
 		if (MainProxy.isServer(getWorld())) {

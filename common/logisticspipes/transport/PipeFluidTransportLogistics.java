@@ -122,7 +122,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 		super.onNeighborBlockChange();
 
 		for (Direction direction : Direction.values()) {
-			if (!MainProxy.checkPipesConnections(container, container.getTile(PipeFluidTransportLogistics.orientations[direction.ordinal()]), PipeFluidTransportLogistics.orientations[direction.ordinal()])) {
+			if (!SimpleServiceLocator.pipeInformationManager.canConnect(container, container.getTile(PipeFluidTransportLogistics.orientations[direction.ordinal()]), PipeFluidTransportLogistics.orientations[direction.ordinal()])) {
 				if (MainProxy.isServer(getWorld())) {
 					FluidStack stack = sideTanks[direction.ordinal()].getFluid();
 					if (stack != null && !stack.isEmpty()) {

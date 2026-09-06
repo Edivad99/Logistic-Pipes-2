@@ -39,7 +39,6 @@ package network.rs485.logisticspipes.world
 
 import network.rs485.logisticspipes.connection.LPNeighborTileEntity
 import logisticspipes.LogisticsPipes
-import logisticspipes.proxy.MainProxy
 import logisticspipes.proxy.SimpleServiceLocator
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -61,7 +60,7 @@ data class WorldCoordinatesWrapper(private val level: Level, private val pos: Bl
             LogisticsPipes.LOG.warn("The coordinates didn't hold a pipe at all", Throwable("Stack trace"))
             return emptyList()
         }
-        return allNeighborTileEntities().filter { adjacent -> MainProxy.checkPipesConnections(pipe, adjacent.tileEntity, adjacent.direction) }
+        return allNeighborTileEntities().filter { adjacent -> SimpleServiceLocator.pipeInformationManager.canConnect(pipe, adjacent.tileEntity, adjacent.direction) }
     }
 
     fun getNeighbor(direction: Direction): LPNeighborTileEntity<BlockEntity>? {

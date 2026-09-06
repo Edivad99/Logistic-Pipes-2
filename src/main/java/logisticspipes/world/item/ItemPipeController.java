@@ -4,10 +4,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.proxy.MainProxy;
 import logisticspipes.world.inventory.PlayerSettingsMenu;
@@ -16,6 +19,11 @@ public class ItemPipeController extends LogisticsItem {
 
     public ItemPipeController(Properties properties) {
         super(properties);
+    }
+
+    /** Whether {@code player} is holding a pipe controller, which unlocks the remote pipe GUIs. */
+    public static boolean isHeldBy(@Nullable Player player) {
+        return player != null && player.getItemBySlot(EquipmentSlot.MAINHAND).is(LPItems.PIPE_CONTROLLER.get());
     }
 
     @Override

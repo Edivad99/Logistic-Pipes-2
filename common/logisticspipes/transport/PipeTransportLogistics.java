@@ -33,8 +33,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.ticks.LPTickHandler;
 import logisticspipes.LPConstants;
+import logisticspipes.LogisticsEventListener;
 import logisticspipes.LogisticsPipes;
 import logisticspipes.api.ILogisticsPowerProvider;
 import logisticspipes.interfaces.IBufferItems;
@@ -48,8 +48,8 @@ import logisticspipes.logisticspipes.IRoutedItem;
 import logisticspipes.logisticspipes.IRoutedItem.TransportMode;
 import logisticspipes.modules.LogisticsModule.ModulePositionType;
 import logisticspipes.network.TargetLookup;
-import logisticspipes.network.to_client.pipe.TravellingItemContentMessage;
 import logisticspipes.network.to_client.pipe.PipeItemBufferMessage;
+import logisticspipes.network.to_client.pipe.TravellingItemContentMessage;
 import logisticspipes.network.to_client.pipe.TravellingItemPositionMessage;
 import logisticspipes.network.to_server.pipe.RequestPipeContentMessage;
 import logisticspipes.pipes.PipeItemsFluidSupplier;
@@ -63,6 +63,7 @@ import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.ItemRoutingInformation;
 import logisticspipes.routing.pathfinder.IPipeInformationProvider;
+import logisticspipes.ticks.LPTickHandler;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemClient;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 import logisticspipes.util.CoordinateUtils;
@@ -192,7 +193,8 @@ public class PipeTransportLogistics {
 		Iterator<Triplet<ItemIdentifierStack, Pair<Integer, Integer>, LPTravelingItemServer>> iterator = itemBuffer.iterator();
 		while (iterator.hasNext()) {
 			ItemIdentifierStack next = iterator.next().getValue1();
-			MainProxy.dropItems(getWorld(), next.makeNormalStack(), getPipe().getX(), getPipe().getY(), getPipe().getZ());
+			getWorld().addFreshEntity(new ItemEntity(getWorld(), getPipe().getX(), getPipe().getY(), getPipe().getZ(),
+					next.makeNormalStack()));
 			iterator.remove();
 		}
 	}
@@ -722,7 +724,7 @@ public class PipeTransportLogistics {
 	}
 
 	private void sendItemPacket(LPTravelingItemServer item) {
-		if (MainProxy.isAnyoneWatching(container.getBlockPos(), getWorld().dimension().identifier().hashCode())) {
+		if (LogisticsEventListener.isAnyoneWatching(container.getBlockPos())) {
 			if (!LPTravelingItem.clientSideKnownIDs.get(item.getId())) {
 				TargetLookup.sendToChunkWatchers(container,
 						new TravellingItemContentMessage(item.getId(), item.getItemIdentifierStack()));

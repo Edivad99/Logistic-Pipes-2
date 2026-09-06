@@ -36,13 +36,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.entity.FakePlayers;
 import logisticspipes.LPConstants;
+import logisticspipes.entity.FakePlayers;
 import logisticspipes.interfaces.ICraftingRecipeGrid;
 import logisticspipes.interfaces.IPipeMenuProvider;
-import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.IRequestWatcher;
 import logisticspipes.interfaces.IRotationProvider;
+import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.logisticspipes.IRoutedItem;
 import logisticspipes.logisticspipes.TransportLayer;
 import logisticspipes.network.to_client.crafting.CraftingTargetMessage;
@@ -65,9 +65,10 @@ import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierInventory;
 import logisticspipes.utils.item.ItemIdentifierStack;
-import logisticspipes.world.inventory.RequestTableMenu;
 import logisticspipes.utils.item.SimpleStackInventory;
 import logisticspipes.utils.tuples.Pair;
+import logisticspipes.world.inventory.RequestTableMenu;
+import logisticspipes.world.item.ItemPipeController;
 import logisticspipes.world.item.LPItems;
 import logisticspipes.world.level.block.entity.AutoCraftingContainer;
 
@@ -126,7 +127,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 	@Override
 	public boolean handleClick(Player entityplayer, @Nullable SecuritySettings settings) {
 		//allow using upgrade manager
-		if (MainProxy.isPipeControllerEquipped(entityplayer) && !(entityplayer.isCrouching())) {
+		if (ItemPipeController.isHeldBy(entityplayer) && !(entityplayer.isCrouching())) {
 			return false;
 		}
 		if (MainProxy.isServer(getWorld())) {

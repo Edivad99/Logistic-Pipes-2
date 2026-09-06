@@ -60,6 +60,32 @@ public class PipeInformationManager {
 		return startPipe.canConnect(provider.getTile(), direction, flag) && provider.canConnect(startPipe.getTile(), direction.getOpposite(), flag);
 	}
 
+	/**
+	 * Whether two neighbouring block entities would form a pipe connection through {@code way}.
+	 *
+	 * <p>True when neither side objects: a non-pipe on one end is not a refusal, it just has no
+	 * opinion, which is what lets a pipe connect to a plain inventory.
+	 */
+	public boolean canConnect(@Nullable BlockEntity from, @Nullable BlockEntity to, Direction way) {
+		return canConnect(from, to, way, false);
+	}
+
+	public boolean canConnect(@Nullable BlockEntity from, @Nullable BlockEntity to, Direction way,
+			boolean ignoreSystemDisconnection) {
+		if (from == null || to == null) {
+			return false;
+		}
+		IPipeInformationProvider fromInfo = getInformationProviderFor(from);
+		IPipeInformationProvider toInfo = getInformationProviderFor(to);
+		if (fromInfo == null && toInfo == null) {
+			return false;
+		}
+		if (fromInfo != null && !fromInfo.canConnect(to, way, ignoreSystemDisconnection)) {
+			return false;
+		}
+		return toInfo == null || toInfo.canConnect(from, way.getOpposite(), ignoreSystemDisconnection);
+	}
+
 	public boolean isItemPipe(@Nullable BlockEntity tile) {
 		return isPipe(tile, true, ConnectionType.ITEM);
 	}

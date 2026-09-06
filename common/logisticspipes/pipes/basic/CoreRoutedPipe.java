@@ -37,8 +37,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -121,19 +121,20 @@ import logisticspipes.textures.Textures.TextureType;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 import logisticspipes.transport.PipeTransportLogistics;
 import logisticspipes.util.DoubleCoordinates;
+import logisticspipes.util.PipeConfigTools;
 import logisticspipes.utils.CacheHolder;
 import logisticspipes.utils.DirectionUtil;
 import logisticspipes.utils.FluidIdentifierStack;
 import logisticspipes.utils.OrientationsUtil;
 import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.SinkReply;
-import logisticspipes.util.PipeConfigTools;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
-import logisticspipes.world.inventory.OrdererMenu;
-import logisticspipes.world.inventory.PipeControllerMenu;
 import logisticspipes.utils.tuples.Pair;
 import logisticspipes.utils.tuples.Triplet;
+import logisticspipes.world.inventory.OrdererMenu;
+import logisticspipes.world.inventory.PipeControllerMenu;
+import logisticspipes.world.item.ItemPipeController;
 import logisticspipes.world.item.ItemPipeSignCreator;
 import logisticspipes.world.item.LPItems;
 import network.rs485.logisticspipes.connection.Adjacent;
@@ -882,7 +883,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 			}
 		}
 
-		if (MainProxy.isPipeControllerEquipped(player)) {
+		if (ItemPipeController.isHeldBy(player)) {
 			if (!player.level().isClientSide()) {
 				if (settings == null || settings.openNetworkMonitor) {
 					if (player instanceof ServerPlayer serverPlayer) {

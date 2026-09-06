@@ -66,10 +66,10 @@ import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.renderer.GuiOverlay;
 import logisticspipes.renderer.LogisticsHUDRenderer;
 import logisticspipes.routing.ItemRoutingInformation;
+import logisticspipes.util.PipeConfigTools;
 import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.PlayerIdentifier;
 import logisticspipes.utils.QuickSortChestMarkerStorage;
-import logisticspipes.util.PipeConfigTools;
 import logisticspipes.utils.string.ChatColor;
 import network.rs485.logisticspipes.config.ClientConfiguration;
 import network.rs485.logisticspipes.config.PlayerConfiguration;
@@ -80,6 +80,12 @@ public class LogisticsEventListener {
 
 	public static final WeakHashMap<Player, List<WeakReference<AsyncQuicksortModule>>> chestQuickSortConnection = new WeakHashMap<>();
 	public static Map<ChunkPos, PlayerCollectionList> watcherList = new ConcurrentHashMap<>();
+
+	/** Whether any player is close enough to {@code pos} to be sent updates for it. */
+	public static boolean isAnyoneWatching(BlockPos pos) {
+		PlayerCollectionList list = LogisticsEventListener.watcherList.get(ChunkPos.containing(pos));
+		return list != null && !list.isEmpty();
+	}
 
 	/**
 	 * Keeps an item that cannot lie in the world from being thrown away.

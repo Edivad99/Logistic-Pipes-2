@@ -15,11 +15,6 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * One fake player per dimension, for the blocks that have to act as somebody.
- *
- * <p>Lives on the game event bus so the entry is dropped when its level unloads. It used to sit in
- * {@code MainProxy}, whose unload handler was never reached: nothing ever registered that class, so
- * every fake player -- and the {@link ServerLevel} it holds -- stayed in the map for the life of
- * the process.
  */
 public final class FakePlayers {
 
@@ -35,7 +30,7 @@ public final class FakePlayers {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
-        return PLAYERS.computeIfAbsent(level.dimension(), dimension -> new FakePlayerLP(serverLevel));
+        return PLAYERS.computeIfAbsent(level.dimension(), _ -> new FakePlayerLP(serverLevel));
     }
 
     @SubscribeEvent
