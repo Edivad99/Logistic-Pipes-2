@@ -8,11 +8,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 import logisticspipes.routing.order.IOrderInfoProvider;
 import logisticspipes.routing.order.LinkedLogisticsOrderList;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.LPGuiGraphics;
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 import logisticspipes.utils.gui.SimpleGraphics;
 import logisticspipes.world.inventory.LogicControllerMenu;
 

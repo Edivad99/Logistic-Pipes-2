@@ -1,8 +1,8 @@
 package logisticspipes.utils.gui;
 
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
-
 import org.jspecify.annotations.Nullable;
+
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 
 public interface ISubGuiController {
 

@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-import org.jspecify.annotations.Nullable;
-
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IRotationProvider;
 import logisticspipes.interfaces.ITickable;

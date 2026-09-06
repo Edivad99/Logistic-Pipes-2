@@ -10,10 +10,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
+import logisticspipes.network.TargetLookup;
 import logisticspipes.network.to_client.pipe.UpgradeConfigPopupMessage;
 import logisticspipes.pipes.upgrades.IConfigPipeUpgrade;
 import logisticspipes.pipes.upgrades.IPipeUpgrade;
-import logisticspipes.network.TargetLookup;
 import logisticspipes.utils.gui.UpgradeSlot;
 
 /**

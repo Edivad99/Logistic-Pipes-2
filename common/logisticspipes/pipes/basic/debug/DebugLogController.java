@@ -8,8 +8,8 @@ import net.minecraft.world.entity.player.Player;
 
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import logisticspipes.network.to_client.debug.SendLogLineMessage;
 import logisticspipes.network.to_client.debug.OpenPipeLogMessage;
+import logisticspipes.network.to_client.debug.SendLogLineMessage;
 import logisticspipes.network.to_client.debug.UpdateStatusEntriesMessage;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.utils.PlayerCollectionList;

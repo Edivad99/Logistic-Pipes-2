@@ -1,8 +1,6 @@
 
 package logisticspipes.utils.gui;
 
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 
 public class LogisticsBaseTabGuiScreen<T extends AbstractContainerMenu>
 		extends LogisticsBaseGuiScreen<T> {

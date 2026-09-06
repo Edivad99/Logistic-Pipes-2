@@ -34,9 +34,9 @@ import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.entity.FakePlayers;
 import logisticspipes.LPConfigs;
 import logisticspipes.api.IRoutedPowerProvider;
+import logisticspipes.entity.FakePlayers;
 import logisticspipes.interfaces.IBlockEntityMenuProvider;
 import logisticspipes.interfaces.ICraftingRecipeGrid;
 import logisticspipes.interfaces.IScreenOpenController;

@@ -1,13 +1,12 @@
 package logisticspipes.network;
 
-import io.netty.buffer.Unpooled;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.storage.ValueInput;
 
 import com.mojang.serialization.Codec;
+import io.netty.buffer.Unpooled;
 import org.jspecify.annotations.Nullable;
 
 /**

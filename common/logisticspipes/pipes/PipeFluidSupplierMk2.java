@@ -14,9 +14,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-import lombok.Getter;
-
 import net.neoforged.neoforge.network.PacketDistributor;
+
+import lombok.Getter;
 
 import logisticspipes.interfaces.IPipeMenuProvider;
 import logisticspipes.interfaces.routing.IRequestFluid;

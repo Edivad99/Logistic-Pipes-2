@@ -1,7 +1,5 @@
 package logisticspipes.utils.gui;
 
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
-
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
@@ -11,6 +9,8 @@ import net.minecraft.network.chat.Component;
 
 import lombok.Setter;
 import org.jspecify.annotations.Nullable;
+
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 
 public class InputBar extends EditBox {
 

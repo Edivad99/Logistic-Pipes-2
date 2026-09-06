@@ -11,9 +11,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.network.ModuleTarget;
-
 import logisticspipes.modules.SneakyDirection;
+import logisticspipes.network.ModuleTarget;
 
 /**
  * The sneaky direction a module settled on, for the players watching its HUD.

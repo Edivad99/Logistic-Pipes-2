@@ -13,7 +13,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 
 import org.jspecify.annotations.Nullable;

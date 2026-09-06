@@ -56,7 +56,6 @@ import logisticspipes.utils.LPPositionSet;
 import logisticspipes.utils.item.ItemIdentifierStack;
 import logisticspipes.utils.item.ItemStackRenderer;
 import logisticspipes.utils.tuples.Pair;
-import network.rs485.logisticspipes.config.ClientConfiguration;
 
 public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGenericPipe, PipeRenderState> {
 

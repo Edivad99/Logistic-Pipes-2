@@ -27,11 +27,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.interfaces.IBlockEntityMenuProvider;
-import logisticspipes.network.to_client.block.CompilerStatusMessage;
 import logisticspipes.LPConfigs;
 import logisticspipes.LPConstants;
+import logisticspipes.interfaces.IBlockEntityMenuProvider;
 import logisticspipes.interfaces.IScreenOpenController;
+import logisticspipes.network.to_client.block.CompilerStatusMessage;
 import logisticspipes.pipes.PipeItemsBasicLogistics;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;

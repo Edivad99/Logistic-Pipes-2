@@ -51,7 +51,6 @@ import logisticspipes.world.inventory.LPMenuTypes;
 import network.rs485.logisticspipes.connection.LPNeighborTileEntityKt;
 import network.rs485.logisticspipes.inventory.IItemIdentifierInventory;
 import network.rs485.logisticspipes.inventory.container.ItemSinkContainer;
-import logisticspipes.modules.SimpleFilter;
 import network.rs485.logisticspipes.property.BitSetProperty;
 import network.rs485.logisticspipes.property.BooleanProperty;
 import network.rs485.logisticspipes.property.IBitSet;

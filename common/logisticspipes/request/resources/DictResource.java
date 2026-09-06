@@ -2,12 +2,11 @@ package logisticspipes.request.resources;
 
 import java.util.BitSet;
 
-import com.google.common.base.Objects;
-
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
+import com.google.common.base.Objects;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.routing.IRequestItems;

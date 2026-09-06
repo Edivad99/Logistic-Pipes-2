@@ -4,9 +4,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import logisticspipes.modules.LogisticsModule;
-import logisticspipes.network.ModuleTarget;
-
 import logisticspipes.modules.SimpleFilter;
+import logisticspipes.network.ModuleTarget;
 
 /**
  * The nine filter slots shared by every module that filters by plain item.

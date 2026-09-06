@@ -19,9 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import logisticspipes.debug.DebugGuiController;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.ticks.ClientTaskQueue;
 import logisticspipes.utils.FluidIdentifier;
 import network.rs485.grow.ServerTickDispatcher;
 

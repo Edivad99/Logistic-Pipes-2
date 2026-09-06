@@ -18,8 +18,8 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.ItemStack;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -27,15 +27,14 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConstants;
 import logisticspipes.LogisticsPipes;
-import network.rs485.logisticspipes.util.FuzzyFlag;
 import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.ticks.RoutingTableUpdateThread;
 import logisticspipes.utils.item.ItemIdentifier;
+import network.rs485.logisticspipes.util.FuzzyFlag;
 
 /**
  * {@code /logisticspipes}, and {@code /lp} for short.

@@ -15,8 +15,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.IPipeUpgradeManager;
+import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.upgrades.power.BCPowerSupplierUpgrade;

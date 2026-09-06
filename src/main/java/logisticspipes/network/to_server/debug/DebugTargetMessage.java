@@ -14,13 +14,13 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
 import logisticspipes.commands.Confirmations;
+import logisticspipes.debug.DebugGuiController;
 import logisticspipes.network.DebugTarget;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.routing.ServerRouter;
 import logisticspipes.routing.debug.DebugController;
-import logisticspipes.debug.DebugGuiController;
 
 /**
  * What the player was pointing at, in answer to

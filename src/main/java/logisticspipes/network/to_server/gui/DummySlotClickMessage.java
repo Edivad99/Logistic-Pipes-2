@@ -4,18 +4,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.inventory.ContainerInput;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.utils.gui.ColorSlot;
 import logisticspipes.world.inventory.DummyMenu;
-import logisticspipes.utils.gui.DummySlot;
-import logisticspipes.utils.gui.FluidSlot;
-
 
 /**
  * The player clicked one of a screen's ghost slots.

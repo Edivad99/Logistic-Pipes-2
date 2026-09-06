@@ -15,8 +15,8 @@ import net.minecraft.resources.Identifier;
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 import logisticspipes.LPConfigs;
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 import logisticspipes.interfaces.ISpecialItemRenderer;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.item.ItemIdentifier;

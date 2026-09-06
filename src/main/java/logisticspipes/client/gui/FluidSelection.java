@@ -8,9 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import logisticspipes.client.gui.popup.SelectItemOutOfList;
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 import logisticspipes.network.to_server.gui.DummySlotClickMessage;
 import logisticspipes.utils.FluidIdentifier;
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 import logisticspipes.utils.gui.SubGuiScreen;
 import logisticspipes.utils.item.ItemIdentifierStack;
 

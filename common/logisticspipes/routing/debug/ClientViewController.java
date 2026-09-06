@@ -1,13 +1,14 @@
 package logisticspipes.routing.debug;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
 import org.jspecify.annotations.Nullable;
@@ -18,8 +19,6 @@ import logisticspipes.particle.Particles;
 import logisticspipes.particle.PipeFXRenderHandler;
 import logisticspipes.renderer.LogisticsHUDRenderer;
 import logisticspipes.routing.PipeRoutingConnectionType;
-import net.minecraft.core.BlockPos;
-
 import logisticspipes.util.DoubleCoordinates;
 
 public class ClientViewController implements IDebugHUDProvider {

@@ -11,8 +11,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.network.ModuleTarget;
 import logisticspipes.modules.SneakyDirection;
+import logisticspipes.network.ModuleTarget;
 
 /**
  * The player picked a side in the sneaky configurator.

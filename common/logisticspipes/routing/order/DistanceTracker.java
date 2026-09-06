@@ -1,7 +1,6 @@
 package logisticspipes.routing.order;
 
 import logisticspipes.ticks.LPTickHandler;
-import logisticspipes.proxy.MainProxy;
 
 public class DistanceTracker implements IDistanceTracker {
 

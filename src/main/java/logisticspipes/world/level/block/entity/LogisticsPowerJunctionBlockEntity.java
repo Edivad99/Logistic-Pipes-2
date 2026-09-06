@@ -25,18 +25,18 @@ import logisticspipes.api.ILogisticsPowerProvider;
 import logisticspipes.gui.hud.HUDPowerLevel;
 import logisticspipes.interfaces.IBlockEntityMenuProvider;
 import logisticspipes.interfaces.IBlockWatchingHandler;
-import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.IHeadUpDisplayBlockRendererProvider;
 import logisticspipes.interfaces.IHeadUpDisplayRenderer;
 import logisticspipes.interfaces.IPowerLevelDisplay;
+import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.network.to_client.block.PowerJunctionLevelMessage;
 import logisticspipes.network.to_server.block.BlockHudWatchMessage;
 import logisticspipes.proxy.MainProxy;
-import logisticspipes.world.inventory.PowerJunctionMenu;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.renderer.LogisticsHUDRenderer;
 import logisticspipes.utils.PlayerCollectionList;
+import logisticspipes.world.inventory.PowerJunctionMenu;
 
 @CCType(name = "LogisticsPowerJunction")
 public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity

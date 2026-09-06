@@ -5,11 +5,11 @@ import java.util.List;
 import logisticspipes.gui.hud.HudChassisPipe;
 import logisticspipes.interfaces.IHUDButton;
 import logisticspipes.interfaces.IHUDModuleRenderer;
+import logisticspipes.modules.SimpleFilter;
 import logisticspipes.renderer.HUDDrawContext;
 import logisticspipes.utils.item.ItemIdentifierStack;
 import logisticspipes.utils.item.ItemStackRenderer;
 import logisticspipes.utils.item.ItemStackRenderer.DisplayAmount;
-import logisticspipes.modules.SimpleFilter;
 
 public class HUDSimpleFilterModule implements IHUDModuleRenderer {
 

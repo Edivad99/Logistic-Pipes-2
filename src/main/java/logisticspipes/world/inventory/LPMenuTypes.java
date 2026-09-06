@@ -1,17 +1,21 @@
 package logisticspipes.world.inventory;
 
 import java.util.BitSet;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.TagValueInput;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.IContainerFactory;
@@ -19,52 +23,45 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import logisticspipes.LPConstants;
-import java.util.Objects;
-import java.util.function.Supplier;
-
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.level.storage.TagValueInput;
-
+import logisticspipes.blocks.LogisticsSecurityTileEntity;
+import logisticspipes.blocks.powertile.LogisticsPowerProviderTileEntity;
+import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
+import logisticspipes.blocks.stats.TrackingTask;
 import logisticspipes.interfaces.IFreqCardHolder;
 import logisticspipes.interfaces.IStringBasedModule;
+import logisticspipes.interfaces.SatellitePipe;
 import logisticspipes.modules.ChassisModule;
 import logisticspipes.modules.LogisticsModule;
 import logisticspipes.modules.ModuleActiveSupplier;
+import logisticspipes.modules.ModuleActiveSupplier.PatternMode;
+import logisticspipes.modules.ModuleActiveSupplier.SupplyMode;
 import logisticspipes.modules.ModuleCrafter;
 import logisticspipes.modules.ModuleFluidSupplier;
 import logisticspipes.modules.ModuleItemSink;
-import logisticspipes.modules.ModuleActiveSupplier.PatternMode;
-import logisticspipes.modules.ModuleActiveSupplier.SupplyMode;
 import logisticspipes.modules.ModuleOreDictItemSink;
 import logisticspipes.modules.ModuleProvider;
+import logisticspipes.modules.SimpleFilter;
+import logisticspipes.modules.SneakyDirection;
 import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.RemotePipeTarget;
-import logisticspipes.interfaces.SatellitePipe;
 import logisticspipes.pipes.PipeBlockRequestTable;
 import logisticspipes.pipes.PipeFluidRequestLogistics;
 import logisticspipes.pipes.PipeFluidSupplierMk2;
 import logisticspipes.pipes.PipeFluidTerminus;
 import logisticspipes.pipes.PipeItemsFirewall;
 import logisticspipes.pipes.PipeItemsFluidSupplier;
-import logisticspipes.pipes.basic.CoreRoutedPipe;
-import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.pipes.PipeItemsInvSysConnector;
 import logisticspipes.pipes.PipeItemsRequestLogisticsMk2;
+import logisticspipes.pipes.basic.CoreRoutedPipe;
+import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.pipes.basic.fluid.FluidSinkPipe;
 import logisticspipes.utils.item.ItemIdentifier;
-
-import network.rs485.logisticspipes.inventory.container.ItemSinkContainer;
-import network.rs485.logisticspipes.inventory.container.ProviderContainer;
-import network.rs485.logisticspipes.module.AsyncAdvancedExtractor;
-import logisticspipes.modules.SneakyDirection;
-import logisticspipes.modules.SimpleFilter;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
-import logisticspipes.blocks.stats.TrackingTask;
-import logisticspipes.blocks.powertile.LogisticsPowerProviderTileEntity;
 import logisticspipes.world.level.block.entity.LogisticsCraftingTableBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsProgramCompilerBlockEntity;
+import network.rs485.logisticspipes.inventory.container.ItemSinkContainer;
+import network.rs485.logisticspipes.inventory.container.ProviderContainer;
+import network.rs485.logisticspipes.module.AsyncAdvancedExtractor;
 
 public class LPMenuTypes {
 

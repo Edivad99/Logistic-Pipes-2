@@ -12,6 +12,8 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
@@ -23,14 +25,12 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.types.IRecipeHolderType;
 import org.jspecify.annotations.Nullable;
 
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-
+import logisticspipes.client.gui.popup.GuiRecipeImport;
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 import logisticspipes.client.gui.screen.LogisticsCraftingTableScreen;
 import logisticspipes.client.gui.screen.RequestTableScreen;
-import logisticspipes.client.gui.popup.GuiRecipeImport;
 import logisticspipes.network.to_server.crafting.ImportCraftingRecipeMessage;
 import logisticspipes.utils.gui.IJeiScreenHolder;
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 
 public class RecipeTransferHandler<C extends AbstractContainerMenu & IJeiScreenHolder>
     implements IRecipeTransferHandler<C, RecipeHolder<CraftingRecipe>> {

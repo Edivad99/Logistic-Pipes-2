@@ -1,7 +1,5 @@
 package logisticspipes.utils.gui;
 
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,6 +10,8 @@ import net.minecraft.network.chat.Component;
 
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
+
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 
 public abstract class SubGuiScreen extends Screen implements ISubGuiController, IGuiAccess {
 

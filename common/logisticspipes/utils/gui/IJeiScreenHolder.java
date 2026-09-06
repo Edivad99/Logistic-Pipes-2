@@ -1,8 +1,8 @@
 package logisticspipes.utils.gui;
 
-import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
-
 import org.jspecify.annotations.Nullable;
+
+import logisticspipes.client.gui.screen.LogisticsBaseGuiScreen;
 
 /**
  * A menu that remembers the screen showing it, for the recipe viewer.
