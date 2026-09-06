@@ -59,23 +59,30 @@ public record UpgradeConfigPopupMessage(Kind kind, BlockPos pipePos, int slotInd
     }
 
     public static void handle(UpgradeConfigPopupMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pipePos, LogisticsTileGenericPipe.class);
-        final UpgradeSlot slot = TargetLookup.slotIn(context.player(), message.slotIndex, UpgradeSlot.class);
-        if (container == null || slot == null || !(container.pipe instanceof CoreRoutedPipe pipe)) {
-            return;
-        }
-        if (!(Minecraft.getInstance().screen instanceof ISubGuiController controller)) {
-            return;
-        }
-        controller.pushSubGui(popupFor(message.kind, container, pipe, slot));
+        Client.handle(message, context);
     }
 
-    private static SubGuiScreen popupFor(Kind kind, LogisticsTileGenericPipe container, CoreRoutedPipe pipe,
-            UpgradeSlot slot) {
-        return kind == Kind.DISCONNECTION
-                ? new DisconnectionConfigurationPopup(pipe, slot)
-                : new SneakyConfigurationPopup(extractableSides(container), slot);
+    private static final class Client {
+
+        static void handle(UpgradeConfigPopupMessage message, IPayloadContext context) {
+            final LogisticsTileGenericPipe container =
+                    TargetLookup.blockEntityAt(context.player(), message.pipePos, LogisticsTileGenericPipe.class);
+            final UpgradeSlot slot = TargetLookup.slotIn(context.player(), message.slotIndex, UpgradeSlot.class);
+            if (container == null || slot == null || !(container.pipe instanceof CoreRoutedPipe pipe)) {
+                return;
+            }
+            if (!(Minecraft.getInstance().screen instanceof ISubGuiController controller)) {
+                return;
+            }
+            controller.pushSubGui(popupFor(message.kind, container, pipe, slot));
+        }
+
+        private static SubGuiScreen popupFor(Kind kind, LogisticsTileGenericPipe container, CoreRoutedPipe pipe,
+                UpgradeSlot slot) {
+            return kind == Kind.DISCONNECTION
+                    ? new DisconnectionConfigurationPopup(pipe, slot)
+                    : new SneakyConfigurationPopup(extractableSides(container), slot);
+        }
     }
 
     /**

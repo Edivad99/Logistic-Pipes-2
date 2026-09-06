@@ -46,23 +46,30 @@ public record RequestAnswerMessage(List<IResource> resources, boolean missing) i
     }
 
     public static void handle(RequestAnswerMessage message, IPayloadContext context) {
-        final Player player = context.player();
-        final var screen = Minecraft.getInstance().screen;
-        if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof OrdererScreen gui) {
-            gui.handleRequestAnswer(message.resources, message.missing, gui, player);
-        } else if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof RequestTableScreen gui) {
-            gui.handleRequestAnswer(message.resources, message.missing, gui, player);
-        } else if (message.missing) {
-            for (IResource resource : message.resources) {
-                player.sendSystemMessage(Component.literal("Missing: " + resource.getDisplayText(ColorCode.NONE))
-                        .withStyle(ChatFormatting.RED));
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(RequestAnswerMessage message, IPayloadContext context) {
+            final Player player = context.player();
+            final var screen = Minecraft.getInstance().screen;
+            if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof OrdererScreen gui) {
+                gui.handleRequestAnswer(message.resources, message.missing, gui, player);
+            } else if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof RequestTableScreen gui) {
+                gui.handleRequestAnswer(message.resources, message.missing, gui, player);
+            } else if (message.missing) {
+                for (IResource resource : message.resources) {
+                    player.sendSystemMessage(Component.literal("Missing: " + resource.getDisplayText(ColorCode.NONE))
+                            .withStyle(ChatFormatting.RED));
+                }
+            } else {
+                for (IResource resource : message.resources) {
+                    player.sendSystemMessage(Component.literal("Requested: " + resource.getDisplayText(ColorCode.NONE))
+                            .withStyle(ChatFormatting.GREEN));
+                }
+                player.sendSystemMessage(Component.literal("Request successful!").withStyle(ChatFormatting.GREEN));
             }
-        } else {
-            for (IResource resource : message.resources) {
-                player.sendSystemMessage(Component.literal("Requested: " + resource.getDisplayText(ColorCode.NONE))
-                        .withStyle(ChatFormatting.GREEN));
-            }
-            player.sendSystemMessage(Component.literal("Request successful!").withStyle(ChatFormatting.GREEN));
         }
     }
 }

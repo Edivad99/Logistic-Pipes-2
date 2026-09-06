@@ -36,8 +36,15 @@ public record OrdererContentMessage(List<ItemIdentifierStack> available) impleme
     }
 
     public static void handle(OrdererContentMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof IAvailableItemsReceiver receiver) {
-            receiver.setAvailableItems(message.available);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(OrdererContentMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof IAvailableItemsReceiver receiver) {
+                receiver.setAvailableItems(message.available);
+            }
         }
     }
 }

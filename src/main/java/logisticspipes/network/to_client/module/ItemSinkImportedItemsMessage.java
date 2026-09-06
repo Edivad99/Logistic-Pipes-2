@@ -41,8 +41,15 @@ public record ItemSinkImportedItemsMessage(List<ItemIdentifier> items) implement
     }
 
     public static void handle(ItemSinkImportedItemsMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof ItemSinkGui gui) {
-            gui.importFromInventory(message.items);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(ItemSinkImportedItemsMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof ItemSinkGui gui) {
+                gui.importFromInventory(message.items);
+            }
         }
     }
 }

@@ -32,8 +32,15 @@ public record TrackableItemsMessage(List<ItemIdentifierStack> items) implements 
     }
 
     public static void handle(TrackableItemsMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof StatisticsScreen gui) {
-            gui.handleTrackableItems(message.items);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(TrackableItemsMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof StatisticsScreen gui) {
+                gui.handleTrackableItems(message.items);
+            }
         }
     }
 }

@@ -37,6 +37,13 @@ public record AskForDebugTargetMessage(Purpose purpose) implements CustomPacketP
     }
 
     public static void handle(AskForDebugTargetMessage message, IPayloadContext context) {
-        ClientPacketDistributor.sendToServer(new DebugTargetMessage(message.purpose, DebugTarget.lookedAt()));
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(AskForDebugTargetMessage message, IPayloadContext context) {
+            ClientPacketDistributor.sendToServer(new DebugTargetMessage(message.purpose, DebugTarget.lookedAt()));
+        }
     }
 }

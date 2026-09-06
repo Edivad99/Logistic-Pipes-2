@@ -5,7 +5,6 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import logisticspipes.LPConstants;
-import logisticspipes.LogisticsPipes;
 import logisticspipes.network.bidirectional.DebugConnectionDataMessage;
 import logisticspipes.network.bidirectional.FluidSupplierMinModeMessage;
 import logisticspipes.network.bidirectional.FluidSupplierPartialsMessage;

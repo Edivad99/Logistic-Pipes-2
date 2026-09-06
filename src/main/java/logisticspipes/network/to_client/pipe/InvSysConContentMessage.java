@@ -37,8 +37,15 @@ public record InvSysConContentMessage(List<ItemIdentifierStack> expected) implem
     }
 
     public static void handle(InvSysConContentMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof InvSysConnectorScreen gui) {
-            gui.handleContentAnswer(message.expected);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(InvSysConContentMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof InvSysConnectorScreen gui) {
+                gui.handleContentAnswer(message.expected);
+            }
         }
     }
 }

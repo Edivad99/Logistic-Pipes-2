@@ -31,8 +31,15 @@ public record PlayerListMessage(List<String> playerNames) implements CustomPacke
     }
 
     public static void handle(PlayerListMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof PlayerListReciver receiver) {
-            receiver.receivePlayerList(message.playerNames);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(PlayerListMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof PlayerListReciver receiver) {
+                receiver.receivePlayerList(message.playerNames);
+            }
         }
     }
 }

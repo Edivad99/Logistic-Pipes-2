@@ -34,8 +34,15 @@ public record RunningCraftingTasksMessage(List<ItemIdentifierStack> tasks) imple
     }
 
     public static void handle(RunningCraftingTasksMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof StatisticsScreen gui) {
-            gui.handleRunningCraftingTasks(message.tasks);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(RunningCraftingTasksMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof StatisticsScreen gui) {
+                gui.handleRunningCraftingTasks(message.tasks);
+            }
         }
     }
 }

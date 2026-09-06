@@ -34,10 +34,17 @@ public record SecurityStationSettingsMessage(String playerName, SecurityPermissi
     }
 
     public static void handle(SecurityStationSettingsMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof SecurityStationScreen screen) {
-            final SecuritySettings settings = new SecuritySettings(message.playerName);
-            message.permissions.applyTo(settings);
-            screen.handlePlayerSecurityOpen(settings);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(SecurityStationSettingsMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof SecurityStationScreen screen) {
+                final SecuritySettings settings = new SecuritySettings(message.playerName);
+                message.permissions.applyTo(settings);
+                screen.handlePlayerSecurityOpen(settings);
+            }
         }
     }
 }

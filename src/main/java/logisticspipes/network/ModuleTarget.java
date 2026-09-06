@@ -124,26 +124,30 @@ public record ModuleTarget(
     /**
      * A module held in hand has no position to look up: the only thing that knows which one it is
      * is the screen the player has open.
-     *
-     * <p>Reached directly rather than through the proxy, which is on its way out; the branch above
-     * is what keeps this off the server, the same arrangement {@code PacketHandler} uses.
      */
     private static @Nullable LogisticsModule fromOpenScreen() {
-        final var screen = Minecraft.getInstance().screen;
-        if (screen instanceof AbstractContainerScreen<?> containerScreen) {
-            if (containerScreen.getMenu() instanceof ModuleMenu menu) {
-                return menu.getModule();
+        return Client.fromOpenScreen();
+    }
+
+    private static final class Client {
+
+        static @Nullable LogisticsModule fromOpenScreen() {
+            final var screen = Minecraft.getInstance().screen;
+            if (screen instanceof AbstractContainerScreen<?> containerScreen) {
+                if (containerScreen.getMenu() instanceof ModuleMenu menu) {
+                    return menu.getModule();
+                }
+                if (containerScreen.getMenu() instanceof LPBaseContainer<?> menu) {
+                    return menu.getModule();
+                }
             }
-            if (containerScreen.getMenu() instanceof LPBaseContainer<?> menu) {
-                return menu.getModule();
+            if (screen instanceof ModuleBaseScreen gui) {
+                return gui.getModule();
             }
+            if (screen instanceof CraftingPipeScreen gui) {
+                return gui.getCraftingModule();
+            }
+            return null;
         }
-        if (screen instanceof ModuleBaseScreen gui) {
-            return gui.getModule();
-        }
-        if (screen instanceof CraftingPipeScreen gui) {
-            return gui.getCraftingModule();
-        }
-        return null;
     }
 }

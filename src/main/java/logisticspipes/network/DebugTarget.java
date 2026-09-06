@@ -27,14 +27,24 @@ public sealed interface DebugTarget {
      * debug tool has to ask.
      */
     static DebugTarget lookedAt() {
-        final HitResult hit = Minecraft.getInstance().hitResult;
-        if (hit instanceof BlockHitResult block && hit.getType() == HitResult.Type.BLOCK) {
-            return new Block(block.getBlockPos());
+        return Client.lookedAt();
+    }
+
+    final class Client {
+
+        private Client() {
         }
-        if (hit instanceof EntityHitResult entity && hit.getType() == HitResult.Type.ENTITY) {
-            return new Entity(entity.getEntity().getId());
+
+        static DebugTarget lookedAt() {
+            final HitResult hit = Minecraft.getInstance().hitResult;
+            if (hit instanceof BlockHitResult block && hit.getType() == HitResult.Type.BLOCK) {
+                return new Block(block.getBlockPos());
+            }
+            if (hit instanceof EntityHitResult entity && hit.getType() == HitResult.Type.ENTITY) {
+                return new Entity(entity.getEntity().getId());
+            }
+            return new Nothing();
         }
-        return new Nothing();
     }
 
     /** The crosshair was on nothing. */

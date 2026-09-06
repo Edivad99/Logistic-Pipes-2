@@ -41,9 +41,16 @@ public record ChannelInformationMessage(ChannelInformation channel, boolean targ
     }
 
     public static void handle(ChannelInformationMessage message, IPayloadContext context) {
-        final Screen screen = Minecraft.getInstance().screen;
-        if (screen instanceof IGUIChannelInformationReceiver receiver) {
-            receiver.handleChannelInformation(message.channel, message.targeted);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(ChannelInformationMessage message, IPayloadContext context) {
+            final Screen screen = Minecraft.getInstance().screen;
+            if (screen instanceof IGUIChannelInformationReceiver receiver) {
+                receiver.handleChannelInformation(message.channel, message.targeted);
+            }
         }
     }
 }

@@ -43,20 +43,27 @@ public record RequestComponentsMessage(List<IResource> used, List<IResource> mis
     }
 
     public static void handle(RequestComponentsMessage message, IPayloadContext context) {
-        final Player player = context.player();
-        final var screen = Minecraft.getInstance().screen;
-        if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof OrdererScreen gui) {
-            gui.handleSimulateAnswer(message.used, message.missing, gui, player);
-        } else if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof RequestTableScreen gui) {
-            gui.handleSimulateAnswer(message.used, message.missing, gui, player);
-        } else {
-            for (IResource resource : message.used) {
-                player.sendSystemMessage(Component.literal("Component: " + resource.getDisplayText(ColorCode.NONE))
-                        .withStyle(ChatFormatting.GREEN));
-            }
-            for (IResource resource : message.missing) {
-                player.sendSystemMessage(Component.literal("Missing: " + resource.getDisplayText(ColorCode.NONE))
-                        .withStyle(ChatFormatting.RED));
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(RequestComponentsMessage message, IPayloadContext context) {
+            final Player player = context.player();
+            final var screen = Minecraft.getInstance().screen;
+            if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof OrdererScreen gui) {
+                gui.handleSimulateAnswer(message.used, message.missing, gui, player);
+            } else if (LPConfigs.COMMON.DISPLAY_POPUP.getAsBoolean() && screen instanceof RequestTableScreen gui) {
+                gui.handleSimulateAnswer(message.used, message.missing, gui, player);
+            } else {
+                for (IResource resource : message.used) {
+                    player.sendSystemMessage(Component.literal("Component: " + resource.getDisplayText(ColorCode.NONE))
+                            .withStyle(ChatFormatting.GREEN));
+                }
+                for (IResource resource : message.missing) {
+                    player.sendSystemMessage(Component.literal("Missing: " + resource.getDisplayText(ColorCode.NONE))
+                            .withStyle(ChatFormatting.RED));
+                }
             }
         }
     }

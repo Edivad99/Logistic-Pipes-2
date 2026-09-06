@@ -38,10 +38,17 @@ public record LikelyRecipeComponentsMessage(List<Optional<Integer>> choices) imp
     }
 
     public static void handle(LikelyRecipeComponentsMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof ISubGuiController controller) {
-            final GuiRecipeImport gui = controller.findSubGui(GuiRecipeImport.class);
-            if (gui != null) {
-                gui.selectComponents(message.choices);
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(LikelyRecipeComponentsMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof ISubGuiController controller) {
+                final GuiRecipeImport gui = controller.findSubGui(GuiRecipeImport.class);
+                if (gui != null) {
+                    gui.selectComponents(message.choices);
+                }
             }
         }
     }

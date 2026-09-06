@@ -39,15 +39,22 @@ public record SecurityStationFlagsMessage(BlockPos pos, boolean allowCC, boolean
     }
 
     public static void handle(SecurityStationFlagsMessage message, IPayloadContext context) {
-        final LogisticsSecurityTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityTileEntity.class);
-        if (be == null) {
-            return;
-        }
-        be.setClientCC(message.allowCC);
-        be.setClientDestroy(message.autoDestroy);
-        if (Minecraft.getInstance().screen instanceof SecurityStationScreen gui) {
-            gui.refreshCheckBoxes();
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(SecurityStationFlagsMessage message, IPayloadContext context) {
+            final LogisticsSecurityTileEntity be = TargetLookup.blockEntityAt(
+                    context.player(), message.pos, LogisticsSecurityTileEntity.class);
+            if (be == null) {
+                return;
+            }
+            be.setClientCC(message.allowCC);
+            be.setClientDestroy(message.autoDestroy);
+            if (Minecraft.getInstance().screen instanceof SecurityStationScreen gui) {
+                gui.refreshCheckBoxes();
+            }
         }
     }
 }

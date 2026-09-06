@@ -38,8 +38,15 @@ public record ChannelManagerPopupMessage(BlockPos pos, List<ChannelInformation> 
     }
 
     public static void handle(ChannelManagerPopupMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof ISubGuiController controller) {
-            controller.setSubGui(new GuiManageChannelPopup(message.channels, message.pos));
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(ChannelManagerPopupMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof ISubGuiController controller) {
+                controller.setSubGui(new GuiManageChannelPopup(message.channels, message.pos));
+            }
         }
     }
 }

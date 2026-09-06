@@ -44,10 +44,17 @@ public record ChannelSelectPopupMessage(BlockPos pos, List<ChannelInformation> c
     }
 
     public static void handle(ChannelSelectPopupMessage message, IPayloadContext context) {
-        if (Minecraft.getInstance().screen instanceof ISubGuiController controller) {
-            controller.setSubGui(new GuiSelectChannelPopup(message.channels, message.pos,
-                    selected -> ClientPacketDistributor.sendToServer(
-                            new SetInvSysConChannelMessage(message.pos, selected.getChannelIdentifier()))));
+        Client.handle(message, context);
+    }
+
+    private static final class Client {
+
+        static void handle(ChannelSelectPopupMessage message, IPayloadContext context) {
+            if (Minecraft.getInstance().screen instanceof ISubGuiController controller) {
+                controller.setSubGui(new GuiSelectChannelPopup(message.channels, message.pos,
+                        selected -> ClientPacketDistributor.sendToServer(
+                                new SetInvSysConChannelMessage(message.pos, selected.getChannelIdentifier()))));
+            }
         }
     }
 }
