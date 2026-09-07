@@ -165,8 +165,6 @@ dependencies {
     [
         "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
         "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:$kotlinx_coroutines",
-        "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serialization",
-        "org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinx_serialization",
     ].each { lib ->
         jarJar(implementation(lib))
     }
@@ -182,7 +180,7 @@ dependencies {
     implementation "curse.maven:patchouli-306770:$patchouli_id"
 
     compileOnly "org.appliedenergistics:appliedenergistics2:$ae2_version:api"
-    localRuntime "org.appliedenergistics:appliedenergistics2:$ae2_version"
+    //localRuntime "org.appliedenergistics:appliedenergistics2:$ae2_version"
 
     compileOnly("com.refinedmods.refinedstorage:refinedstorage-neoforge:$rs_version") {
         transitive = false
@@ -190,9 +188,9 @@ dependencies {
     // RS's API classes carry apiguardian @API annotations; without this javac emits
     // "unknown enum constant Status.STABLE" for every one of them (transitive = false above).
     compileOnly "org.apiguardian:apiguardian-api:1.1.2"
-    localRuntime("com.refinedmods.refinedstorage:refinedstorage-neoforge:$rs_version") {
-        transitive = false
-    }
+    //localRuntime("com.refinedmods.refinedstorage:refinedstorage-neoforge:$rs_version") {
+    //    transitive = false
+    //}
 
     //localRuntime "curse.maven:mekanism-268560:7904058"
     testImplementation "org.jetbrains.kotlin:kotlin-test:2.4.0"
