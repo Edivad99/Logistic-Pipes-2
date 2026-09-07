@@ -203,20 +203,31 @@ public class DebugController implements IRoutingDebugAdapter {
 	 * @return false if there was no update to stop
 	 */
 	public boolean stop() {
+		final boolean parked;
 		synchronized (stepLock) {
-			if (waiting) {
+			parked = waiting;
+			if (parked) {
 				waiting = false;
 				step = Step.STOP;
 				stepLock.notifyAll();
-				return true;
 			}
 		}
-		final Thread thread = updateThread;
-		if (thread == null) {
-			return false;
+		if (!parked) {
+			final Thread thread = updateThread;
+			if (thread == null) {
+				return false;
+			}
+			thread.interrupt();
 		}
-		thread.interrupt();
+		clearClientView();
 		return true;
+	}
+
+	/** Takes the debug view, and with it the HUD, back off the client. */
+	private void clearClientView() {
+		sendToPlayer(new RoutingDebugClearMessage());
+		sendToPlayer(new RoutingDebugDoneMessage());
+		cachedRoutes.clear();
 	}
 
 	/** Whether an update is parked, waiting to be told what to do next. */
@@ -363,9 +374,7 @@ public class DebugController implements IRoutingDebugAdapter {
 	@Override
 	public void done() {
 		sendMsg("Update Done");
-		sendToPlayer(new RoutingDebugClearMessage());
-		sendToPlayer(new RoutingDebugDoneMessage());
-		cachedRoutes.clear();
+		clearClientView();
 	}
 
 	@Override
