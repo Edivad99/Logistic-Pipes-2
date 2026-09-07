@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.TagValueOutput;
 
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -36,7 +37,6 @@ import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.to_client.module.ItemSinkDefaultRouteMessage;
 import logisticspipes.network.to_client.module.ModuleInventoryMessage;
 import logisticspipes.pipes.PipeLogisticsChassis.ChassiTargetInformation;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
@@ -237,10 +237,11 @@ public class ModuleItemSink extends LogisticsModule
 
 	@Override
 	public void InventoryChanged(Container inventory) {
-		MainProxy.runOnServer(getWorld(), () -> () ->
-			localModeWatchers.send(
-					new ModuleInventoryMessage(ModuleTarget.of(this), ItemIdentifierStack.getListFromInventory(inventory)))
-		);
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
+			localModeWatchers.send(new ModuleInventoryMessage(ModuleTarget.of(this),
+                ItemIdentifierStack.getListFromInventory(inventory)));
+		}
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package logisticspipes.pipes.upgrades;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -10,7 +11,6 @@ import lombok.Getter;
 
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.pipes.PipeLogisticsChassis;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
 import logisticspipes.utils.item.SimpleStackInventory;
@@ -174,12 +174,13 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 		itemExtractionUpgrade = Math.min(itemExtractionUpgrade, ItemUpgrade.MAX_ITEM_EXTRACTION);
 		itemStackExtractionUpgrade = Math.min(itemStackExtractionUpgrade, ItemUpgrade.MAX_ITEM_STACK_EXTRACTION);
 		if (needUpdate) {
-			MainProxy.runOnServer(pipe.getWorld(), () -> () -> {
+			final Level level = pipe.getWorld();
+			if (level != null && !level.isClientSide()) {
 				pipe.connectionUpdate();
 				if (pipe.container != null) {
 					pipe.container.sendUpdateToClient();
 				}
-			});
+			}
 		}
 	}
 

@@ -38,11 +38,10 @@
 package network.rs485.logisticspipes.property
 
 import network.rs485.grow.Coroutines.scheduleServerTask
-import net.neoforged.neoforge.network.PacketDistributor
-
 import logisticspipes.modules.LogisticsModule
 import logisticspipes.network.ModuleTarget
 import logisticspipes.network.to_client.module.ModulePropertiesMessage
+import net.neoforged.neoforge.network.PacketDistributor
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.util.ProblemReporter
 import net.minecraft.world.entity.player.Player

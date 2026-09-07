@@ -27,7 +27,6 @@ import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.interfaces.IWorldProvider;
 import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.to_server.module.ModuleWatchMessage;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.proxy.computers.interfaces.ILPCCTypeHolder;
@@ -232,12 +231,12 @@ public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeH
 		}
 		if (service != null) {
 			final Level blockAccess = worldProvider == null ? null : worldProvider.getWorld();
-			MainProxy.runOnServer(blockAccess, () -> () ->
-					UtilKt.addObserver(getProperties(), (prop) -> {
-						service.markTileDirty();
-						return Unit.INSTANCE;
-					})
-			);
+			if (blockAccess != null && !blockAccess.isClientSide()) {
+				UtilKt.addObserver(getProperties(), (_) -> {
+					service.markTileDirty();
+					return Unit.INSTANCE;
+				});
+			}
 		}
 		initialized = true;
 	}

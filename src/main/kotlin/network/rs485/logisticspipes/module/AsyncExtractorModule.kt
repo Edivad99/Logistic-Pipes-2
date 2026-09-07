@@ -37,12 +37,6 @@
 
 package network.rs485.logisticspipes.module
 
-import net.minecraft.world.inventory.AbstractContainerMenu
-import net.minecraft.world.entity.player.Inventory
-import net.minecraft.network.codec.ByteBufCodecs
-import net.minecraft.network.RegistryFriendlyByteBuf
-import logisticspipes.world.inventory.SneakyDirectionMenu
-import logisticspipes.interfaces.IModuleMenuProvider
 import network.rs485.logisticspipes.logistics.LogisticsManager
 import network.rs485.logisticspipes.property.NullableEnumProperty
 import network.rs485.logisticspipes.property.Property
@@ -62,12 +56,16 @@ import logisticspipes.routing.ServerRouter
 import logisticspipes.utils.PlayerCollectionList
 import logisticspipes.utils.item.ItemIdentifier
 import logisticspipes.utils.item.ItemIdentifierStack
+import logisticspipes.world.inventory.SneakyDirectionMenu
+import net.neoforged.neoforge.network.PacketDistributor
 import net.minecraft.client.Minecraft
 import net.minecraft.core.Direction
-import java.util.Optional
-import net.neoforged.neoforge.network.PacketDistributor
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
 import net.minecraft.world.item.ItemStack
 import java.util.*
 import kotlin.math.min

@@ -38,7 +38,6 @@
 package network.rs485.logisticspipes.property
 
 import network.rs485.logisticspipes.inventory.container.LPBaseContainer
-import logisticspipes.proxy.MainProxy
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent
 
@@ -48,15 +47,13 @@ object PropertyUpdaterEventListener {
     @SubscribeEvent
     fun openContainer(event: PlayerContainerEvent.Open) {
         val player = event.entity
-        MainProxy.runOnServer(player.level()) {
-            Runnable {
-                val guiContainer = event.container
-                if (guiContainer is LPBaseContainer<*>) {
-                    val module = guiContainer.module
-                    propertyUpdaters.add(
-                        PropertyUpdater(player, module, module.properties)
-                    )
-                }
+        if (!player.level().isClientSide) {
+            val guiContainer = event.container
+            if (guiContainer is LPBaseContainer<*>) {
+                val module = guiContainer.module
+                propertyUpdaters.add(
+                    PropertyUpdater(player, module, module.properties)
+                )
             }
         }
     }
@@ -64,11 +61,9 @@ object PropertyUpdaterEventListener {
     @SubscribeEvent
     fun closeContainer(event: PlayerContainerEvent.Close) {
         val player = event.entity
-        MainProxy.runOnServer(player.level()) {
-            Runnable {
-                propertyUpdaters.removeIf { propertyUpdater: PropertyUpdater ->
-                    propertyUpdater.removeForPlayer(event.entity)
-                }
+        if (!player.level().isClientSide) {
+            propertyUpdaters.removeIf { propertyUpdater: PropertyUpdater ->
+                propertyUpdater.removeForPlayer(event.entity)
             }
         }
     }

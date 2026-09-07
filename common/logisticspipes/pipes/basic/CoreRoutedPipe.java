@@ -99,7 +99,6 @@ import logisticspipes.pipes.basic.debug.DebugLogController;
 import logisticspipes.pipes.basic.debug.StatusEntry;
 import logisticspipes.pipes.signs.IPipeSign;
 import logisticspipes.pipes.upgrades.UpgradeManager;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.proxy.computers.CCConstants;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
@@ -1762,14 +1761,13 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	public void finishInit() {
 		super.finishInit();
 		if (isInitialized()) {
-			MainProxy.runOnServer(getWorld(), () -> () -> {
-				if (this instanceof PropertyHolder) {
-					UtilKt.addObserver(((PropertyHolder) this).getProperties(), (prop) -> {
-						markTileDirty();
-						return Unit.INSTANCE;
-					});
-				}
-			});
+			final Level level = getWorld();
+			if (level != null && !level.isClientSide() && this instanceof PropertyHolder) {
+				UtilKt.addObserver(((PropertyHolder) this).getProperties(), (prop) -> {
+					markTileDirty();
+					return Unit.INSTANCE;
+				});
+			}
 
 			if (getLogisticsModule() != null) {
 				getLogisticsModule().finishInit();

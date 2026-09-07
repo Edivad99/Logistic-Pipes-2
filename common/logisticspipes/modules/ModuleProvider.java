@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.TagValueOutput;
 
@@ -48,7 +49,6 @@ import logisticspipes.network.to_client.module.ModuleInventoryMessage;
 import logisticspipes.network.to_client.module.SneakyDirectionMessage;
 import logisticspipes.particle.Particles;
 import logisticspipes.pipes.basic.CoreRoutedPipe.ItemSendMode;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
@@ -130,10 +130,13 @@ public class ModuleProvider extends LogisticsModule implements SneakyDirection, 
 	}
 
 	@Override
-	public void setSneakyDirection(Direction direction) {
+	public void setSneakyDirection(@Nullable Direction direction) {
 		sneakyDirection.setValue(direction);
-		MainProxy.runOnServer(getWorld(), () -> () -> localModeWatchers.send(
-				new SneakyDirectionMessage(ModuleTarget.of(this), Optional.ofNullable(sneakyDirection.getValue()))));
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
+			localModeWatchers.send(new SneakyDirectionMessage(ModuleTarget.of(this),
+                Optional.ofNullable(sneakyDirection.getValue())));
+		}
 	}
 
 	protected int neededEnergy() {

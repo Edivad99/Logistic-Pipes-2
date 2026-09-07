@@ -45,8 +45,6 @@ import network.rs485.logisticspipes.property.ItemIdentifierInventoryProperty
 import network.rs485.logisticspipes.property.layer.PropertyLayer
 import network.rs485.logisticspipes.util.IRectangle
 import network.rs485.logisticspipes.util.TextUtil
-import net.neoforged.neoforge.client.network.ClientPacketDistributor
-
 import logisticspipes.modules.LogisticsModule.ModulePositionType
 import logisticspipes.modules.ModuleItemSink
 import logisticspipes.network.ModuleTarget
@@ -54,6 +52,7 @@ import logisticspipes.network.to_server.module.ItemSinkImportRequestMessage
 import logisticspipes.network.to_server.module.SetModulePropertiesMessage
 import logisticspipes.utils.Color
 import logisticspipes.utils.item.ItemIdentifier
+import net.neoforged.neoforge.client.network.ClientPacketDistributor
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory

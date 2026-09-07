@@ -41,7 +41,6 @@ import logisticspipes.interfaces.IClientInformationProvider
 import logisticspipes.interfaces.IModuleWatchReciver
 import logisticspipes.interfaces.IPipeServiceProvider
 import logisticspipes.interfaces.IWorldProvider
-import logisticspipes.proxy.MainProxy
 import logisticspipes.utils.PlayerCollectionList
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -66,11 +65,8 @@ class AsyncComputerQuicksort : AsyncModule<Pair<Int, ItemStack>?, QuicksortAsync
         get() = _timeout
         set(value) {
             _timeout = if (value == 0) 100 else value
-            MainProxy.runOnServer(world) {
-                Runnable {
-//                    MainProxy.sendToPlayerList(PacketHandler.getPacket(CCBasedQuickSortMode::class.java).setTimeOut(timeout).setModulePos(this), localModeWatchers)
-                }
-            }
+            // TODO: tell the watchers, once this class is implemented
+            // MainProxy.sendToPlayerList(PacketHandler.getPacket(CCBasedQuickSortMode::class.java).setTimeOut(timeout).setModulePos(this), localModeWatchers)
         }
 
     private var _sinkSize: Int = 0
@@ -78,11 +74,8 @@ class AsyncComputerQuicksort : AsyncModule<Pair<Int, ItemStack>?, QuicksortAsync
         get() = _sinkSize
         set(value) {
             _sinkSize = value
-            MainProxy.runOnServer(world) {
-                Runnable {
-//                    MainProxy.sendToPlayerList(PacketHandler.getPacket(CCBasedQuickSortSinkSize::class.java).setSinkSize(sinkSize).setModulePos(this), localModeWatchers)
-                }
-            }
+            // TODO: tell the watchers, once this class is implemented
+            // MainProxy.sendToPlayerList(PacketHandler.getPacket(CCBasedQuickSortSinkSize::class.java).setSinkSize(sinkSize).setModulePos(this), localModeWatchers)
         }
 
     init {

@@ -46,24 +46,22 @@ import logisticspipes.gui.hud.modules.HUDAdvancedExtractor
 import logisticspipes.interfaces.*
 import logisticspipes.modules.SimpleFilter
 import logisticspipes.modules.SneakyDirection
-import logisticspipes.network.to_client.module.ModuleInventoryMessage
 import logisticspipes.network.ModuleTarget
 import logisticspipes.network.to_client.module.AdvancedExtractorIncludeMessage
-import logisticspipes.proxy.MainProxy
+import logisticspipes.network.to_client.module.ModuleInventoryMessage
 import logisticspipes.proxy.computers.interfaces.CCCommand
 import logisticspipes.utils.ISimpleInventoryEventHandler
 import logisticspipes.utils.item.ItemIdentifierInventory
 import logisticspipes.utils.item.ItemIdentifierStack
-import logisticspipes.interfaces.IModuleMenuProvider
 import logisticspipes.world.inventory.AdvancedExtractorMenu
+import net.neoforged.neoforge.network.PacketDistributor
 import net.minecraft.core.Direction
 import net.minecraft.network.RegistryFriendlyByteBuf
-import net.minecraft.world.entity.player.Inventory
-import net.minecraft.world.inventory.AbstractContainerMenu
-import net.minecraft.world.Container
-import net.neoforged.neoforge.network.PacketDistributor
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.Container
+import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
 import kotlinx.coroutines.Deferred
 
 
@@ -110,13 +108,11 @@ class AsyncAdvancedExtractor : AsyncModule<ExtractorJob, Unit>(), SimpleFilter, 
         if (isInitialized) return
         if (service != null) {
             val level = worldProvider?.getWorld()
-            MainProxy.runOnServer(level) {
-                Runnable {
-                    itemsIncluded.addObserver {
-                        extractor.localModeWatchers.send(
-                            AdvancedExtractorIncludeMessage(ModuleTarget.of(this), it.copyValue()),
-                        )
-                    }
+            if (level?.isClientSide == false) {
+                itemsIncluded.addObserver {
+                    extractor.localModeWatchers.send(
+                        AdvancedExtractorIncludeMessage(ModuleTarget.of(this), it.copyValue()),
+                    )
                 }
             }
         }
@@ -159,15 +155,13 @@ class AsyncAdvancedExtractor : AsyncModule<ExtractorJob, Unit>(), SimpleFilter, 
         filterInventory.handleItemIdentifierList(items)
 
     override fun InventoryChanged(inventory: Container) {
-        MainProxy.runOnServer(world) {
-            Runnable {
-                extractor.localModeWatchers.send(
-                    ModuleInventoryMessage(
-                        ModuleTarget.of(this),
-                        ItemIdentifierStack.getListFromInventory(inventory),
-                    ),
-                )
-            }
+        if (world?.isClientSide == false) {
+            extractor.localModeWatchers.send(
+                ModuleInventoryMessage(
+                    ModuleTarget.of(this),
+                    ItemIdentifierStack.getListFromInventory(inventory),
+                ),
+            )
         }
     }
 

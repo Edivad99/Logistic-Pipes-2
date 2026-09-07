@@ -22,7 +22,6 @@ import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.upgrades.power.BCPowerSupplierUpgrade;
 import logisticspipes.pipes.upgrades.power.IC2PowerSupplierUpgrade;
 import logisticspipes.pipes.upgrades.power.RFPowerSupplierUpgrade;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
@@ -239,12 +238,13 @@ public class UpgradeManager
 			}
 		}
 		if (needUpdate) {
-			MainProxy.runOnServer(pipe.getWorld(), () -> () -> {
+			final Level level = pipe.getWorld();
+			if (level != null && !level.isClientSide()) {
 				pipe.connectionUpdate();
 				if (pipe.container != null) {
 					pipe.container.sendUpdateToClient();
 				}
-			});
+			}
 		}
 		uuid = null;
 		uuidS = null;

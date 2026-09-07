@@ -45,12 +45,11 @@ import network.rs485.logisticspipes.property.EnumProperty
 import network.rs485.logisticspipes.property.layer.PropertyLayer
 import network.rs485.logisticspipes.util.IRectangle
 import network.rs485.logisticspipes.util.TextUtil
-import net.neoforged.neoforge.client.network.ClientPacketDistributor
-
 import logisticspipes.modules.ModuleProvider
 import logisticspipes.network.ModuleTarget
 import logisticspipes.network.to_server.module.SetModulePropertiesMessage
 import logisticspipes.utils.Color
+import net.neoforged.neoforge.client.network.ClientPacketDistributor
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory

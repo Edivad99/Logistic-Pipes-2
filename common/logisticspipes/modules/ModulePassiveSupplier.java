@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -30,7 +31,6 @@ import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.to_client.module.ModuleInventoryMessage;
 import logisticspipes.pipes.PipeLogisticsChassis.ChassiTargetInformation;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
 import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.SinkReply;
@@ -159,10 +159,11 @@ public class ModulePassiveSupplier extends LogisticsModule
 
 	@Override
 	public void InventoryChanged(Container inventory) {
-		MainProxy.runOnServer(getWorld(), () -> () ->
-				localModeWatchers.send(
-					new ModuleInventoryMessage(ModuleTarget.of(this), ItemIdentifierStack.getListFromInventory(filterInventory)))
-		);
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
+            localModeWatchers.send(new ModuleInventoryMessage(ModuleTarget.of(this),
+                ItemIdentifierStack.getListFromInventory(filterInventory)));
+		}
 	}
 
 	@Override
