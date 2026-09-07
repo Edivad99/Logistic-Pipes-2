@@ -39,8 +39,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -1110,7 +1108,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	}
 
 	@Override
-	public ExitRoute getExitFor(int id, boolean active, ItemIdentifier type) {
+	public @Nullable ExitRoute getExitFor(int id, boolean active, ItemIdentifier type) {
 		ensureLatestRoutingTable();
 		if (getRouteTable().size() <= id || getRouteTable().get(id) == null) {
 			return null;

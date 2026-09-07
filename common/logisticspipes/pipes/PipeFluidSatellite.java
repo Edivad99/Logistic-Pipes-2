@@ -43,7 +43,6 @@ import logisticspipes.network.to_client.pipe.SatelliteNameMessage;
 import logisticspipes.network.to_server.pipe.PipeHudWatchMessage;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.pipes.basic.fluid.FluidRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.request.RequestTree;
 import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
@@ -181,7 +180,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
         satellitePipeName = input.getInt("satelliteid")
             .map(integer -> Integer.toString(integer))
             .orElseGet(() -> input.getStringOr("satellitePipeName", ""));
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			ensureAllSatelliteStatus();
 		}
 	}
@@ -209,7 +208,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 
 	@Override
 	public void onAllowedRemoval() {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		PipeFluidSatellite.AllSatellites.remove(this);

@@ -239,7 +239,7 @@ public class UpgradeManager
 			}
 		}
 		if (needUpdate) {
-			MainProxy.runOnServer(null, () -> () -> {
+			MainProxy.runOnServer(pipe.getWorld(), () -> () -> {
 				pipe.connectionUpdate();
 				if (pipe.container != null) {
 					pipe.container.sendUpdateToClient();
@@ -330,7 +330,7 @@ public class UpgradeManager
 	public boolean tryIserting(Level level, Player entityplayer) {
 		ItemStack itemStackInMainHand = entityplayer.getItemBySlot(EquipmentSlot.MAINHAND);
 		if (!itemStackInMainHand.isEmpty() && itemStackInMainHand.getItem() instanceof ItemUpgrade) {
-			if (MainProxy.isClient(level)) {
+			if (level.isClientSide()) {
 				return true;
 			}
 			IPipeUpgrade upgrade = ((ItemUpgrade) itemStackInMainHand.getItem()).getUpgradeForItem(itemStackInMainHand, null);
@@ -348,7 +348,7 @@ public class UpgradeManager
 			}
 		}
 		if (itemStackInMainHand.is(LPItems.SECURITY_CARD)) {
-			if (MainProxy.isClient(level)) {
+			if (level.isClientSide()) {
 				return true;
 			}
 			if (secInv.getItem(0).isEmpty()) {

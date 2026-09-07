@@ -28,7 +28,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.ItemStackLoader;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
 import logisticspipes.utils.tuples.Pair;
@@ -166,7 +165,7 @@ public class SimpleStackInventory implements Container, ValueIOSerializable {
 	}
 
 	public void dropContents(Level level, BlockPos pos) {
-		if (MainProxy.isServer(level)) {
+		if (!level.isClientSide()) {
 			for (int i = 0; i < stackList.size(); i++) {
 				dropSlot(i, level, pos);
 			}

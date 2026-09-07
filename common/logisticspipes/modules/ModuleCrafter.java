@@ -64,7 +64,6 @@ import logisticspipes.pipes.PipeItemsSatelliteLogistics;
 import logisticspipes.pipes.PipeLogisticsChassis.ChassiTargetInformation;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.CoreRoutedPipe.ItemSendMode;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.proxy.interfaces.IFuzzyRecipeProvider;
 import logisticspipes.request.DictCraftingTemplate;
@@ -700,7 +699,7 @@ public class ModuleCrafter extends LogisticsModule
 	}
 
 	public void importFromCraftingTable(@Nullable Player player) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			// Send packet asking for import
 			ClientPacketDistributor.sendToServer(new CrafterImportRecipeMessage(ModuleTarget.of(this)));
 		} else {
@@ -770,7 +769,7 @@ public class ModuleCrafter extends LogisticsModule
 	 * @return true, if a GUI was opened (server-side only)
 	 */
 	public boolean openAttachedGui(Player player) {
-		if (MainProxy.isClient(player.level())) {
+		if (player.level().isClientSide()) {
 			player.closeContainer();
 			ClientPacketDistributor.sendToServer(new OpenAttachedCrafterGuiMessage(ModuleTarget.of(this)));
 			return false;

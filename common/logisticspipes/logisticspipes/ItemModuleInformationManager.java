@@ -11,17 +11,18 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 
 import logisticspipes.interfaces.IClientInformationProvider;
 import logisticspipes.modules.LogisticsModule;
-import logisticspipes.proxy.MainProxy;
 
 public class ItemModuleInformationManager {
 
-	public static void saveInformation(ItemStack stack, LogisticsModule module, HolderLookup.Provider provider) {
+    public static void saveInformation(Level level, ItemStack stack, LogisticsModule module,
+			HolderLookup.Provider provider) {
 		if (module == null) {
 			return;
 		}
@@ -33,7 +34,7 @@ public class ItemModuleInformationManager {
 		if (nbt.isEmpty()) {
 			return;
 		}
-		if (MainProxy.isClient()) {
+		if (level.isClientSide()) {
 			ListTag list = new ListTag();
 			String info1 = "Please reopen the window";
 			String info2 = "to see the information.";

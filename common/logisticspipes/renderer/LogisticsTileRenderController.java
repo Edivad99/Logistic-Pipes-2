@@ -19,7 +19,6 @@ import logisticspipes.network.to_client.pipe.PowerLaserMessage;
 import logisticspipes.pipefxhandlers.PipeFXLaserPowerBall;
 import logisticspipes.pipefxhandlers.PipeFXLaserPowerBeam;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.DoubleCoordinates;
 
 public class LogisticsTileRenderController {
@@ -195,7 +194,7 @@ public class LogisticsTileRenderController {
 		if (powerLasersBeam.containsKey(new LaserKey(dir, color))) {
 			powerLasersBeam.get(new LaserKey(dir, color)).timeout = LASER_TIMEOUT_TICKS;
 		} else {
-			if (MainProxy.isClient(pipe.getWorld())) {
+			if (pipe.getWorld().isClientSide()) {
 				powerLasersBeam.put(new LaserKey(dir, color), new LaserBeamDataClient(length, LASER_TIMEOUT_TICKS, reverse, dir, color));
 			} else {
 				powerLasersBeam.put(new LaserKey(dir, color), new LaserBeamData(length, LASER_TIMEOUT_TICKS, reverse));
@@ -206,7 +205,7 @@ public class LogisticsTileRenderController {
 			if (powerLasersBall.containsKey(color)) {
 				powerLasersBall.get(color).timeout = LASER_TIMEOUT_TICKS;
 			} else {
-				if (MainProxy.isClient(pipe.getWorld())) {
+				if (pipe.getWorld().isClientSide()) {
 					powerLasersBall.put(color, new LaserBallDataClient(length, LASER_TIMEOUT_TICKS, color));
 				} else {
 					powerLasersBall.put(color, new LaserBallData(length, LASER_TIMEOUT_TICKS));
@@ -221,7 +220,7 @@ public class LogisticsTileRenderController {
 	}
 
 	public void removeLaser(Direction dir, int color, boolean isBall) {
-		if (!MainProxy.isClient(pipe.getWorld())) {
+		if (!pipe.getWorld().isClientSide()) {
 			return;
 		}
 		if (!isBall) {
@@ -229,7 +228,7 @@ public class LogisticsTileRenderController {
 			LaserBeamData beam = powerLasersBeam.get(key);
 			if (beam != null) {
 				beam.timeout = -1;
-				if (MainProxy.isClient(pipe.getWorld())) {
+				if (pipe.getWorld().isClientSide()) {
 					((LaserBeamDataClient) beam).entity.remove();
 				}
 				powerLasersBeam.remove(key);
@@ -238,7 +237,7 @@ public class LogisticsTileRenderController {
 			LaserBallData ball = powerLasersBall.get(color);
 			if (ball != null) {
 				ball.timeout = -1;
-				if (MainProxy.isClient(pipe.getWorld())) {
+				if (pipe.getWorld().isClientSide()) {
 					((LaserBallDataClient) ball).entity.remove();
 				}
 				powerLasersBall.remove(color);

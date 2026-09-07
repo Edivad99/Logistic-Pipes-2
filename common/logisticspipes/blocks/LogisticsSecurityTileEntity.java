@@ -38,7 +38,6 @@ import logisticspipes.network.to_client.security.SecurityStationFlagsMessage;
 import logisticspipes.network.to_client.security.SecurityStationIdMessage;
 import logisticspipes.network.to_client.security.SecurityStationSettingsMessage;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.security.SecuritySettings;
 import logisticspipes.utils.PlayerCollectionList;
@@ -78,7 +77,7 @@ public class LogisticsSecurityTileEntity extends LogisticsSolidBlockEntity imple
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			SimpleServiceLocator.securityStationManager.remove(this);
 		}
 	}
@@ -86,7 +85,7 @@ public class LogisticsSecurityTileEntity extends LogisticsSolidBlockEntity imple
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			SimpleServiceLocator.securityStationManager.add(this);
 		}
 	}
@@ -120,7 +119,7 @@ public class LogisticsSecurityTileEntity extends LogisticsSolidBlockEntity imple
 
     @Nullable
 	public UUID getSecId() {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (secId == null) {
 				secId = UUID.randomUUID();
 			}
@@ -129,19 +128,19 @@ public class LogisticsSecurityTileEntity extends LogisticsSolidBlockEntity imple
 	}
 
 	public void setClientUUID(UUID id) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			secId = id;
 		}
 	}
 
 	public void setClientCC(boolean flag) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			allowCC = flag;
 		}
 	}
 
 	public void setClientDestroy(boolean flag) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			allowAutoDestroy = flag;
 		}
 	}

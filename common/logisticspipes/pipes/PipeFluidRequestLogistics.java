@@ -12,7 +12,6 @@ import org.jspecify.annotations.Nullable;
 import logisticspipes.interfaces.IPipeMenuProvider;
 import logisticspipes.interfaces.routing.IRequestFluid;
 import logisticspipes.pipes.basic.fluid.FluidRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.security.SecuritySettings;
 import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
@@ -38,7 +37,7 @@ public class PipeFluidRequestLogistics extends FluidRoutedPipe implements IReque
 
 	@Override
 	public boolean handleClick(Player entityplayer, @Nullable SecuritySettings settings) {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (settings == null || settings.openRequest) {
 				openGui(entityplayer);
 			} else {

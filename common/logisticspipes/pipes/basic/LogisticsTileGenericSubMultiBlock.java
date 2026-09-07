@@ -22,10 +22,10 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import com.mojang.serialization.Codec;
 
+import logisticspipes.LogisticsPipes;
 import logisticspipes.interfaces.ITickable;
 import logisticspipes.network.UpdateTagPayload;
 import logisticspipes.network.to_client.block.MultiBlockPositionMessage;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.routing.pathfinder.IPipeInformationProvider;
 import logisticspipes.routing.pathfinder.ISubMultiBlockPipeInformationProvider;
 import logisticspipes.ticks.ClientTaskQueue;
@@ -87,7 +87,7 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 			}
 			mainPipe = Collections.unmodifiableList(mainPipe);
 		}
-		if (MainProxy.isServer(getLevel())) {
+		if (!getLevel().isClientSide()) {
 			boolean allInvalid = true;
 			for (LogisticsTileGenericPipe pipe : mainPipe) {
 				if (!pipe.isRemoved()) {
@@ -130,7 +130,7 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 
 	@Override
 	public void update() {
-		if (MainProxy.isClient(getLevel())) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 		List<LogisticsTileGenericPipe> pipes = getMainPipe();
@@ -267,6 +267,11 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 	public void onLoad() {
 		super.onLoad();
 		tileBuffer = null;
+		// The controller is only ever set by the server-side placement path, so a sub block that
+		// reaches the world without one is a bug there.
+		if (!level.isClientSide() && mainPipePos.isEmpty()) {
+			LogisticsPipes.LOG.warn("Sub multi block at {} has no MultiBlock controller", getBlockPos());
+		}
 	}
 
 	public void scheduleNeighborChange() {

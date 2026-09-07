@@ -34,7 +34,6 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.ItemStackLoader;
 import logisticspipes.utils.FluidIdentifier;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
@@ -268,7 +267,7 @@ public class ItemIdentifierInventory
 	}
 
 	public void dropContents(Level level, int posX, int posY, int posZ) {
-		if (MainProxy.isServer(level)) {
+		if (!level.isClientSide()) {
 			for (int i = 0; i < contents.length; i++) {
 				while (contents[i] != null) {
 					ItemStack todrop = removeItem(i, contents[i].getItem().getMaxStackSize());

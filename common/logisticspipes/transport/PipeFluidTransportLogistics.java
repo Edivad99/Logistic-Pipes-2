@@ -17,7 +17,6 @@ import org.jspecify.annotations.Nullable;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.network.to_client.pipe.PipeFluidUpdateMessage;
 import logisticspipes.pipes.basic.fluid.FluidRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.utils.SafeTimeTracker;
 import logisticspipes.utils.item.ItemIdentifierStack;
@@ -123,7 +122,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 
 		for (Direction direction : Direction.values()) {
 			if (!SimpleServiceLocator.pipeInformationManager.canConnect(container, container.getTile(PipeFluidTransportLogistics.orientations[direction.ordinal()]), PipeFluidTransportLogistics.orientations[direction.ordinal()])) {
-				if (MainProxy.isServer(getWorld())) {
+				if (!getWorld().isClientSide()) {
 					FluidStack stack = sideTanks[direction.ordinal()].getFluid();
 					if (stack != null && !stack.isEmpty()) {
 						sideTanks[direction.ordinal()].setFluid(FluidStack.EMPTY);
@@ -153,7 +152,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 	private static final Direction[] orientations = Direction.values();
 
 	private void updateFluid() {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		if (tracker.markTimeIfDelay(getWorld())) {

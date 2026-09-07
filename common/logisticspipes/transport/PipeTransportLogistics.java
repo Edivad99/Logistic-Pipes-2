@@ -59,7 +59,6 @@ import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.pipes.basic.fluid.FluidRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.ItemRoutingInformation;
 import logisticspipes.routing.pathfinder.IPipeInformationProvider;
@@ -101,7 +100,7 @@ public class PipeTransportLogistics {
 	}
 
 	public void initialize() {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			// Cache the chunk for marking dirty, without forcing a load: initialize() runs while
 			// the chunk is still being loaded, and getChunkAt() would re-enter the chunk system
 			// asking for FULL status. getChunkNow returns null when it is not ready, which
@@ -155,7 +154,7 @@ public class PipeTransportLogistics {
 
 	public void updateEntity() {
 		moveSolids();
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (!itemBuffer.isEmpty()) {
 				List<LPTravelingItem> toAdd = new LinkedList<>();
 				Iterator<Triplet<ItemIdentifierStack, Pair<Integer, Integer>, LPTravelingItemServer>> iterator = itemBuffer.iterator();
@@ -227,7 +226,7 @@ public class PipeTransportLogistics {
 
 		item.input = inputOrientation;
 
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			readjustSpeed((LPTravelingItemServer) item);
 			ItemRoutingInformation info1 = ((LPTravelingItemServer) item).getInfo().clone();
 			RoutingResult result = resolveDestination((LPTravelingItemServer) item);
@@ -245,7 +244,7 @@ public class PipeTransportLogistics {
 		} else {
 			items.add(item);
 
-			if (MainProxy.isServer(getWorld()) && !getPipe().isOpaque() && item.getItemIdentifierStack().getStackSize() > 0) {
+			if (!getWorld().isClientSide() && !getPipe().isOpaque() && item.getItemIdentifierStack().getStackSize() > 0) {
 				sendItemPacket((LPTravelingItemServer) item);
 			}
 		}
@@ -365,7 +364,7 @@ public class PipeTransportLogistics {
 		} else {
 			value = getRoutedPipe().getRouteLayer().getOrientationForItem(data, blocked);
 		}
-		if (value == null && MainProxy.isClient(getWorld())) {
+		if (value == null && getWorld().isClientSide()) {
 			return new RoutingResult(null, true);
 		}
 
@@ -648,7 +647,7 @@ public class PipeTransportLogistics {
 	protected void reachedEnd(LPTravelingItem item) {
 		BlockEntity tile = container.getTile(item.output);
 		if (items.scheduleRemoval(item)) {
-			if (MainProxy.isServer(getWorld())) {
+			if (!getWorld().isClientSide()) {
 				handleTileReachedServer((LPTravelingItemServer) item, tile, item.output);
 			} else {
 				handleTileReachedClient((LPTravelingItemClient) item, tile, item.output);
@@ -668,7 +667,7 @@ public class PipeTransportLogistics {
 			item.setPosition(item.getPosition() + item.getSpeed());
 			if (hasReachedEnd(item)) {
 				if (item.output == null) {
-					if (MainProxy.isServer(getWorld())) {
+					if (!getWorld().isClientSide()) {
 						dropItem((LPTravelingItemServer) item);
 					}
 					items.scheduleRemoval(item);
@@ -692,7 +691,7 @@ public class PipeTransportLogistics {
 	}
 
 	private void dropItem(LPTravelingItemServer item) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		item.setSpeed(0.05F);
@@ -711,7 +710,7 @@ public class PipeTransportLogistics {
 
 	public NonNullList<ItemStack> dropContents() {
 		NonNullList<ItemStack> list = NonNullList.create();
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			for (LPTravelingItem item : items) {
 				list.add(item.getItemIdentifierStack().makeNormalStack());
 			}

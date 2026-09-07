@@ -30,7 +30,6 @@ import logisticspipes.interfaces.routing.IRequestItems;
 import logisticspipes.interfaces.routing.IRequireReliableTransport;
 import logisticspipes.modules.LogisticsModule;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.request.RequestTree;
 import logisticspipes.textures.Textures;
@@ -152,7 +151,7 @@ public class PipeItemsFluidSupplier extends CoreRoutedPipe implements IRequestIt
 			return;
 		}
 
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		super.throttledUpdateEntity();

@@ -23,7 +23,6 @@ import logisticspipes.interfaces.routing.IRequestFluid;
 import logisticspipes.interfaces.routing.IRequireReliableFluidTransport;
 import logisticspipes.network.to_client.pipe.FluidSupplierAmountMessage;
 import logisticspipes.pipes.basic.fluid.FluidRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.request.RequestTree;
 import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
@@ -112,7 +111,7 @@ public class PipeFluidSupplierMk2 extends FluidRoutedPipe implements IRequestFlu
 		if (!isEnabled()) {
 			return;
 		}
-		if (MainProxy.isClient(Objects.requireNonNull(container).getLevel())) {
+		if (Objects.requireNonNull(container).getLevel().isClientSide()) {
 			return;
 		}
 		super.throttledUpdateEntity();
@@ -308,7 +307,7 @@ public class PipeFluidSupplierMk2 extends FluidRoutedPipe implements IRequestFlu
 	}
 
 	public void setAmount(int amount) {
-		if (MainProxy.isClient(Objects.requireNonNull(container).getLevel())) {
+		if (Objects.requireNonNull(container).getLevel().isClientSide()) {
 			this.amount = amount;
 		}
 	}

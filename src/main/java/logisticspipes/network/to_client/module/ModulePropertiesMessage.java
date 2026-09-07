@@ -63,7 +63,7 @@ public record ModulePropertiesMessage(ModuleTarget target, CompoundTag propertie
         module.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, registries, message.properties));
         if (message.target.slot().filter(ModulePositionType::isInWorld).isEmpty()
                 && context.player().containerMenu instanceof InventoryMenu) {
-            ItemModuleInformationManager.saveInformation(
+            ItemModuleInformationManager.saveInformation(context.player().level(),
                     context.player().getInventory().getItem(message.target.positionInt()), module, registries);
             context.player().getInventory().setChanged();
         }

@@ -35,7 +35,6 @@ import logisticspipes.network.to_client.block.CompilerStatusMessage;
 import logisticspipes.pipes.PipeItemsBasicLogistics;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.PlayerCollectionList;
@@ -162,7 +161,7 @@ public class LogisticsProgramCompilerBlockEntity extends LogisticsSolidBlockEnti
     @Override
     public void update() {
         super.update();
-        if (!MainProxy.isServer(this.level)) {
+        if (this.level.isClientSide()) {
             return;
         }
         if (currentTask == null) {

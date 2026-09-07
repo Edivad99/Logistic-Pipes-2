@@ -381,7 +381,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	 */
 	public void firstInitialiseTick() {
 		getRouter();
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			ClientPacketDistributor.sendToServer(new RequestPipeSignsMessage(getPos()));
 		}
 	}
@@ -491,7 +491,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
                 }
             }
 		}
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		checkTexturePowered();
@@ -524,7 +524,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	private void doDebugStuff(Player entityplayer) {
 		//entityplayer.level().setWorldTime(4951);
-		if (!MainProxy.isServer(entityplayer.level())) {
+		if (entityplayer.level().isClientSide()) {
 			return;
 		}
 		StringBuilder sb = new StringBuilder();
@@ -1105,7 +1105,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	public void connectionUpdate() {
 		if (container != null && !stillNeedReplace) {
-			if (MainProxy.isClient(getWorld())) throw new IllegalStateException("Wont do connectionUpdate on client-side");
+			if (getWorld().isClientSide()) throw new IllegalStateException("Wont do connectionUpdate on client-side");
 			container.scheduleNeighborChange();
 			BlockState state = getWorld().getBlockState(getPos());
 			getWorld().updateNeighborsAt(getPos(), state.getBlock());
@@ -1122,7 +1122,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
     @Nullable
 	public List<Pair<ILogisticsPowerProvider, List<IFilter>>> getRoutedPowerProviders() {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return null;
 		}
 		if (stillNeedReplace) {
@@ -1149,7 +1149,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public boolean canUseEnergy(int amount, @Nullable List<Object> providersToIgnore) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return false;
 		}
 		if (LPConfigs.COMMON.LOGISTICS_POWER_USAGE_DISABLED.getAsBoolean()) {
@@ -1185,7 +1185,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	private boolean useEnergy(int amount, @Nullable List<Object> providersToIgnore, boolean sparkles) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return false;
 		}
 		if (LPConfigs.COMMON.LOGISTICS_POWER_USAGE_DISABLED.getAsBoolean()) {
@@ -1646,7 +1646,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	public void handleSignPacket(List<Integer> types) {
-		if (!MainProxy.isClient(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			return;
 		}
 		for (int i = 0; i < 6; i++) {
@@ -1686,7 +1686,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public boolean isOpaque() {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return LPConfigs.COMMON.OPAQUE.getAsBoolean() || isOpaqueClientSide;
 		} else {
 			return LPConfigs.COMMON.OPAQUE.getAsBoolean() || this.getUpgradeManager().isOpaque();

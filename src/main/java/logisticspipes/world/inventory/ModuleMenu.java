@@ -71,7 +71,7 @@ public abstract class ModuleMenu extends DummyMenu {
             controller.screenClosedByPlayer(player);
         }
         if (heldInHand()) {
-            ItemModuleInformationManager.saveInformation(
+            ItemModuleInformationManager.saveInformation(player.level(),
                 player.getInventory().getItem(target.positionInt()), module, player.registryAccess());
             player.getInventory().setChanged();
         }

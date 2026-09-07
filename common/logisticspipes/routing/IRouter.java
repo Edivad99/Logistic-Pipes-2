@@ -39,7 +39,7 @@ public interface IRouter {
 
 	boolean hasRoute(int id, boolean active, ItemIdentifier type);
 
-	ExitRoute getExitFor(int id, boolean active, ItemIdentifier type);
+	@Nullable ExitRoute getExitFor(int id, boolean active, ItemIdentifier type);
 
 	List<List<ExitRoute>> getRouteTable();
 

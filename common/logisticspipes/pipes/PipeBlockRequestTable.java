@@ -51,7 +51,6 @@ import logisticspipes.network.to_client.orderer.OrdererWatchRemoveMessage;
 import logisticspipes.network.to_server.block.RequestBlockRotationMessage;
 import logisticspipes.particle.Particles;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.request.resources.IResource;
 import logisticspipes.routing.order.IOrderInfoProvider;
@@ -130,7 +129,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		if (ItemPipeController.isHeldBy(entityplayer) && !(entityplayer.isCrouching())) {
 			return false;
 		}
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (settings == null || settings.openGui) {
 				openGui(entityplayer);
 			} else {
@@ -150,14 +149,14 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 				getWorld().sendBlockUpdated(pos, state, state, 3);
 			}
 		}
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			if (!init) {
 				ClientPacketDistributor.sendToServer(new RequestBlockRotationMessage(getPos()));
 				init = true;
 			}
 			return;
 		}
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		if (tick % 2 == 0 && !localGuiWatcher.isEmpty()) {
@@ -297,7 +296,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 
 	@Override
 	public void onAllowedRemoval() {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			inv.dropContents(getWorld(), getPos());
 			toSortInv.dropContents(getWorld(), getPos());
 			diskInv.dropContents(getWorld(), getPos());
@@ -349,7 +348,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		} else {
 			targetType = null;
 		}
-		if (targetType != oldTargetType && !localGuiWatcher.isEmpty() && getWorld() != null && MainProxy.isServer(getWorld())) {
+		if (targetType != oldTargetType && !localGuiWatcher.isEmpty() && getWorld() != null && !getWorld().isClientSide()) {
 			localGuiWatcher.send(new CraftingTargetMessage(getPos(), Optional.ofNullable(targetType)));
 		}
 	}
@@ -409,7 +408,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 			craftingInput = CraftingInput.of(3,3, craftInv.getItems());
 			targetType = ItemIdentifier.get(cache.value().assemble(craftingInput));
 		}
-		if (!localGuiWatcher.isEmpty() && getWorld() != null && MainProxy.isServer(getWorld())) {
+		if (!localGuiWatcher.isEmpty() && getWorld() != null && !getWorld().isClientSide()) {
 			localGuiWatcher.send(new CraftingTargetMessage(getPos(), Optional.ofNullable(targetType)));
 		}
 		cacheRecipe();
@@ -521,7 +520,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 	}
 
 	public ItemStack getResultForClick() {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			ItemStack result = getOutput(true);
 			if (result.isEmpty()) {
 				result = getOutput(false);
@@ -645,14 +644,14 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 
 	@Override
 	public void handleClientSideListInfo(int id, IResource stack, LinkedLogisticsOrderList orders) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			watchedRequests.put(id, new Pair<>(stack, orders));
 		}
 	}
 
 	@Override
 	public void handleClientSideRemove(int id) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			if (id == -1) {
 				watchedRequests.clear();
 			} else {

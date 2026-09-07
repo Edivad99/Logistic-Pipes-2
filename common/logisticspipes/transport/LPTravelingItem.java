@@ -25,7 +25,6 @@ import logisticspipes.interfaces.routing.IRequireReliableTransport;
 import logisticspipes.logisticspipes.IRoutedItem;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.IRouter;
 import logisticspipes.routing.ItemRoutingInformation;
@@ -224,7 +223,7 @@ public abstract class LPTravelingItem {
         @Nullable
 		public ItemEntity toEntityItem() {
 			Level level = container.getLevel();
-			if (MainProxy.isServer(level)) {
+			if (!level.isClientSide()) {
 				if (getItemIdentifierStack().getStackSize() <= 0) {
 					return null;
 				}
@@ -294,7 +293,7 @@ public abstract class LPTravelingItem {
 
 		public void itemWasLost() {
 			if (container != null) {
-				if (MainProxy.isClient(container.getLevel())) {
+				if (container.getLevel().isClientSide()) {
 					return;
 				}
 			}
@@ -325,7 +324,7 @@ public abstract class LPTravelingItem {
 		public void setDestination(int destination) {
 			info.destinationint = destination;
 			final @Nullable Level level = container != null ? container.getLevel() : null;
-			if (MainProxy.isServer(level)) {
+			if (!level.isClientSide()) {
 				IRouter router = SimpleServiceLocator.routerManager.getServerRouter(destination);
 				if (router != null) {
 					info.destinationUUID = router.getId();

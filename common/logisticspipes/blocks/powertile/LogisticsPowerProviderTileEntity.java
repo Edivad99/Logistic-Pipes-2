@@ -35,7 +35,6 @@ import logisticspipes.network.to_client.block.PowerProviderLevelMessage;
 import logisticspipes.network.to_server.block.BlockHudWatchMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
@@ -86,7 +85,7 @@ public abstract class LogisticsPowerProviderTileEntity extends LogisticsSolidBlo
 		super.update();
 		pauseRequesting = false;
 		if (!init) {
-			if (MainProxy.isClient(getWorld())) {
+			if (getWorld().isClientSide()) {
 				LogisticsHUDRenderer.instance().add(this);
 			}
 			init = true;
@@ -125,7 +124,7 @@ public abstract class LogisticsPowerProviderTileEntity extends LogisticsSolidBlo
 			}
 		}
 		orders.clear();
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (internalStorage != lastUpdateStorage) {
 				updateClients();
 				lastUpdateStorage = internalStorage;
@@ -187,7 +186,7 @@ public abstract class LogisticsPowerProviderTileEntity extends LogisticsSolidBlo
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			LogisticsHUDRenderer.instance().remove(this);
 		}
 	}
@@ -195,7 +194,7 @@ public abstract class LogisticsPowerProviderTileEntity extends LogisticsSolidBlo
 	@Override
 	public void onLoad() {
 		super.onLoad();
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			init = false;
 		}
 	}
@@ -314,7 +313,7 @@ public abstract class LogisticsPowerProviderTileEntity extends LogisticsSolidBlo
 	}
 
 	public void handlePowerPacket(double d) {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			internalStorage = d;
 		}
 	}

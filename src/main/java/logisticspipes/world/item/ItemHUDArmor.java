@@ -15,7 +15,6 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 
 import logisticspipes.api.IHUDArmor;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.world.inventory.HudSettingsMenu;
 
 public class ItemHUDArmor extends Item implements IHUDArmor {
@@ -26,7 +25,7 @@ public class ItemHUDArmor extends Item implements IHUDArmor {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand handIn) {
-        if (MainProxy.isClient(level)) {
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
         useItem(player, level);
@@ -40,14 +39,14 @@ public class ItemHUDArmor extends Item implements IHUDArmor {
         if (player != null) {
             useItem(player, level);
         }
-        if (MainProxy.isClient(level)) {
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
         return InteractionResult.SUCCESS;
     }
 
     private void useItem(Player player, Level level) {
-        if (MainProxy.isServer(level)) {
+        if (!level.isClientSide()) {
             if (player instanceof ServerPlayer serverPlayer) {
                 final int slot = player.getInventory().getSelectedSlot();
                 serverPlayer.openMenu(new SimpleMenuProvider(

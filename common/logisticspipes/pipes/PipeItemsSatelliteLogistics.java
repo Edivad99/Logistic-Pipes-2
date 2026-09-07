@@ -49,7 +49,6 @@ import logisticspipes.network.to_client.pipe.ChestContentMessage;
 import logisticspipes.network.to_client.pipe.SatelliteNameMessage;
 import logisticspipes.network.to_server.pipe.PipeHudWatchMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.request.RequestTree;
 import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
@@ -184,7 +183,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
         satellitePipeName = input.getInt("satelliteid")
             .map(integer -> Integer.toString(integer))
             .orElseGet(() -> input.getStringOr("satellitePipeName", ""));
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			ensureAllSatelliteStatus();
 		}
 	}
@@ -212,7 +211,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 
 	@Override
 	public void onAllowedRemoval() {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		PipeItemsSatelliteLogistics.AllSatellites.remove(this);

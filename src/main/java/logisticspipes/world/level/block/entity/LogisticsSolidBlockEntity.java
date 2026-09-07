@@ -15,7 +15,6 @@ import org.jspecify.annotations.Nullable;
 import logisticspipes.interfaces.IRotationProvider;
 import logisticspipes.interfaces.ITickable;
 import logisticspipes.network.to_server.block.RequestBlockRotationMessage;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.util.DoubleCoordinates;
 
 public class LogisticsSolidBlockEntity extends BlockEntity implements ITickable, IRotationProvider {
@@ -49,7 +48,7 @@ public class LogisticsSolidBlockEntity extends BlockEntity implements ITickable,
 
     @Override
     public void update() {
-        if (MainProxy.isClient(getWorld())) {
+        if (getWorld().isClientSide()) {
             if (!init) {
                 ClientPacketDistributor.sendToServer(new RequestBlockRotationMessage(getBlockPos()));
                 init = true;

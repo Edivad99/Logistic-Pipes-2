@@ -29,7 +29,6 @@ import logisticspipes.client.renderer.blockentity.LogisticsRenderPipe;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.network.to_client.pipe.ItemAmountSignMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.ExitRoute;
 import logisticspipes.routing.IRouter;
@@ -256,7 +255,7 @@ public class ItemAmountPipeSign implements IPipeSign, ISimpleInventoryEventHandl
 	}
 
 	private void sendUpdatePacket() {
-		if (MainProxy.isServer(pipe.getWorld())) {
+		if (!pipe.getWorld().isClientSide()) {
 			TargetLookup.sendToChunkWatchers(pipe.container, getPacket());
 		}
 	}

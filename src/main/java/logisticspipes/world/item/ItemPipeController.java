@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.world.inventory.PlayerSettingsMenu;
 
 public class ItemPipeController extends LogisticsItem {
@@ -28,7 +27,7 @@ public class ItemPipeController extends LogisticsItem {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand handIn) {
-        if (MainProxy.isClient(level)) {
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
         useItem(player, level);
@@ -40,7 +39,7 @@ public class ItemPipeController extends LogisticsItem {
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         Level level = context.getLevel();
-        if (MainProxy.isClient(level)) {
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
         if (player != null) {

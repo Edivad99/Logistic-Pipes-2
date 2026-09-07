@@ -174,7 +174,7 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 		itemExtractionUpgrade = Math.min(itemExtractionUpgrade, ItemUpgrade.MAX_ITEM_EXTRACTION);
 		itemStackExtractionUpgrade = Math.min(itemStackExtractionUpgrade, ItemUpgrade.MAX_ITEM_STACK_EXTRACTION);
 		if (needUpdate) {
-			MainProxy.runOnServer(null, () -> () -> {
+			MainProxy.runOnServer(pipe.getWorld(), () -> () -> {
 				pipe.connectionUpdate();
 				if (pipe.container != null) {
 					pipe.container.sendUpdateToClient();

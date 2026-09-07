@@ -67,7 +67,7 @@ public record SetModulePropertiesMessage(ModuleTarget target, CompoundTag proper
         module.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, registries, message.properties));
         if (message.target.slot().filter(ModulePositionType::isInWorld).isEmpty()) {
             // A module held in hand lives in the item stack, so its properties have to go back into it.
-            ItemModuleInformationManager.saveInformation(
+            ItemModuleInformationManager.saveInformation(player.level(),
                     player.getInventory().getItem(message.target.positionInt()), module, registries);
             player.getInventory().setChanged();
         }

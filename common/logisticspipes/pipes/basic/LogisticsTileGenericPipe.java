@@ -55,7 +55,6 @@ import logisticspipes.network.to_client.pipe.PipeRenderUpdateMessage;
 import logisticspipes.network.to_client.pipe.PipeStateMessage;
 import logisticspipes.pipes.PipeItemsFirewall;
 import logisticspipes.pipes.basic.ltgpmodcompat.LPMicroblockTileEntity;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.renderer.IIconProvider;
 import logisticspipes.renderer.LogisticsTileRenderController;
@@ -201,7 +200,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 	public void update() {
 		final Info superDebug = StackTraceUtil.addSuperTraceInformation(() -> "Time: " + getLevel().getGameTime());
 		final Info debug = StackTraceUtil.addTraceInformation(() -> "(" + getX() + ", " + getY() + ", " + getZ() + ")", superDebug);
-		if (sendInitPacket && MainProxy.isServer(getLevel())) {
+		if (sendInitPacket && !getLevel().isClientSide()) {
 			sendInitPacket = false;
 			getRenderController().sendInit();
 		}
@@ -242,7 +241,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 			blockNeighborChange = false;
 			refreshRenderState = true;
 
-			if (MainProxy.isServer(level)) {
+			if (!level.isClientSide()) {
 				TargetLookup.sendToChunkWatchers(this, new PipeRenderUpdateMessage(getBlockPos()));
 			}
 		}
@@ -342,7 +341,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
     }
 
     public void scheduleNeighborChange() {
-		if (MainProxy.isServer(level)) {
+		if (!level.isClientSide()) {
 			pipe.triggerConnectionCheck();
 		}
 		blockNeighborChange = true;
@@ -417,7 +416,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 	}
 
 	public boolean canPipeConnect(BlockEntity with, Direction side) {
-		if (MainProxy.isClient(level)) {
+		if (level.isClientSide()) {
 			//XXX why is this ever called client side, its not *used* for anything.
 			return false;
 		}
@@ -601,7 +600,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 
 	public int injectItem(ItemStack payload, boolean doAdd, Direction from) {
 		if (LogisticsBlockGenericPipe.isValid(pipe) && pipe.transport != null && isPipeConnectedCached(from)) {
-			if (doAdd && MainProxy.isServer(getLevel())) {
+			if (doAdd && !getLevel().isClientSide()) {
 				ItemStack leftStack = payload.copy();
 				int lastIterLeft;
 				do {
@@ -616,7 +615,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 	}
 
 	public boolean isPipeConnectedCached(Direction side) {
-		if (MainProxy.isClient(this.level)) {
+		if (this.level.isClientSide()) {
 			return renderState.pipeConnectionMatrix.isConnected(side);
 		} else {
 			return pipeConnectionsBuffer[side.ordinal()];

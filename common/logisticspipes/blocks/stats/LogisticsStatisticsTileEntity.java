@@ -17,7 +17,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import logisticspipes.interfaces.IBlockEntityMenuProvider;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.world.inventory.StatisticsMenu;
 import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
@@ -61,7 +60,7 @@ public class LogisticsStatisticsTileEntity extends LogisticsSolidBlockEntity imp
 
 	@Override
 	public void update() {
-		if (MainProxy.isClient(getWorld())) {
+		if (getWorld().isClientSide()) {
 			return;
 		}
 		tickCount++;

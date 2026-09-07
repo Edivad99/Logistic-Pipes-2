@@ -89,9 +89,6 @@ public class LogisticsBlockGenericSubMultiBlock extends Block implements EntityB
     @Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		if (LogisticsBlockGenericSubMultiBlock.currentCreatedMultiBlock == null && logisticspipes.proxy.MainProxy.isServer(null)) {
-			new RuntimeException("Unknown MultiBlock controller").printStackTrace();
-		}
 		return new LogisticsTileGenericSubMultiBlock(pos, state, LogisticsBlockGenericSubMultiBlock.currentCreatedMultiBlock);
 	}
 

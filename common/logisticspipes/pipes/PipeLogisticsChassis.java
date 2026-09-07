@@ -76,7 +76,6 @@ import logisticspipes.network.to_server.pipe.RequestChassisOrientationMessage;
 import logisticspipes.particle.Particles;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.upgrades.ModuleUpgradeManager;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.request.ICraftingTemplate;
@@ -255,7 +254,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 				if (item == null) return;
 				moduleStack = new ItemStack(item);
 			}
-			ItemModuleInformationManager.saveInformation(moduleStack, module, provider);
+			ItemModuleInformationManager.saveInformation(getWorld(), moduleStack, module, provider);
 			moduleInventory.setItem(slottedModule.getSlot(), moduleStack);
 		});
 	}
@@ -325,7 +324,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	@Override
 	public void onAllowedRemoval() {
 		moduleInventory.removeListener(this);
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			for (int i = 0; i < getChassisSize(); i++) {
 				LogisticsModule x = getSubModule(i);
 				if (x instanceof ILegacyActiveModule) {
@@ -344,7 +343,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public void itemArrived(ItemIdentifierStack item, IAdditionalTargetInformation info) {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (info instanceof ChassiTargetInformation) {
 				ChassiTargetInformation target = (ChassiTargetInformation) info;
 				LogisticsModule module = getSubModule(target.moduleSlot);
@@ -361,7 +360,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info) {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (info instanceof ChassiTargetInformation) {
 				ChassiTargetInformation target = (ChassiTargetInformation) info;
 				LogisticsModule module = getSubModule(target.moduleSlot);
@@ -378,7 +377,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public int addToBuffer(ItemIdentifierStack item, IAdditionalTargetInformation info) {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (info instanceof ChassiTargetInformation) {
 				ChassiTargetInformation target = (ChassiTargetInformation) info;
 				LogisticsModule module = getSubModule(target.moduleSlot);
@@ -416,7 +415,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 				next.registerPosition(ModulePositionType.SLOT, i);
 				if (current != next) {
 					module.installModule(i, next);
-					if (!MainProxy.isClient(getWorld())) {
+					if (!getWorld().isClientSide()) {
 						ItemModuleInformationManager.readInformation(stack, next);
 					}
 					next.finishInit();
@@ -425,13 +424,13 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 			}
 		}
 		if (reInitGui) {
-			if (MainProxy.isClient(getWorld())) {
+			if (getWorld().isClientSide()) {
 				if (Minecraft.getInstance().screen instanceof ChassisPipeScreen) {
 					Minecraft.getInstance().setScreen(Minecraft.getInstance().screen); // re-init screen (1.20.1: init() is no longer public no-arg)
 				}
 			}
 		}
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (!localModeWatchers.isEmpty()) {
 				localModeWatchers.send(new ChassisModuleContentMessage(getPos(),
 						ItemIdentifierStack.getListFromInventory(moduleInventory)));
@@ -443,7 +442,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	public void ignoreDisableUpdateEntity() {
 		if (!init) {
 			init = true;
-			if (MainProxy.isClient(getWorld())) {
+			if (getWorld().isClientSide()) {
 				ClientPacketDistributor.sendToServer(new RequestChassisOrientationMessage(getPos()));
 			}
 		}
@@ -613,7 +612,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public int sendQueueChanged(boolean force) {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (LPConfigs.COMMON.MULTI_THREAD_NUMBER.getAsInt() > 0 && !force) {
 				HudUpdateTick.add(getRouter());
 			} else {

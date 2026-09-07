@@ -38,7 +38,6 @@ import logisticspipes.network.to_client.module.ModuleInventoryMessage;
 import logisticspipes.particle.Particles;
 import logisticspipes.pipes.PipeLogisticsChassis.ChassiTargetInformation;
 import logisticspipes.pipes.basic.debug.StatusEntry;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.request.RequestTree;
 import logisticspipes.routing.IRouter;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
@@ -142,7 +141,7 @@ public class ModuleActiveSupplier extends LogisticsModule
 
 	@Override
 	public void InventoryChanged(Container inventory) {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			localModeWatchers.send(
 					new ModuleInventoryMessage(ModuleTarget.of(this), ItemIdentifierStack.getListFromInventory(inventory)));
 		}

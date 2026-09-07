@@ -22,7 +22,6 @@ import org.jspecify.annotations.Nullable;
 
 import logisticspipes.network.bidirectional.DebugConnectionDataMessage;
 import logisticspipes.network.to_client.debug.OpenDebugPanelMessage;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
 import network.rs485.debug.api.IDataConnection;
@@ -104,7 +103,7 @@ public class DebugGuiController {
 	}
 
 	public void handleDataPacket(byte[] payload, int connectionId, Player player) {
-		if (MainProxy.isServer(player.level())) {
+		if (!player.level().isClientSide()) {
 			synchronized (serverList) {
 				if (connectionId < 0 || connectionId >= serverList.size()) {
 					return;

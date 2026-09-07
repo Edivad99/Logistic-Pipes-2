@@ -45,7 +45,6 @@ import logisticspipes.network.to_client.crafting.CraftingTargetMessage;
 import logisticspipes.pipes.PipeItemsCraftingLogistics;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.request.resources.IResource;
 import logisticspipes.util.ItemStackLoader;
 import logisticspipes.utils.CraftingUtil;
@@ -167,7 +166,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
             targetType = null;
         }
         if (((targetType == null && oldTargetType != null) || (targetType != null && !targetType.equals(oldTargetType)))
-            && !guiWatcher.isEmpty() && MainProxy.isServer(getWorld())) {
+            && !guiWatcher.isEmpty() && !getWorld().isClientSide()) {
             guiWatcher.send(new CraftingTargetMessage(getBlockPos(), Optional.ofNullable(targetType)));
         }
     }
@@ -237,7 +236,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
             }
         }
 
-        if (!guiWatcher.isEmpty() && MainProxy.isServer(getWorld())) {
+        if (!guiWatcher.isEmpty() && !getWorld().isClientSide()) {
             guiWatcher.send(new CraftingTargetMessage(getBlockPos(), Optional.ofNullable(targetType)));
         }
 

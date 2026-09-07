@@ -21,7 +21,6 @@ import logisticspipes.modules.LogisticsModule;
 import logisticspipes.pipes.PipeFluidUtil;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.ItemRoutingInformation;
 import logisticspipes.routing.order.LogisticsFluidOrderManager;
@@ -220,7 +219,7 @@ public abstract class FluidRoutedPipe extends CoreRoutedPipe {
 	public abstract boolean canReceiveFluid();
 
 	public boolean endReached(LPTravelingItemServer arrivingItem, BlockEntity tile) {
-		if (canInsertToTanks() && MainProxy.isServer(getWorld())) {
+		if (canInsertToTanks() && !getWorld().isClientSide()) {
 			getCacheHolder().trigger(CacheTypes.Inventory);
 			if (arrivingItem.getItemIdentifierStack() == null || !(arrivingItem.getItemIdentifierStack().getItem().isFluidContainer())) {
 				return false;

@@ -34,7 +34,6 @@ import logisticspipes.modules.LogisticsModule.ModulePositionType;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.pipes.basic.LogisticsBlockGenericPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.utils.DummyLevelProvider;
 import logisticspipes.world.item.tooltip.ModuleInventoryTooltip;
 import network.rs485.logisticspipes.util.TextUtil;
@@ -96,7 +95,7 @@ public class ItemModule extends LogisticsItem {
     @Override
     public InteractionResult use(final Level level, final Player player,
         final InteractionHand hand) {
-        if (MainProxy.isServer(player.level())) {
+        if (!player.level().isClientSide()) {
             openConfigGui(player.getItemInHand(hand), player, level);
         }
         return super.use(level, player, hand);
@@ -108,7 +107,7 @@ public class ItemModule extends LogisticsItem {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         InteractionHand hand = context.getHand();
-        if (player != null && MainProxy.isServer(player.level())) {
+        if (player != null && !player.level().isClientSide()) {
             BlockEntity tile = level.getBlockEntity(pos);
             if (tile instanceof LogisticsTileGenericPipe) {
                 if (player.getDisplayName().getString()

@@ -64,7 +64,7 @@ public class ClientRouter implements IRouter {
 	}
 
 	@Override
-	public ExitRoute getExitFor(int id, boolean flag, ItemIdentifier item) {
+	public @Nullable ExitRoute getExitFor(int id, boolean flag, ItemIdentifier item) {
 		if (LogisticsPipes.isDEBUG()) {
 			throw new UnsupportedOperationException("noClientRouting");
 		}

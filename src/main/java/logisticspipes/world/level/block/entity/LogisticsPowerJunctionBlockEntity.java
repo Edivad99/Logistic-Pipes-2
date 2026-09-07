@@ -31,7 +31,6 @@ import logisticspipes.interfaces.IPowerLevelDisplay;
 import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.network.to_client.block.PowerJunctionLevelMessage;
 import logisticspipes.network.to_server.block.BlockHudWatchMessage;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.renderer.LogisticsHUDRenderer;
@@ -181,7 +180,7 @@ public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity
     }
 
     public void addEnergy(int amount) {
-        if (MainProxy.isClient(getWorld())) {
+        if (getWorld().isClientSide()) {
             return;
         }
         internalStorage += amount;
@@ -211,13 +210,13 @@ public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity
     @Override
     public void update() {
         super.update();
-        if (MainProxy.isServer(getWorld())) {
+        if (!getWorld().isClientSide()) {
             if (internalStorage != lastUpdateStorage) {
                 updateClients();
             }
         }
         if (!init) {
-            if (MainProxy.isClient(getWorld())) {
+            if (getWorld().isClientSide()) {
                 LogisticsHUDRenderer.instance().add(this);
             }
             init = true;
@@ -227,7 +226,7 @@ public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (MainProxy.isClient(getWorld())) {
+        if (getWorld().isClientSide()) {
             LogisticsHUDRenderer.instance().remove(this);
         }
     }
@@ -235,7 +234,7 @@ public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity
     @Override
     public void onLoad() {
         super.onLoad();
-        if (MainProxy.isClient(getWorld())) {
+        if (getWorld().isClientSide()) {
             init = false;
         }
     }
@@ -281,7 +280,7 @@ public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity
     }
 
     public void handlePowerPacket(int integer) {
-        if (MainProxy.isClient(getWorld())) {
+        if (getWorld().isClientSide()) {
             internalStorage = integer;
         }
     }

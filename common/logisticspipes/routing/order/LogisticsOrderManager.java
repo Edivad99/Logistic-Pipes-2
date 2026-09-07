@@ -23,7 +23,6 @@ import logisticspipes.interfaces.IChangeListener;
 import logisticspipes.interfaces.ILPPositionProvider;
 import logisticspipes.logisticspipes.IRoutedItem;
 import logisticspipes.network.to_client.pipe.PipeOrdersMessage;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.routing.order.IOrderInfoProvider.ResourceType;
 import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.item.ItemIdentifierStack;
@@ -74,7 +73,7 @@ public abstract class LogisticsOrderManager<T extends LogisticsOrder, I> impleme
 	}
 
 	public LinkedList<ItemIdentifierStack> getContentList(Level level) {
-		if (MainProxy.isClient(level) || orders.size() == 0) {
+		if (level.isClientSide() || orders.size() == 0) {
 			return new LinkedList<>();
 		}
 		LinkedList<ItemIdentifierStack> list = new LinkedList<>();

@@ -15,7 +15,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IPipeMenuProvider;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.security.SecuritySettings;
 import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
@@ -43,7 +42,7 @@ public class PipeItemsRequestLogisticsMk2 extends PipeItemsRequestLogistics impl
 		if (ItemPipeController.isHeldBy(entityplayer) && !(entityplayer.isCrouching())) {
 			return false;
 		}
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			if (settings == null || settings.openGui) {
 				openGui(entityplayer);
 			} else {
@@ -92,7 +91,7 @@ public class PipeItemsRequestLogisticsMk2 extends PipeItemsRequestLogistics impl
 
 	@Override
 	public void onAllowedRemoval() {
-		if (MainProxy.isServer(getWorld())) {
+		if (!getWorld().isClientSide()) {
 			dropDisk();
 		}
 	}

@@ -367,6 +367,7 @@ abstract class LPBaseContainer<out M : LogisticsModule>(
         super.removed(player)
         if (player is ServerPlayer && target.slot().orElse(null) == ModulePositionType.IN_HAND) {
             ItemModuleInformationManager.saveInformation(
+                player.level(),
                 player.inventory.getItem(target.positionInt()),
                 module,
                 player.registryAccess(),

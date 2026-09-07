@@ -13,7 +13,6 @@ import logisticspipes.pipes.basic.CoreMultiBlockPipe;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemClient;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 
@@ -89,7 +88,7 @@ public class PipeMultiBlockTransportLogistics extends PipeTransportLogistics {
 			tile = getMultiPipe().getConnectedEndTile(item.output);
 		}
 		if (items.scheduleRemoval(item)) {
-			if (MainProxy.isServer(container.getLevel())) {
+			if (!container.getLevel().isClientSide()) {
 				handleTileReachedServer((LPTravelingItemServer) item, tile, item.output);
 			} else {
 				handleTileReachedClient((LPTravelingItemClient) item, tile, item.output);

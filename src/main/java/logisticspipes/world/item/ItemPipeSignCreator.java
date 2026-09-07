@@ -23,7 +23,6 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.pipes.signs.CraftingPipeSign;
 import logisticspipes.pipes.signs.IPipeSign;
 import logisticspipes.pipes.signs.ItemAmountPipeSign;
-import logisticspipes.proxy.MainProxy;
 
 public class ItemPipeSignCreator extends LogisticsItem {
 
@@ -111,7 +110,7 @@ public class ItemPipeSignCreator extends LogisticsItem {
     @Override
     public InteractionResult use(final Level level, final Player player, final InteractionHand hand) {
         ItemStack stack = player.getMainHandItem();
-        if (MainProxy.isClient(level)) {
+        if (level.isClientSide()) {
             return InteractionResult.PASS;
         }
         if (player.isCrouching()) {

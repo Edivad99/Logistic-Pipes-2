@@ -61,7 +61,6 @@ import logisticspipes.interfaces.ITickable;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.pipes.basic.ltgpmodcompat.LPMicroblockBlock;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.ticks.QueuedTasks;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.util.DoubleCoordinatesType;
@@ -362,7 +361,7 @@ public class LogisticsBlockGenericPipe extends LPMicroblockBlock {
 	// @Override removed — getDrops(BlockGetter...) does not match 1.20.1 Block API
 	public NonNullList<ItemStack> getDrops(BlockGetter world, BlockPos pos, BlockState state, int fortune) {
 		NonNullList<ItemStack> list = NonNullList.create();
-		if (world instanceof Level && MainProxy.isClient((Level) world)) {
+		if (world instanceof Level && ((Level) world).isClientSide()) {
 			return list;
 		}
 

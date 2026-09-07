@@ -10,7 +10,6 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 import logisticspipes.asm.te.ILPTEInformation;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.ticks.QueuedTasks;
 import logisticspipes.util.CoordinateUtils;
@@ -36,7 +35,7 @@ public class BlockChangeListener {
     @SubscribeEvent
     public void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
         if (!(event.getLevel() instanceof Level level)) return;
-        if (!MainProxy.isServer(level)) return;
+        if (level.isClientSide()) return;
         final BlockPos pos = event.getPos();
         QueuedTasks.queueTask(() -> {
             notifyAdjacentPipes(level, pos);
@@ -51,7 +50,7 @@ public class BlockChangeListener {
     @SubscribeEvent
     public void onBlockBroken(BreakBlockEvent event) {
         if (!(event.getLevel() instanceof Level level)) return;
-        if (!MainProxy.isServer(level)) return;
+        if (level.isClientSide()) return;
         final BlockPos pos = event.getPos();
         QueuedTasks.queueTask(() -> {
             notifyAdjacentPipes(level, pos);
