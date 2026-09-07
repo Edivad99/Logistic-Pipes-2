@@ -323,8 +323,8 @@ public abstract class LPTravelingItem {
 		@Override
 		public void setDestination(int destination) {
 			info.destinationint = destination;
-			final @Nullable Level level = container != null ? container.getLevel() : null;
-			if (!level.isClientSide()) {
+			final Level level = container != null ? container.getLevel() : null;
+			if (level == null || !level.isClientSide()) {
 				IRouter router = SimpleServiceLocator.routerManager.getServerRouter(destination);
 				if (router != null) {
 					info.destinationUUID = router.getId();

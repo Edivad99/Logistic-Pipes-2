@@ -395,6 +395,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public void InventoryChanged(Container inventory) {
+		final Level level = getWorld();
 		boolean reInitGui = false;
 		for (int i = 0; i < inventory.getContainerSize(); i++) {
 			ItemStack stack = inventory.getItem(i);
@@ -415,7 +416,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 				next.registerPosition(ModulePositionType.SLOT, i);
 				if (current != next) {
 					module.installModule(i, next);
-					if (!getWorld().isClientSide()) {
+					if (level != null && !level.isClientSide()) {
 						ItemModuleInformationManager.readInformation(stack, next);
 					}
 					next.finishInit();
@@ -424,13 +425,13 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 			}
 		}
 		if (reInitGui) {
-			if (getWorld().isClientSide()) {
+			if (level != null && level.isClientSide()) {
 				if (Minecraft.getInstance().screen instanceof ChassisPipeScreen) {
 					Minecraft.getInstance().setScreen(Minecraft.getInstance().screen); // re-init screen (1.20.1: init() is no longer public no-arg)
 				}
 			}
 		}
-		if (!getWorld().isClientSide()) {
+		if (level != null && !level.isClientSide()) {
 			if (!localModeWatchers.isEmpty()) {
 				localModeWatchers.send(new ChassisModuleContentMessage(getPos(),
 						ItemIdentifierStack.getListFromInventory(moduleInventory)));

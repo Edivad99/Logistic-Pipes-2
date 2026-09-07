@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -141,7 +142,8 @@ public class ModuleActiveSupplier extends LogisticsModule
 
 	@Override
 	public void InventoryChanged(Container inventory) {
-		if (!getWorld().isClientSide()) {
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
 			localModeWatchers.send(
 					new ModuleInventoryMessage(ModuleTarget.of(this), ItemIdentifierStack.getListFromInventory(inventory)));
 		}

@@ -183,7 +183,8 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
         satellitePipeName = input.getInt("satelliteid")
             .map(integer -> Integer.toString(integer))
             .orElseGet(() -> input.getStringOr("satellitePipeName", ""));
-		if (!getWorld().isClientSide()) {
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
 			ensureAllSatelliteStatus();
 		}
 	}

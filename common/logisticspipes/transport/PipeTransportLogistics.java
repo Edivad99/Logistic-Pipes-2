@@ -84,13 +84,13 @@ public class PipeTransportLogistics {
 	@AllArgsConstructor
 	static class RoutingResult {
 
-		private Direction face;
+		private @Nullable Direction face;
 		private boolean hasRoute;
 	}
 
 	private final int bufferTimeOut = 20 * 2; // 2 Seconds
 	public final SyncList<Triplet<ItemIdentifierStack, Pair<Integer /* Time */, Integer /* BufferCounter */>, LPTravelingItemServer>> itemBuffer = new SyncList<>();
-	private LevelChunk chunk;
+	private @Nullable LevelChunk chunk;
 	public LPItemList items = new LPItemList(this);
 	public LogisticsTileGenericPipe container;
 	public final boolean isRouted;
@@ -101,12 +101,13 @@ public class PipeTransportLogistics {
 	}
 
 	public void initialize() {
-		if (!getWorld().isClientSide()) {
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
 			// Cache the chunk for marking dirty, without forcing a load: initialize() runs while
 			// the chunk is still being loaded, and getChunkAt() would re-enter the chunk system
 			// asking for FULL status. getChunkNow returns null when it is not ready, which
 			// markChunkModified already tolerates.
-			chunk = getWorld().getChunkSource().getChunkNow(
+			chunk = level.getChunkSource().getChunkNow(
 					SectionPos.blockToSectionCoord(container.getBlockPos().getX()),
 					SectionPos.blockToSectionCoord(container.getBlockPos().getZ()));
 			itemBuffer.syncTo(getWorld(), container.getBlockPos(), buffered -> new PipeItemBufferMessage(
@@ -115,19 +116,22 @@ public class PipeTransportLogistics {
 		}
 	}
 
-	public void markChunkModified(BlockEntity tile) {
-		if (tile != null && chunk != null) {
+	public void markChunkModified(BlockEntity blockEntity) {
+		if (blockEntity != null && chunk != null) {
 			// items are crossing a chunk boundary, mark both chunks modified
-			if (container.getBlockPos().getX() >> 4 != tile.getBlockPos().getX() >> 4 || container.getBlockPos().getZ() >> 4 != tile.getBlockPos().getZ() >> 4) {
+			if (container.getBlockPos().getX() >> 4 != blockEntity.getBlockPos().getX() >> 4 || container.getBlockPos().getZ() >> 4 != blockEntity.getBlockPos().getZ() >> 4) {
 				chunk.markUnsaved();
-				if (tile instanceof LogisticsTileGenericPipe && ((LogisticsTileGenericPipe) tile).pipe != null && ((LogisticsTileGenericPipe) tile).pipe.transport != null && ((LogisticsTileGenericPipe) tile).pipe.transport.chunk != null) {
-					((LogisticsTileGenericPipe) tile).pipe.transport.chunk.markUnsaved();
+				if (blockEntity instanceof LogisticsTileGenericPipe genericPipe &&
+                    genericPipe.pipe != null &&
+                    genericPipe.pipe.transport != null &&
+                    genericPipe.pipe.transport.chunk != null) {
+					genericPipe.pipe.transport.chunk.markUnsaved();
 				} else {
 					// Same reasoning as in initialize(): never force-load the neighbour's chunk
 					// just to flag it dirty. If it is not loaded there is nothing to flag.
 					LevelChunk neighbourChunk = getWorld().getChunkSource().getChunkNow(
-							SectionPos.blockToSectionCoord(tile.getBlockPos().getX()),
-							SectionPos.blockToSectionCoord(tile.getBlockPos().getZ()));
+							SectionPos.blockToSectionCoord(blockEntity.getBlockPos().getX()),
+							SectionPos.blockToSectionCoord(blockEntity.getBlockPos().getZ()));
 					if (neighbourChunk != null) {
 						neighbourChunk.markUnsaved();
 					}
