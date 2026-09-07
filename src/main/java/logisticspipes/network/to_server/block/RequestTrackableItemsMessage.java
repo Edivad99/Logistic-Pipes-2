@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -15,13 +17,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.network.to_client.block.TrackableItemsMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
+import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 
 /**
  * The "add tracking" screen is opening and wants the list of items it can offer.
@@ -45,13 +47,15 @@ public record RequestTrackableItemsMessage(BlockPos pos) implements CustomPacket
     }
 
     public static void handle(RequestTrackableItemsMessage message, IPayloadContext context) {
-        final LogisticsStatisticsTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsStatisticsTileEntity.class);
+        final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
         if (be == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         final CoreRoutedPipe pipe = be.getConnectedPipe();
         if (pipe == null) {
+            player.sendSystemMessage(Component.translatable("gui.networkstatistics.nopipe")
+                .withStyle(ChatFormatting.RED));
             return;
         }
         final var routers = pipe.getRouter().getIRoutersByCost();

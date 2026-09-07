@@ -4,25 +4,25 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
-import logisticspipes.blocks.LogisticsSecurityTileEntity.SecurityPermissions;
 import logisticspipes.network.to_server.security.SaveSecuritySettingsMessage;
 import logisticspipes.security.SecuritySettings;
 import logisticspipes.utils.gui.GuiCheckBox;
 import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.utils.gui.SubGuiScreen;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.SecurityPermissions;
 import network.rs485.logisticspipes.util.TextUtil;
 
 public class GuiSecurityStationPopup extends SubGuiScreen {
 
     private static final String PREFIX = "gui.securitystation.popup.player.";
 
-    private final LogisticsSecurityTileEntity tile;
+    private final LogisticsSecurityBlockEntity tile;
     private final SecuritySettings activeSetting;
     private GuiCheckBox cb0, cb1, cb2, cb3, cb4, cb5;
 
-    public GuiSecurityStationPopup(SecuritySettings setting, LogisticsSecurityTileEntity tile) {
+    public GuiSecurityStationPopup(SecuritySettings setting, LogisticsSecurityBlockEntity tile) {
         super(160, 135, 0, 0);
         activeSetting = setting;
         this.tile = tile;

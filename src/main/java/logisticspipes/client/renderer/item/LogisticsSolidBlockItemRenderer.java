@@ -12,9 +12,9 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.LogisticsSolidBlock;
 import logisticspipes.client.renderer.blockentity.LogisticsSolidBlockRenderer;
 import logisticspipes.world.item.LogisticsSolidBlockItem;
+import logisticspipes.world.level.block.LogisticsSolidBlock;
 
 /**
  * Draws an LP solid block item using the same OBJ geometry as
@@ -30,7 +30,7 @@ import logisticspipes.world.item.LogisticsSolidBlockItem;
  * <p>The renderer no longer receives the {@link ItemStack}: whatever it needs is pulled out ahead of
  * time by {@link #extractArgument}, which here is the block type driving the geometry.</p>
  */
-public class LogisticsSolidBlockItemRenderer implements SpecialModelRenderer<LogisticsSolidBlock.Type> {
+public class LogisticsSolidBlockItemRenderer implements SpecialModelRenderer<LogisticsSolidBlock> {
 
     public static final LogisticsSolidBlockItemRenderer INSTANCE = new LogisticsSolidBlockItemRenderer();
 
@@ -38,8 +38,8 @@ public class LogisticsSolidBlockItemRenderer implements SpecialModelRenderer<Log
     }
 
     @Override
-    public LogisticsSolidBlock.@Nullable Type extractArgument(ItemStack stack) {
-        return stack.getItem() instanceof LogisticsSolidBlockItem item ? item.getType() : null;
+    public @Nullable LogisticsSolidBlock extractArgument(ItemStack stack) {
+        return stack.getItem() instanceof LogisticsSolidBlockItem item ? item.getSolidBlock() : null;
     }
 
     /**
@@ -55,26 +55,26 @@ public class LogisticsSolidBlockItemRenderer implements SpecialModelRenderer<Log
     }
 
     @Override
-    public void submit(LogisticsSolidBlock.@Nullable Type type, PoseStack pose,
+    public void submit(@Nullable LogisticsSolidBlock block, PoseStack pose,
         SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
-        if (type == null) {
+        if (block == null) {
             return;
         }
         pose.pushPose();
         try {
-            LogisticsSolidBlockRenderer.submitSolid(type, pose, collector, light, overlay);
+            LogisticsSolidBlockRenderer.submitSolid(block, pose, collector, light, overlay);
         } finally {
             pose.popPose();
         }
     }
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked<LogisticsSolidBlock.Type> {
+    public record Unbaked() implements SpecialModelRenderer.Unbaked<LogisticsSolidBlock> {
 
         public static final Unbaked INSTANCE = new Unbaked();
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
 
         @Override
-        public SpecialModelRenderer<LogisticsSolidBlock.Type> bake(SpecialModelRenderer.BakingContext context) {
+        public SpecialModelRenderer<LogisticsSolidBlock> bake(SpecialModelRenderer.BakingContext context) {
             return LogisticsSolidBlockItemRenderer.INSTANCE;
         }
 

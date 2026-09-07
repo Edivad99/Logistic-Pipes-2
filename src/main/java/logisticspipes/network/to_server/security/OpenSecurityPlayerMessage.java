@@ -9,8 +9,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 /**
  * The player name typed into a security station's search bar: open their settings.
@@ -35,8 +35,8 @@ public record OpenSecurityPlayerMessage(BlockPos pos, String playerName) impleme
         if (message.playerName.isEmpty()) {
             return;
         }
-        final LogisticsSecurityTileEntity station =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityTileEntity.class);
+        final LogisticsSecurityBlockEntity station =
+                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (station != null) {
             station.handleOpenSecurityPlayer(context.player(), message.playerName);
         }

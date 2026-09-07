@@ -10,7 +10,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSolidBlock;
 import logisticspipes.pipes.basic.LogisticsBlockGenericPipe;
 import logisticspipes.pipes.basic.LogisticsBlockGenericSubMultiBlock;
 
@@ -27,33 +26,28 @@ public class LPBlocks {
         return deferredRegister.getEntries();
     }
 
-    public static final DeferredBlock<LogisticsSolidBlock> FRAME =
-        deferredRegister.registerBlock("frame",
-            properties -> new LogisticsSolidBlock(LogisticsSolidBlock.Type.LOGISTICS_BLOCK_FRAME, properties));
+    public static final DeferredBlock<LogisticsFrameBlock> FRAME =
+        deferredRegister.registerBlock("frame", LogisticsFrameBlock::new);
 
-    public static final DeferredBlock<LogisticsSolidBlock> POWER_JUNCTION =
-        deferredRegister.registerBlock("power_junction",
-            properties -> new LogisticsSolidBlock(LogisticsSolidBlock.Type.LOGISTICS_POWER_JUNCTION, properties));
+    public static final DeferredBlock<LogisticsPowerJunctionBlock> POWER_JUNCTION =
+        deferredRegister.registerBlock("power_junction", LogisticsPowerJunctionBlock::new);
 
-    public static final DeferredBlock<LogisticsSolidBlock> SECURITY_STATION =
-        deferredRegister.registerBlock("security_station",
-            properties -> new LogisticsSolidBlock(LogisticsSolidBlock.Type.LOGISTICS_SECURITY_STATION, properties));
+    public static final DeferredBlock<LogisticsSecurityStationBlock> SECURITY_STATION =
+        deferredRegister.registerBlock("security_station", LogisticsSecurityStationBlock::new);
 
-    public static final DeferredBlock<LogisticsSolidBlock> CRAFTER =
+    public static final DeferredBlock<LogisticsCraftingTableBlock> CRAFTER =
         deferredRegister.registerBlock("crafting_table",
-            properties -> new LogisticsSolidBlock(LogisticsSolidBlock.Type.LOGISTICS_AUTOCRAFTING_TABLE, properties));
+            properties -> new LogisticsCraftingTableBlock(false, properties));
 
-    public static final DeferredBlock<LogisticsSolidBlock> CRAFTER_FUZZY =
+    public static final DeferredBlock<LogisticsCraftingTableBlock> CRAFTER_FUZZY =
         deferredRegister.registerBlock("crafting_table_fuzzy",
-            properties -> new LogisticsSolidBlock(LogisticsSolidBlock.Type.LOGISTICS_FUZZYCRAFTING_TABLE, properties));
+            properties -> new LogisticsCraftingTableBlock(true, properties));
 
-    public static final DeferredBlock<LogisticsSolidBlock> STATISTICS_TABLE =
-        deferredRegister.registerBlock("statistics_table",
-            properties -> new LogisticsSolidBlock(LogisticsSolidBlock.Type.LOGISTICS_STATISTICS_TABLE, properties));
+    public static final DeferredBlock<LogisticsStatisticsTableBlock> STATISTICS_TABLE =
+        deferredRegister.registerBlock("statistics_table", LogisticsStatisticsTableBlock::new);
 
-    public static final DeferredBlock<LogisticsSolidBlock> POWER_PROVIDER_RF =
-        deferredRegister.registerBlock("power_provider_rf",
-            properties -> new LogisticsSolidBlock(LogisticsSolidBlock.Type.LOGISTICS_RF_POWERPROVIDER, properties));
+    public static final DeferredBlock<LogisticsRFPowerProviderBlock> POWER_PROVIDER_RF =
+        deferredRegister.registerBlock("power_provider_rf", LogisticsRFPowerProviderBlock::new);
 
     public static final DeferredBlock<LogisticsProgramCompilerBlock> PROGRAM_COMPILER =
         deferredRegister.registerBlock("program_compiler", LogisticsProgramCompilerBlock::new);

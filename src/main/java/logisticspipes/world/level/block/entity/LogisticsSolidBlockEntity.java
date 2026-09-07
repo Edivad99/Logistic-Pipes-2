@@ -26,14 +26,6 @@ public class LogisticsSolidBlockEntity extends BlockEntity implements ITickable,
         super(type, pos, state);
     }
 
-    /**
-     * Returns the level this block entity is in. Replaces removed getWorld() from 1.12.2.
-     */
-    @Nullable
-    protected Level getWorld() {
-        return this.level;
-    }
-
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
@@ -48,7 +40,7 @@ public class LogisticsSolidBlockEntity extends BlockEntity implements ITickable,
 
     @Override
     public void update() {
-        if (getWorld().isClientSide()) {
+        if (level.isClientSide()) {
             if (!init) {
                 ClientPacketDistributor.sendToServer(new RequestBlockRotationMessage(getBlockPos()));
                 init = true;
@@ -100,6 +92,6 @@ public class LogisticsSolidBlockEntity extends BlockEntity implements ITickable,
     }
 
     public Level getLevelForHUD() {
-        return getWorld();
+        return level;
     }
 }

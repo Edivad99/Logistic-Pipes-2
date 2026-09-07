@@ -387,6 +387,7 @@
   "gui.networkstatistics.amount": "Track amount",
   "gui.networkstatistics.crafting": "View active crafting tasks",
   "gui.networkstatistics.gettasks": "Acquire tasks",
+  "gui.networkstatistics.nopipe": "No logistics pipe next to this table.",
   "gui.networkstatistics.add.alreadytracked": "This item type is already tracked",
   "gui.compiler.logisticspipes.compilercategory.basic": "Basic",
   "gui.compiler.logisticspipes.compilercategory.tier_2": "Tier 2",

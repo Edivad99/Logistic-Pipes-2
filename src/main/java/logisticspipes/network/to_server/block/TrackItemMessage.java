@@ -9,9 +9,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.utils.item.ItemIdentifier;
+import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 
 /**
  * The player started or stopped tracking an item on a statistics block.
@@ -37,8 +37,8 @@ public record TrackItemMessage(BlockPos pos, ItemIdentifier item, boolean tracke
     }
 
     public static void handle(TrackItemMessage message, IPayloadContext context) {
-        final LogisticsStatisticsTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsStatisticsTileEntity.class);
+        final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
         if (be != null) {
             be.setTracked(message.item, message.tracked);
         }

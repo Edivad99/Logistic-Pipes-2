@@ -9,9 +9,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity.SecurityPermissions;
 import logisticspipes.client.gui.screen.SecurityStationScreen;
 import logisticspipes.security.SecuritySettings;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.SecurityPermissions;
 
 /**
  * One player's security settings, for the station GUI that asked to edit them.

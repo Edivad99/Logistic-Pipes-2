@@ -64,7 +64,7 @@ import logisticspipes.LogisticsPipes;
 import logisticspipes.api.ILogisticsPowerProvider;
 import logisticspipes.asm.ModDependentMethod;
 import logisticspipes.asm.te.ILPTEInformation;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import logisticspipes.interfaces.ILPPositionProvider;
 import logisticspipes.interfaces.IModuleMenuProvider;
 import logisticspipes.interfaces.IPipeServiceProvider;
@@ -878,7 +878,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
         }
 		SecuritySettings settings = null;
 		if (!player.level().isClientSide()) {
-			LogisticsSecurityTileEntity station = SimpleServiceLocator.securityStationManager.getStation(getOriginalUpgradeManager().getSecurityID());
+			LogisticsSecurityBlockEntity station = SimpleServiceLocator.securityStationManager.getStation(getOriginalUpgradeManager().getSecurityID());
 			if (station != null) {
 				settings = station.getSecuritySettingsForPlayer(player, true);
 			}
@@ -1264,7 +1264,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	public boolean canBeDestroyedByPlayer(Player entityPlayer) {
-		LogisticsSecurityTileEntity station = SimpleServiceLocator.securityStationManager.getStation(getOriginalUpgradeManager().getSecurityID());
+		LogisticsSecurityBlockEntity station = SimpleServiceLocator.securityStationManager.getStation(getOriginalUpgradeManager().getSecurityID());
 		return station == null || station.getSecuritySettingsForPlayer(entityPlayer, true).removePipes;
 	}
 

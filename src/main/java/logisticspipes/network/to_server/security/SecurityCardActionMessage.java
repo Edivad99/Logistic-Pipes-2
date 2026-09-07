@@ -9,9 +9,9 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
-import logisticspipes.blocks.LogisticsSecurityTileEntity.CardAction;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.CardAction;
 
 /**
  * The player pressed one of the security station's card buttons.
@@ -36,8 +36,8 @@ public record SecurityCardActionMessage(BlockPos pos, CardAction action) impleme
     }
 
     public static void handle(SecurityCardActionMessage message, IPayloadContext context) {
-        final LogisticsSecurityTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityTileEntity.class);
+        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (be != null) {
             be.handleCardAction(message.action, context.player());
         }

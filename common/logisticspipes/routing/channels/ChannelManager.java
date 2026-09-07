@@ -20,7 +20,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import logisticspipes.interfaces.routing.IChannelManager;
 import logisticspipes.network.to_client.channel.ChannelInformationMessage;
 import logisticspipes.proxy.SimpleServiceLocator;
@@ -51,7 +51,7 @@ public class ChannelManager implements IChannelManager {
                 return true;
             case SECURED:
                 final UUID secUUID = channel.getResponsibleSecurityID();
-                final LogisticsSecurityTileEntity station = SimpleServiceLocator.securityStationManager
+                final LogisticsSecurityBlockEntity station = SimpleServiceLocator.securityStationManager
                     .getStation(secUUID);
                 if (station != null) {
                     final SecuritySettings settings = station.getSecuritySettingsForPlayer(player, false);

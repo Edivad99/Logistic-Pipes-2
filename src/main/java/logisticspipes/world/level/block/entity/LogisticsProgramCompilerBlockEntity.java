@@ -45,59 +45,12 @@ import logisticspipes.world.item.component.LPDataComponents;
 public class LogisticsProgramCompilerBlockEntity extends LogisticsSolidBlockEntity
     implements IScreenOpenController, IBlockEntityMenuProvider {
 
-    public static class ProgramCategories {
-
-        public static final Identifier BASIC = LPConstants.rl("compilercategory.basic");
-        public static final Identifier TIER_2 = LPConstants.rl("compilercategory.tier_2");
-        public static final Identifier FLUID = LPConstants.rl("compilercategory.fluid");
-        public static final Identifier TIER_3 = LPConstants.rl("compilercategory.tier_3");
-        public static final Identifier CHASSIS = LPConstants.rl("compilercategory.chassis");
-        public static final Identifier CHASSIS_2 = LPConstants.rl("compilercategory.chassis_2");
-        public static final Identifier CHASSIS_3 = LPConstants.rl("compilercategory.chassis_3");
-        public static final Identifier MODDED = LPConstants.rl("compilercategory.modded");
-
-        static {
-            //Force the order of keys
-            programByCategory.put(BASIC, new HashSet<>());
-            programByCategory.put(TIER_2, new HashSet<>());
-            programByCategory.put(FLUID, new HashSet<>());
-            programByCategory.put(TIER_3, new HashSet<>());
-            programByCategory.put(CHASSIS, new HashSet<>());
-            programByCategory.put(CHASSIS_2, new HashSet<>());
-            programByCategory.put(CHASSIS_3, new HashSet<>());
-            programByCategory.put(MODDED, new HashSet<>());
-        }
-    }
-
-    public LogisticsProgramCompilerBlockEntity(BlockPos pos, BlockState state) {
-        super(LPBlockEntityTypes.PROGRAM_COMPILER.get(), pos, state);
-    }
-
+    public static final Map<Identifier, Set<Identifier>> programByCategory = new LinkedHashMap<>();
     private static final int DISK_SLOT = 0;
     private static final int PROGRAMMER_SLOT = 1;
-
-    public static final Map<Identifier, Set<Identifier>> programByCategory = new LinkedHashMap<>();
     private final PlayerCollectionList playerList = new PlayerCollectionList();
-    /**
-     * What the compiler is working towards. Not persisted: an interrupted task starts over.
-     *
-     * @param progressPerTick how fast this kind of task advances per unit of power consumed
-     */
-    public enum CompilerTask {
-        /** Unlocks a whole category of programs on the disk. */
-        CATEGORY(0.0005),
-        /** Unlocks one program on the disk. */
-        PROGRAM(0.0025),
-        /** Writes a program onto the programmer in the slot. */
-        FLASH(0.01);
-
-        private final double progressPerTick;
-
-        CompilerTask(double progressPerTick) {
-            this.progressPerTick = progressPerTick;
-        }
-    }
-
+    @Getter
+    private final SimpleStackInventory inventory = new SimpleStackInventory(2, "programcompilerinv", 64);
     private @Nullable CompilerTask taskType = null;
     @Getter
     private @Nullable Identifier currentTask = null;
@@ -105,9 +58,9 @@ public class LogisticsProgramCompilerBlockEntity extends LogisticsSolidBlockEnti
     private double taskProgress = 0;
     @Getter
     private boolean wasAbleToConsumePower = false;
-
-    @Getter
-    private final SimpleStackInventory inventory = new SimpleStackInventory(2, "programcompilerinv", 64);
+    public LogisticsProgramCompilerBlockEntity(BlockPos pos, BlockState state) {
+        super(LPBlockEntityTypes.PROGRAM_COMPILER.get(), pos, state);
+    }
 
     public ListTag getListTagForKey(String key) {
         ItemStack stack = this.getInventory().getItem(DISK_SLOT);
@@ -251,5 +204,55 @@ public class LogisticsProgramCompilerBlockEntity extends LogisticsSolidBlockEnti
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
         return new ProgramCompilerMenu(i, inventory, this);
+    }
+
+    /**
+     * What the compiler is working towards. Not persisted: an interrupted task starts over.
+     *
+     * @param progressPerTick how fast this kind of task advances per unit of power consumed
+     */
+    public enum CompilerTask {
+        /**
+         * Unlocks a whole category of programs on the disk.
+         */
+        CATEGORY(0.0005),
+        /**
+         * Unlocks one program on the disk.
+         */
+        PROGRAM(0.0025),
+        /**
+         * Writes a program onto the programmer in the slot.
+         */
+        FLASH(0.01);
+
+        private final double progressPerTick;
+
+        CompilerTask(double progressPerTick) {
+            this.progressPerTick = progressPerTick;
+        }
+    }
+
+    public static class ProgramCategories {
+
+        public static final Identifier BASIC = LPConstants.rl("compilercategory.basic");
+        public static final Identifier TIER_2 = LPConstants.rl("compilercategory.tier_2");
+        public static final Identifier FLUID = LPConstants.rl("compilercategory.fluid");
+        public static final Identifier TIER_3 = LPConstants.rl("compilercategory.tier_3");
+        public static final Identifier CHASSIS = LPConstants.rl("compilercategory.chassis");
+        public static final Identifier CHASSIS_2 = LPConstants.rl("compilercategory.chassis_2");
+        public static final Identifier CHASSIS_3 = LPConstants.rl("compilercategory.chassis_3");
+        public static final Identifier MODDED = LPConstants.rl("compilercategory.modded");
+
+        static {
+            //Force the order of keys
+            programByCategory.put(BASIC, new HashSet<>());
+            programByCategory.put(TIER_2, new HashSet<>());
+            programByCategory.put(FLUID, new HashSet<>());
+            programByCategory.put(TIER_3, new HashSet<>());
+            programByCategory.put(CHASSIS, new HashSet<>());
+            programByCategory.put(CHASSIS_2, new HashSet<>());
+            programByCategory.put(CHASSIS_3, new HashSet<>());
+            programByCategory.put(MODDED, new HashSet<>());
+        }
     }
 }

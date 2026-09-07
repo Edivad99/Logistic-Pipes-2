@@ -13,13 +13,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.network.to_client.block.RunningCraftingTasksMessage;
 import logisticspipes.pipes.PipeItemsCraftingLogistics;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.routing.ExitRoute;
 import logisticspipes.utils.item.ItemIdentifierStack;
+import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 
 /**
  * The statistics block's crafting tab wants to know what the network is busy making.
@@ -40,8 +40,8 @@ public record RequestRunningCraftingTasksMessage(BlockPos pos) implements Custom
     }
 
     public static void handle(RequestRunningCraftingTasksMessage message, IPayloadContext context) {
-        final LogisticsStatisticsTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsStatisticsTileEntity.class);
+        final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
         if (be == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }

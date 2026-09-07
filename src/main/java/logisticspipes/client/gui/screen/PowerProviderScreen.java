@@ -7,16 +7,16 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.powertile.LogisticsPowerProviderTileEntity;
 import logisticspipes.utils.string.StringUtils;
 import logisticspipes.world.inventory.PowerProviderMenu;
+import logisticspipes.world.level.block.entity.LogisticsPowerProviderBlockEntity;
 import network.rs485.logisticspipes.util.TextUtil;
 
 public class PowerProviderScreen extends LogisticsBaseGuiScreen<PowerProviderMenu> {
 
     private static final String PREFIX = "gui.powerprovider.";
     private static final Identifier TEXTURE = LPConstants.rl("textures/gui/power_junction.png");
-    private final LogisticsPowerProviderTileEntity junction;
+    private final LogisticsPowerProviderBlockEntity junction;
 
     public PowerProviderScreen(PowerProviderMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 166, 0, 0);

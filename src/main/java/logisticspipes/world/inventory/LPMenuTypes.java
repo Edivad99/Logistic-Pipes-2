@@ -23,9 +23,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
-import logisticspipes.blocks.powertile.LogisticsPowerProviderTileEntity;
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
 import logisticspipes.blocks.stats.TrackingTask;
 import logisticspipes.interfaces.IFreqCardHolder;
 import logisticspipes.interfaces.IStringBasedModule;
@@ -58,7 +55,10 @@ import logisticspipes.pipes.basic.fluid.FluidSinkPipe;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.world.level.block.entity.LogisticsCraftingTableBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsPowerProviderBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsProgramCompilerBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 import network.rs485.logisticspipes.inventory.container.ItemSinkContainer;
 import network.rs485.logisticspipes.inventory.container.ProviderContainer;
 import network.rs485.logisticspipes.module.AsyncAdvancedExtractor;
@@ -305,18 +305,18 @@ public class LPMenuTypes {
 
     public static final DeferredHolder<MenuType<?>, MenuType<PowerProviderMenu>> POWER_PROVIDER =
         deferredRegister.register("power_provider",
-            () -> blockEntityMenu(LogisticsPowerProviderTileEntity.class, PowerProviderMenu::new));
+            () -> blockEntityMenu(LogisticsPowerProviderBlockEntity.class, PowerProviderMenu::new));
 
     public static final DeferredHolder<MenuType<?>, MenuType<SecurityStationMenu>> SECURITY_STATION =
         deferredRegister.register("security_station",
-            () -> blockEntityMenu(LogisticsSecurityTileEntity.class, SecurityStationMenu::new));
+            () -> blockEntityMenu(LogisticsSecurityBlockEntity.class, SecurityStationMenu::new));
 
     public static final DeferredHolder<MenuType<?>, MenuType<StatisticsMenu>> STATISTICS =
         deferredRegister.register("statistics", () -> new MenuType<>(
             (IContainerFactory<StatisticsMenu>) (containerId, inventory, buffer) -> {
                 final BlockPos pos = buffer.readBlockPos();
                 final BlockEntity entity = inventory.player.level().getBlockEntity(pos);
-                if (!(entity instanceof LogisticsStatisticsTileEntity table)) {
+                if (!(entity instanceof LogisticsStatisticsBlockEntity table)) {
                     throw new IllegalStateException("No statistics table at [%s]".formatted(pos));
                 }
                 // The recorded history is kept server side only.

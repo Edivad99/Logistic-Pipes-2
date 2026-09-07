@@ -13,9 +13,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
-import logisticspipes.blocks.LogisticsSecurityTileEntity.CardAction;
-import logisticspipes.blocks.LogisticsSecurityTileEntity.SecurityFlag;
 import logisticspipes.client.gui.popup.GuiEditCCAccessTable;
 import logisticspipes.client.gui.popup.GuiSecurityStationPopup;
 import logisticspipes.interfaces.PlayerListReciver;
@@ -34,6 +31,9 @@ import logisticspipes.utils.gui.InputBar;
 import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.world.inventory.SecurityStationMenu;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.CardAction;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.SecurityFlag;
 import network.rs485.logisticspipes.util.TextUtil;
 
 public class SecurityStationScreen extends LogisticsBaseGuiScreen<SecurityStationMenu> implements PlayerListReciver {
@@ -42,7 +42,7 @@ public class SecurityStationScreen extends LogisticsBaseGuiScreen<SecurityStatio
     protected static final int searchWidth = 250;
     private static final String PREFIX = "gui.securitystation.";
     protected final String title = "Request items";
-    private final LogisticsSecurityTileEntity tile;
+    private final LogisticsSecurityBlockEntity tile;
     private final List<String> players = new LinkedList<>();
     protected int lastClickedX = 0;
     protected int lastClickedY = 0;

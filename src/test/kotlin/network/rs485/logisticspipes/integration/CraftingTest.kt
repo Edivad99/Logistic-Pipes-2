@@ -46,7 +46,6 @@ import network.rs485.logisticspipes.util.FuzzyUtil
 import network.rs485.minecraft.BlockPlacer
 import network.rs485.minecraft.BlockPosSelector
 import network.rs485.minecraft.configurator
-import logisticspipes.blocks.LogisticsSolidBlock
 import logisticspipes.pipes.PipeItemsBasicLogistics
 import logisticspipes.pipes.PipeItemsCraftingLogistics
 import logisticspipes.pipes.PipeItemsRequestLogistics
@@ -55,6 +54,7 @@ import logisticspipes.pipes.upgrades.UpgradeManager
 import logisticspipes.utils.item.ItemIdentifier
 import logisticspipes.world.item.LPItems
 import logisticspipes.world.level.block.LPBlocks
+import logisticspipes.world.level.block.LogisticsCraftingTableBlock
 import logisticspipes.world.level.block.entity.LogisticsCraftingTableBlockEntity
 import net.minecraft.core.Direction
 import net.minecraft.core.registries.BuiltInRegistries
@@ -429,7 +429,7 @@ object CraftingTest {
         val craftingPipePlacer: PipePlacer<PipeItemsCraftingLogistics>
         val craftingPipe: PipeItemsCraftingLogistics
             get() = craftingPipePlacer.pipe
-        val fuzzyCraftingTablePlacer: BlockPlacer<LogisticsSolidBlock>
+        val fuzzyCraftingTablePlacer: BlockPlacer<LogisticsCraftingTableBlock>
         @Suppress("unused")
         val fuzzyCraftingTable: LogisticsCraftingTableBlockEntity
             get() = fuzzyCraftingTablePlacer.getTileEntity<LogisticsCraftingTableBlockEntity>()

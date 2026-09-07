@@ -9,8 +9,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 /**
  * The player authorized or deauthorized a security station.
@@ -33,8 +33,8 @@ public record SetSecurityStationAuthorizedMessage(BlockPos pos, boolean authoriz
     }
 
     public static void handle(SetSecurityStationAuthorizedMessage message, IPayloadContext context) {
-        final LogisticsSecurityTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityTileEntity.class);
+        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (be == null) {
             return;
         }

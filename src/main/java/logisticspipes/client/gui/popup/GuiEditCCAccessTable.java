@@ -9,19 +9,19 @@ import net.minecraft.client.input.MouseButtonEvent;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.network.to_server.security.SetSecurityStationCCIdMessage;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.utils.gui.SubGuiScreen;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import network.rs485.logisticspipes.util.TextUtil;
 
 public class GuiEditCCAccessTable extends SubGuiScreen {
 
     private static final String PREFIX = "gui.securitystation.popup.ccAccess.";
     private static final int searchWidth = 55;
-    private final LogisticsSecurityTileEntity tile;
+    private final LogisticsSecurityBlockEntity tile;
     private String searchInput1 = "0";
     private String searchInput2 = "";
     private boolean editSearch = false;
@@ -34,7 +34,7 @@ public class GuiEditCCAccessTable extends SubGuiScreen {
     private boolean clickWasButton = false;
     private int page = 0;
 
-    public GuiEditCCAccessTable(LogisticsSecurityTileEntity tile) {
+    public GuiEditCCAccessTable(LogisticsSecurityBlockEntity tile) {
         super(150, 150, 0, 0);
         this.tile = tile;
     }

@@ -31,9 +31,9 @@ import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConstants;
 import logisticspipes.LogisticsPipes;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.ticks.RoutingTableUpdateThread;
 import logisticspipes.utils.item.ItemIdentifier;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import network.rs485.logisticspipes.util.FuzzyFlag;
 
 /**
@@ -260,11 +260,11 @@ public final class LogisticsPipesCommand {
     private static int toggleBypass(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         final ServerPlayer player = ctx.getSource().getPlayerOrException();
         final boolean enabled;
-        if (LogisticsSecurityTileEntity.byPassed.contains(player)) {
-            LogisticsSecurityTileEntity.byPassed.remove(player);
+        if (LogisticsSecurityBlockEntity.byPassed.contains(player)) {
+            LogisticsSecurityBlockEntity.byPassed.remove(player);
             enabled = false;
         } else {
-            LogisticsSecurityTileEntity.byPassed.add(player);
+            LogisticsSecurityBlockEntity.byPassed.add(player);
             enabled = true;
         }
         ctx.getSource()

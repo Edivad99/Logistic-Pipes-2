@@ -68,6 +68,7 @@ import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.util.ItemStackLoader;
+import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
 import logisticspipes.utils.CacheHolder.CacheTypes;
 import logisticspipes.utils.InventoryHelper;
 import logisticspipes.utils.OrientationsUtil;
@@ -633,6 +634,9 @@ public class PipeTransportLogistics {
 			IInventoryUtil util = SimpleServiceLocator.inventoryUtilFactory.getInventoryUtil(tile, side.getOpposite());
 			if (util != null) {
 				return util.getContainerSize() > 0;
+			}
+			if (tile instanceof LogisticsSolidBlockEntity) {
+				return true;
 			}
 			return isPipeCheck(tile);
 		} else {

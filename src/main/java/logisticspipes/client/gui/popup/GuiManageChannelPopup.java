@@ -13,7 +13,6 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.interfaces.IGUIChannelInformationReceiver;
 import logisticspipes.network.to_server.channel.DeleteChannelMessage;
 import logisticspipes.routing.channels.ChannelInformation;
@@ -21,6 +20,7 @@ import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.utils.gui.SubGuiScreen;
 import logisticspipes.utils.gui.TextListDisplay;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import network.rs485.logisticspipes.util.TextUtil;
 
 public class GuiManageChannelPopup extends SubGuiScreen implements IGUIChannelInformationReceiver {
@@ -65,7 +65,7 @@ public class GuiManageChannelPopup extends SubGuiScreen implements IGUIChannelIn
         if (level == null) {
             return null;
         }
-        return level.getBlockEntity(position) instanceof LogisticsSecurityTileEntity station
+        return level.getBlockEntity(position) instanceof LogisticsSecurityBlockEntity station
             ? station.getSecId()
             : null;
     }

@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-import logisticspipes.blocks.powertile.LogisticsPowerProviderTileEntity;
+import logisticspipes.world.level.block.entity.LogisticsPowerProviderBlockEntity;
 import logisticspipes.interfaces.ISubSystemPowerProvider;
 import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.proxy.SimpleServiceLocator;
@@ -98,7 +98,7 @@ public class PowerSupplierHandler implements ValueIOSerializable {
 							transaction.commit();
 						}
 						if (used > 0) {
-							pipe.container.addLaser(adjacent.getDirection(), 0.5F, LogisticsPowerProviderTileEntity.RF_COLOR, false, true);
+							pipe.container.addLaser(adjacent.getDirection(), 0.5F, LogisticsPowerProviderBlockEntity.RF_COLOR, false, true);
 							internalBufferRF -= used;
 						}
 						if (internalBufferRF < 0) {

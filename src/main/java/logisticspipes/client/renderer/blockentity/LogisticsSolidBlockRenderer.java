@@ -1,7 +1,7 @@
 package logisticspipes.client.renderer.blockentity;
 
-import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
@@ -23,13 +23,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSolidBlock;
 import logisticspipes.client.model.mesh.MeshRenderer;
 import logisticspipes.client.model.pipe.PipeModelStore;
 import logisticspipes.client.model.solid.SolidBlockModelParts;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
+import logisticspipes.world.level.block.LogisticsSolidBlock;
 import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
 
 /**
@@ -37,52 +37,38 @@ import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
  * and 5 cover plates held by {@link SolidBlockModelParts} and renders them to the
  * cutoutMipped buffer via {@link MeshRenderer}.
  *
- * <p>Each {@link LogisticsSolidBlock.Type} maps to a sprite at
+ * <p>Each {@link LogisticsSolidBlock} names the sprite it wants, found at
  * {@code logisticspipes:solid_block/<name>} which is used as the plate texture.</p>
  */
 public class LogisticsSolidBlockRenderer<T extends BlockEntity> implements BlockEntityRenderer<T, SolidBlockRenderState> {
 
-    private static final Map<LogisticsSolidBlock.Type, TextureAtlasSprite> SPRITE_CACHE =
-        new EnumMap<>(LogisticsSolidBlock.Type.class);
-    private static final Map<LogisticsSolidBlock.Type, TextureAtlasSprite> SPRITE_CACHE_ACTIVE =
-        new EnumMap<>(LogisticsSolidBlock.Type.class);
+    private static final Map<String, TextureAtlasSprite> SPRITE_CACHE = new HashMap<>();
+    private static final Map<String, TextureAtlasSprite> SPRITE_CACHE_ACTIVE = new HashMap<>();
 
     public LogisticsSolidBlockRenderer(BlockEntityRendererProvider.Context context) {
     }
 
-    public static String textureNameFor(LogisticsSolidBlock.Type type) {
-        return switch (type) {
-            case LOGISTICS_POWER_JUNCTION -> "power_junction";
-            case LOGISTICS_SECURITY_STATION -> "security_station";
-            case LOGISTICS_AUTOCRAFTING_TABLE -> "crafting_table";
-            case LOGISTICS_FUZZYCRAFTING_TABLE -> "crafting_table_fuzzy";
-            case LOGISTICS_STATISTICS_TABLE -> "statistics_table";
-            case LOGISTICS_RF_POWERPROVIDER -> "power_provider_rf";
-            case LOGISTICS_PROGRAM_COMPILER -> "program_compiler";
-            default -> "frame";
-        };
-    }
 
-    public static TextureAtlasSprite getIcon(LogisticsSolidBlock.Type type) {
-        return getIcon(type, false);
+    public static TextureAtlasSprite getIcon(LogisticsSolidBlock block) {
+        return getIcon(block, false);
     }
 
     /**
      * LP1: types with an active texture switch to {@code <name>_active} while the tile is active.
      */
-    public static TextureAtlasSprite getIcon(LogisticsSolidBlock.Type type, boolean active) {
-        boolean useActive = active && type.isHasActiveTexture();
-        Map<LogisticsSolidBlock.Type, TextureAtlasSprite> cache = useActive ? SPRITE_CACHE_ACTIVE : SPRITE_CACHE;
-        TextureAtlasSprite cached = cache.get(type);
+    public static TextureAtlasSprite getIcon(LogisticsSolidBlock block, boolean active) {
+        boolean useActive = active && block.hasActiveTexture();
+        Map<String, TextureAtlasSprite> cache = useActive ? SPRITE_CACHE_ACTIVE : SPRITE_CACHE;
+        String name = block.textureName() + (useActive ? "_active" : "");
+        TextureAtlasSprite cached = cache.get(name);
         if (cached != null) {
             return cached;
         }
-        String name = textureNameFor(type) + (useActive ? "_active" : "");
         TextureAtlasSprite sprite = Minecraft.getInstance()
             .getAtlasManager()
             .getAtlasOrThrow(AtlasIds.BLOCKS)
             .getSprite(LPConstants.rl("solid_block/" + name));
-        cache.put(type, sprite);
+        cache.put(name, sprite);
         return sprite;
     }
 
@@ -100,13 +86,12 @@ public class LogisticsSolidBlockRenderer<T extends BlockEntity> implements Block
      * type. LP's mesh emitter already worked against a {@code PoseStack.Pose}, so the callback
      * hands it straight through.</p>
      */
-    public static void submitSolid(LogisticsSolidBlock.Type type, PoseStack poseStack,
+    public static void submitSolid(LogisticsSolidBlock block, PoseStack poseStack,
         SubmitNodeCollector collector, int light, int overlay) {
-        TextureAtlasSprite icon = getIcon(type);
-        // The frame draws no cover plates in the inventory render; mirror that.
-        EnumSet<SolidBlockModelParts.CoverSide> plates = type == LogisticsSolidBlock.Type.LOGISTICS_BLOCK_FRAME
-            ? EnumSet.noneOf(SolidBlockModelParts.CoverSide.class)
-            : EnumSet.allOf(SolidBlockModelParts.CoverSide.class);
+        TextureAtlasSprite icon = getIcon(block);
+        EnumSet<SolidBlockModelParts.CoverSide> plates = block.hasCoverPlates()
+            ? EnumSet.allOf(SolidBlockModelParts.CoverSide.class)
+            : EnumSet.noneOf(SolidBlockModelParts.CoverSide.class);
         submit(poseStack, collector, icon, 0, plates, light, overlay);
     }
 
@@ -135,7 +120,7 @@ public class LogisticsSolidBlockRenderer<T extends BlockEntity> implements Block
     public void extractRenderState(T be, SolidBlockRenderState state, float partialTicks, Vec3 cameraPos,
         ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, breakProgress);
-        state.type = null;
+        state.block = null;
         state.icon = null;
         state.rotation = 0;
         state.plates.clear();
@@ -144,19 +129,18 @@ public class LogisticsSolidBlockRenderer<T extends BlockEntity> implements Block
         if (!(block instanceof LogisticsSolidBlock solidBlock)) {
             return;
         }
-        LogisticsSolidBlock.Type type = solidBlock.getType();
-        state.type = type;
+        state.block = solidBlock;
 
         if (!(be instanceof LogisticsSolidBlockEntity tile) || be.getLevel() == null) {
             // No tile to ask: fall back to the inventory look, all plates on.
-            state.icon = getIcon(type);
-            if (type != LogisticsSolidBlock.Type.LOGISTICS_BLOCK_FRAME) {
+            state.icon = getIcon(solidBlock);
+            if (solidBlock.hasCoverPlates()) {
                 state.plates.addAll(EnumSet.allOf(SolidBlockModelParts.CoverSide.class));
             }
             return;
         }
 
-        state.icon = getIcon(type, tile.isActive());
+        state.icon = getIcon(solidBlock, tile.isActive());
         int rotation = tile.getRotation();
         state.rotation = rotation < 0 || rotation > 3 ? 0 : rotation;
 
@@ -179,7 +163,7 @@ public class LogisticsSolidBlockRenderer<T extends BlockEntity> implements Block
     @Override
     public void submit(SolidBlockRenderState state, PoseStack poseStack, SubmitNodeCollector collector,
         CameraRenderState cameraState) {
-        if (state.type == null) {
+        if (state.block == null) {
             return;
         }
         submit(poseStack, collector, state.icon, state.rotation, state.plates,

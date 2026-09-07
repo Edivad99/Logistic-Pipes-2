@@ -7,16 +7,16 @@ import net.minecraft.world.entity.player.Player;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 public interface ISecurityStationManager {
 
-	void add(LogisticsSecurityTileEntity tile);
+	void add(LogisticsSecurityBlockEntity tile);
 
 	@Nullable
-	LogisticsSecurityTileEntity getStation(UUID id);
+	LogisticsSecurityBlockEntity getStation(UUID id);
 
-	void remove(LogisticsSecurityTileEntity tile);
+	void remove(LogisticsSecurityBlockEntity tile);
 
 	void deauthorizeUUID(UUID id);
 

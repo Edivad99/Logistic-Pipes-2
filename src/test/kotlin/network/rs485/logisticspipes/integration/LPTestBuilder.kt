@@ -40,7 +40,7 @@ package network.rs485.logisticspipes.integration
 import network.rs485.grow.ServerTickDispatcher
 import network.rs485.minecraft.BlockPlacer
 import network.rs485.minecraft.BlockPosSelector
-import logisticspipes.blocks.LogisticsSolidBlock
+import logisticspipes.world.level.block.LogisticsPowerJunctionBlock
 import logisticspipes.interfaces.routing.IRequestItems
 import logisticspipes.pipes.PipeItemsBasicLogistics
 import logisticspipes.pipes.PipeItemsProviderLogistics
@@ -73,7 +73,7 @@ import kotlinx.coroutines.time.withTimeoutOrNull
 fun BlockPosSelector.setupLogisticsPower(
     direction: Direction,
     amount: Int,
-): Pair<PipePlacer<PipeItemsBasicLogistics>, BlockPlacer<LogisticsSolidBlock>> =
+): Pair<PipePlacer<PipeItemsBasicLogistics>, BlockPlacer<LogisticsPowerJunctionBlock>> =
     resetOffsetAfter {
         val basicPipePlacer = PipePlacer(PipeItemsBasicLogistics(LPItems.PIPE_BASIC.get()))
             .also { direction(direction).place(it) }

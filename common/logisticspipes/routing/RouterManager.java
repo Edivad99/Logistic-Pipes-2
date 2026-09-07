@@ -30,7 +30,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import logisticspipes.interfaces.ISecurityStationManager;
 import logisticspipes.interfaces.routing.IChannelConnectionManager;
 import logisticspipes.network.to_client.security.SecurityAuthorizedListMessage;
@@ -42,7 +42,7 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 	private final ArrayList<ServerRouter> routersServer = new ArrayList<>();
 	private final Map<UUID, Integer> uuidMap = new HashMap<>();
 
-	private final WeakHashMap<LogisticsSecurityTileEntity, Void> security = new WeakHashMap<>();
+	private final WeakHashMap<LogisticsSecurityBlockEntity, Void> security = new WeakHashMap<>();
 	private List<String> authorized = new LinkedList<>();
 
 	private final ArrayList<ChannelConnection> channelConnectedPipes = new ArrayList<>();
@@ -188,17 +188,17 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 
 
 	@Override
-	public void add(LogisticsSecurityTileEntity tile) {
+	public void add(LogisticsSecurityBlockEntity tile) {
 		security.put(tile, null);
 		authorizeUUID(tile.getSecId());
 	}
 
 	@Override
-	public LogisticsSecurityTileEntity getStation(UUID id) {
+	public LogisticsSecurityBlockEntity getStation(UUID id) {
 		if (id == null) {
 			return null;
 		}
-		for (LogisticsSecurityTileEntity tile : security.keySet()) {
+		for (LogisticsSecurityBlockEntity tile : security.keySet()) {
 			if (id.equals(tile.getSecId())) {
 				return tile;
 			}
@@ -207,7 +207,7 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 	}
 
 	@Override
-	public void remove(LogisticsSecurityTileEntity tile) {
+	public void remove(LogisticsSecurityBlockEntity tile) {
 		security.remove(tile);
 		deauthorizeUUID(tile.getSecId());
 	}

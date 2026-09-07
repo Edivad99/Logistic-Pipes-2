@@ -13,8 +13,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 /**
  * The identity a security station goes by, for the GUI to display.
@@ -39,8 +39,8 @@ public record SecurityStationIdMessage(BlockPos pos, Optional<UUID> id) implemen
     }
 
     public static void handle(SecurityStationIdMessage message, IPayloadContext context) {
-        final LogisticsSecurityTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityTileEntity.class);
+        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (be != null) {
             message.id.ifPresent(be::setClientUUID);
         }

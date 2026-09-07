@@ -1,8 +1,7 @@
-package logisticspipes.blocks;
+package logisticspipes.world.level.block;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import net.minecraft.core.BlockPos;
@@ -27,34 +26,38 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 
-import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.powertile.LogisticsRFPowerProviderTileEntity;
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
 import logisticspipes.interfaces.IRotationProvider;
 import logisticspipes.interfaces.ITickable;
 import logisticspipes.world.level.block.entity.LogisticsCraftingTableBlockEntity;
-import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity;
-import logisticspipes.world.level.block.entity.LogisticsProgramCompilerBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
 
-public class LogisticsSolidBlock extends Block implements EntityBlock {
+public abstract class LogisticsSolidBlock extends Block implements EntityBlock {
 
     public static final IntegerProperty rotationProperty = IntegerProperty.create("rotation", 0, 3);
     public static final BooleanProperty active = BooleanProperty.create("active");
     public static final Map<Direction, BooleanProperty> connectionProperties = Arrays.stream(Direction.values())
         .collect(Collectors.toMap(key -> key, key -> BooleanProperty.create("connection_" + key.ordinal())));
 
-    @Getter
-    private final Type type;
-
-    public LogisticsSolidBlock(Type type, Properties properties) {
+    protected LogisticsSolidBlock(Properties properties) {
         // noOcclusion() is required so the BER receives a non-zero packedLight value.
         // Without it Minecraft treats the block as fully opaque, stores sky-light = 0
         // at its own position, and the BER renders pitch-black regardless of ambient light.
         super(properties.strength(6.0F).requiresCorrectToolForDrops().noOcclusion());
-        this.type = type;
+    }
+
+    /** The name under {@code textures/block/solid_block/} this block is drawn with. */
+    public abstract String textureName();
+
+    /** Whether an {@code _active} variant of that texture exists. */
+    public boolean hasActiveTexture() {
+        return false;
+    }
+
+    /** Whether the cover plates are drawn around the core. Only the frame goes without. */
+    public boolean hasCoverPlates() {
+        return true;
     }
 
     @Override
@@ -96,15 +99,6 @@ public class LogisticsSolidBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        if (!type.hasBlockEntity()) {
-            return null;
-        }
-        return type.createBlockEntity(pos, state);
-    }
-
-    @Nullable
-    @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
         BlockEntityType<T> type) {
         // Tick all ITickable solid block entities
@@ -117,18 +111,7 @@ public class LogisticsSolidBlock extends Block implements EntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        // Types with a BlockEntity are drawn by LogisticsSolidBlockRenderer — suppress the
-        // flat cube_all JSON model so only the 3D OBJ geometry is visible. Types without a
-        // TE (frame, BC power provider) fall back to the JSON model for now.
-        //
-        // INVISIBLE, not MODEL: 1.21.4 dropped ENTITYBLOCK_ANIMATED, and INVISIBLE is what
-        // BaseEntityBlock returns in its place. MODEL would put the cube back into the chunk
-        // mesh on top of the geometry the renderer draws, which is exactly what suppressing it
-        // is meant to avoid.
-        if (type.hasBlockEntity()) {
-            return RenderShape.INVISIBLE;
-        }
-        return super.getRenderShape(state);
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -137,48 +120,4 @@ public class LogisticsSolidBlock extends Block implements EntityBlock {
         builder.add(active);
         connectionProperties.values().forEach(builder::add);
     }
-
-    public enum Type {
-        LOGISTICS_POWER_JUNCTION(LogisticsPowerJunctionBlockEntity::new),
-        LOGISTICS_SECURITY_STATION(LogisticsSecurityTileEntity::new),
-        LOGISTICS_AUTOCRAFTING_TABLE(LogisticsCraftingTableBlockEntity::new),
-        LOGISTICS_FUZZYCRAFTING_TABLE(LogisticsCraftingTableBlockEntity::new),
-        LOGISTICS_STATISTICS_TABLE(LogisticsStatisticsTileEntity::new),
-
-        // Power Provider
-        LOGISTICS_RF_POWERPROVIDER(LogisticsRFPowerProviderTileEntity::new),
-
-        LOGISTICS_PROGRAM_COMPILER(LogisticsProgramCompilerBlockEntity::new),
-
-        LOGISTICS_BLOCK_FRAME(LogisticsFrameTileEntity::new);
-
-        @Nullable
-        private final BiFunction<BlockPos, BlockState, BlockEntity> beConstructor;
-        @Getter
-        final boolean hasActiveTexture;
-
-        Type(@Nullable BiFunction<BlockPos, BlockState, BlockEntity> beConstructor) {
-            this(beConstructor, false);
-        }
-
-        Type(@Nullable BiFunction<BlockPos, BlockState, BlockEntity> beConstructor, boolean hasActiveTexture) {
-            this.beConstructor = beConstructor;
-            this.hasActiveTexture = hasActiveTexture;
-        }
-
-        public boolean hasBlockEntity() {
-            return beConstructor != null;
-        }
-
-        public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-            if (!hasBlockEntity()) {
-                throw new UnsupportedOperationException("This block type has no tile entity!");
-            }
-            return beConstructor.apply(pos, state);
-        }
-    }
-
-    // TODO: getActualState (dynamic state per neighbor) removed in 1.20.1.
-    // Reimplement as a ticker that calls setChanged() + requestModelDataUpdate(),
-    // or encode connection state in blockstate updates via neighborChanged().
 }

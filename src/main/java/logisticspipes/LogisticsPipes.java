@@ -25,7 +25,6 @@ import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
-import logisticspipes.blocks.powertile.LogisticsRFPowerProviderTileEntity;
 import logisticspipes.client.ClientManager;
 import logisticspipes.commands.Confirmations;
 import logisticspipes.commands.LogisticsPipesCommand;
@@ -74,6 +73,7 @@ import logisticspipes.world.level.block.LPBlocks;
 import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 import logisticspipes.world.level.block.entity.LogisticsCraftingTableBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsRFPowerProviderBlockEntity;
 import network.rs485.grow.ServerTickDispatcher;
 import network.rs485.logisticspipes.config.ClientConfiguration;
 import network.rs485.logisticspipes.config.ServerConfigurationManager;
@@ -135,7 +135,7 @@ public class LogisticsPipes {
         event.registerBlockEntity(Capabilities.Energy.BLOCK,
             LPBlockEntityTypes.POWER_JUNCTION.get(), LogisticsPowerJunctionBlockEntity::getEnergyStorageCap);
         event.registerBlockEntity(Capabilities.Energy.BLOCK,
-            LPBlockEntityTypes.POWER_PROVIDER_RF.get(), LogisticsRFPowerProviderTileEntity::getEnergyStorageCap);
+            LPBlockEntityTypes.POWER_PROVIDER_RF.get(), LogisticsRFPowerProviderBlockEntity::getEnergyStorageCap);
     }
 
     private void handleCommonSetup(FMLCommonSetupEvent event) {

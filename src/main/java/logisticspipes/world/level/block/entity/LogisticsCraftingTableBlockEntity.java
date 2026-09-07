@@ -70,6 +70,17 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
     public ItemIdentifierInventory matrix = new ItemIdentifierInventory(9, "Crafting Matrix", 1);
     public ItemIdentifierInventory resultInv = new ItemIdentifierInventory(1, "Crafting Result", 1);
     public @Nullable ItemIdentifier targetType = null;
+    @Nullable
+    private RecipeHolder<CraftingRecipe> cache;
+    @Nullable
+    private ServerPlayer fake;
+    @Nullable
+    private PlayerIdentifier placedBy = null;
+
+    public LogisticsCraftingTableBlockEntity(BlockPos pos, BlockState state) {
+        super(LPBlockEntityTypes.CRAFTING_TABLE.get(), pos, state);
+        matrix.addListener(this);
+    }
 
     @Override
     public @Nullable CoreRoutedPipe getAttachedPipe() {
@@ -79,7 +90,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
         }
         for (Direction dir : Direction.values()) {
             final LogisticsTileGenericPipe container =
-                    TargetLookup.blockEntityAt(level, getBlockPos().relative(dir), LogisticsTileGenericPipe.class);
+                TargetLookup.blockEntityAt(level, getBlockPos().relative(dir), LogisticsTileGenericPipe.class);
             if (container != null && container.pipe instanceof PipeItemsCraftingLogistics pipe) {
                 return pipe;
             }
@@ -101,17 +112,6 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
     public void setTargetType(@Nullable ItemIdentifier targetType) {
         this.targetType = targetType;
     }
-    @Nullable
-    private RecipeHolder<CraftingRecipe> cache;
-    @Nullable
-    private ServerPlayer fake;
-    @Nullable
-    private PlayerIdentifier placedBy = null;
-
-    public LogisticsCraftingTableBlockEntity(BlockPos pos, BlockState state) {
-        super(LPBlockEntityTypes.CRAFTING_TABLE.get(), pos, state);
-        matrix.addListener(this);
-    }
 
     @Override
     public void cacheRecipe() {
@@ -127,7 +127,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
         for (RecipeHolder<CraftingRecipe> holder : CraftingUtil.getRecipeList()) {
             CraftingRecipe recipe = holder.value();
 
-            if (recipe.matches(craftingInput, getWorld())) {
+            if (recipe.matches(craftingInput, level)) {
                 list.add(holder);
             }
         }
@@ -166,7 +166,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
             targetType = null;
         }
         if (((targetType == null && oldTargetType != null) || (targetType != null && !targetType.equals(oldTargetType)))
-            && !guiWatcher.isEmpty() && !getWorld().isClientSide()) {
+            && !guiWatcher.isEmpty() && !level.isClientSide()) {
             guiWatcher.send(new CraftingTargetMessage(getBlockPos(), Optional.ofNullable(targetType)));
         }
     }
@@ -187,7 +187,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
         CraftingInput craftingInput = CraftingInput.of(3, 3, craftInv.getItems());
         List<RecipeHolder<CraftingRecipe>> list = new ArrayList<>();
         for (RecipeHolder<CraftingRecipe> r : CraftingUtil.getRecipeList()) {
-            if (r.value().matches(craftingInput, getWorld())) {
+            if (r.value().matches(craftingInput, level)) {
                 list.add(r);
             }
         }
@@ -236,7 +236,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
             }
         }
 
-        if (!guiWatcher.isEmpty() && !getWorld().isClientSide()) {
+        if (!guiWatcher.isEmpty() && !level.isClientSide()) {
             guiWatcher.send(new CraftingTargetMessage(getBlockPos(), Optional.ofNullable(targetType)));
         }
 
@@ -301,12 +301,12 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
         CraftingInput craftingInput = CraftingInput.of(3, 3, crafter.getItems());
         RecipeHolder<CraftingRecipe> recipe = cache;
         final ItemIdentifierStack outStack = Objects.requireNonNull(resultInv.getIDStackInSlot(0));
-        if (!recipe.value().matches(craftingInput, getWorld())) {
+        if (!recipe.value().matches(craftingInput, level)) {
             if (isFuzzy && outputFuzzy().nextSetBit(0) != -1) {
                 recipe = null;
                 for (RecipeHolder<CraftingRecipe> r : CraftingUtil.getRecipeList()) {
 
-                    if (r.value().matches(craftingInput, getWorld()) && FuzzyUtil.INSTANCE
+                    if (r.value().matches(craftingInput, level) && FuzzyUtil.INSTANCE
                         .fuzzyMatches(FuzzyUtil.INSTANCE.getter(outputFuzzy()), outStack.getItem(),
                             ItemIdentifier.get(r.value().assemble(craftingInput)))) {
                         recipe = r;
@@ -354,7 +354,7 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
         craftingInput = CraftingInput.of(3, 3, crafter.getItems());
         result = recipe.value().assemble(craftingInput);
         if (fake == null) {
-            fake = FakePlayers.of(getWorld());
+            fake = FakePlayers.of(level);
         }
         result = result.copy();
         result.onCraftedBy(fake, result.getCount());

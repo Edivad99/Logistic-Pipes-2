@@ -10,11 +10,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.interfaces.routing.IChannelManager;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.network.to_client.channel.ChannelManagerPopupMessage;
 import logisticspipes.proxy.SimpleServiceLocator;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 /**
  * Asks for the channels this player may manage; answered with {@link ChannelManagerPopupMessage}.
@@ -35,8 +35,8 @@ public record RequestChannelManagerMessage(BlockPos pos) implements CustomPacket
     }
 
     public static void handle(RequestChannelManagerMessage message, IPayloadContext context) {
-        final LogisticsSecurityTileEntity station =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityTileEntity.class);
+        final LogisticsSecurityBlockEntity station =
+                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (station == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }

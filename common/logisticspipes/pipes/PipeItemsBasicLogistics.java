@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import logisticspipes.modules.LogisticsModule.ModulePositionType;
 import logisticspipes.modules.ModuleItemSink;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
@@ -36,7 +36,7 @@ public class PipeItemsBasicLogistics extends CoreRoutedPipe {
 				if (super.canPipeConnect(tile, dir)) {
 					return true;
 				}
-				if (tile instanceof LogisticsSecurityTileEntity) {
+				if (tile instanceof LogisticsSecurityBlockEntity) {
 					Direction ori = OrientationsUtil.getOrientationOfTilewithTile(container, tile);
 					return ori != null && ori != Direction.DOWN && ori != Direction.UP;
 				}
@@ -82,7 +82,7 @@ public class PipeItemsBasicLogistics extends CoreRoutedPipe {
 		if (tilePipe == null || !container.canPipeConnect(tilePipe, ori)) {
 			return false;
 		}
-		return tilePipe instanceof LogisticsSecurityTileEntity;
+		return tilePipe instanceof LogisticsSecurityBlockEntity;
 	}
 
 	@Override

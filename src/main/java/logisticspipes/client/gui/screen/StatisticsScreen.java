@@ -18,18 +18,20 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Items;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
 import logisticspipes.blocks.stats.TrackingTask;
 import logisticspipes.client.gui.popup.GuiAddTracking;
 import logisticspipes.network.to_server.block.RequestRunningCraftingTasksMessage;
 import logisticspipes.network.to_server.block.RequestTrackableItemsMessage;
 import logisticspipes.network.to_server.block.TrackItemMessage;
+import logisticspipes.world.item.LPItems;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.ItemDisplay;
 import logisticspipes.utils.gui.LPGuiGraphics;
@@ -38,6 +40,7 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 import logisticspipes.utils.math.Vec2;
 import logisticspipes.utils.string.StringUtils;
 import logisticspipes.world.inventory.StatisticsMenu;
+import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 import network.rs485.logisticspipes.util.TextUtil;
 
 public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
@@ -46,7 +49,7 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
     private final TabTracker tabTracker = new TabTracker();
     private final TabCrafting tabCrafting = new TabCrafting();
     private final List<StatisticsTab> tabs = Arrays.asList(tabTracker, tabCrafting);
-    private final LogisticsStatisticsTileEntity tile;
+    private final LogisticsStatisticsBlockEntity tile;
     private int currentTab;
     private int prevMouseDragX;
     private int prevMouseDragY;
@@ -120,10 +123,10 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
                 topPos + 35, 0.0f, false, true, true, false, true);
         }
 
-        // First Tab
+        // Tab icons, one per selector pane: the stats sheet, then the crafting table the second
+        // tab reports on.
         LPGuiGraphics.drawStatsBackground(guiGraphics, leftPos + 6, topPos + 3);
-
-        // Second tab background: item icons drawn lazily by TabCrafting.draw()
+        guiGraphics.item(new ItemStack(Items.CRAFTING_TABLE), leftPos + 31, topPos + 3);
     }
 
     @Override

@@ -9,9 +9,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
-import logisticspipes.blocks.LogisticsSecurityTileEntity.SecurityPermissions;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.SecurityPermissions;
 
 /**
  * The security station's per-player switches, as edited in its popup.
@@ -42,8 +42,8 @@ public record SaveSecuritySettingsMessage(BlockPos pos, String playerName, Secur
         if (message.playerName.isEmpty()) {
             return;
         }
-        final LogisticsSecurityTileEntity station =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityTileEntity.class);
+        final LogisticsSecurityBlockEntity station =
+                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (station != null) {
             station.saveSecuritySettings(message.playerName, message.permissions);
         }

@@ -9,9 +9,9 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
-import logisticspipes.blocks.LogisticsSecurityTileEntity.SecurityFlag;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.SecurityFlag;
 
 /**
  * The player ticked one of the security station's checkboxes.
@@ -38,8 +38,8 @@ public record ToggleSecurityStationFlagMessage(BlockPos pos, SecurityFlag flag) 
     }
 
     public static void handle(ToggleSecurityStationFlagMessage message, IPayloadContext context) {
-        final LogisticsSecurityTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityTileEntity.class);
+        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (be != null) {
             be.toggleFlag(message.flag);
         }

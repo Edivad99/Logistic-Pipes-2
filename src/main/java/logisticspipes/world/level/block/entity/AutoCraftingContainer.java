@@ -5,13 +5,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.PlayerIdentifier;
 
 public class AutoCraftingContainer extends TransientCraftingContainer {
 
-    public final PlayerIdentifier placedByPlayer;
+    private final @Nullable PlayerIdentifier placedByPlayer;
 
-    public AutoCraftingContainer(PlayerIdentifier playerID) {
+    public AutoCraftingContainer(@Nullable PlayerIdentifier playerID) {
         super(new AbstractContainerMenu(null, 0) {
 
             @Override

@@ -7,13 +7,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.LogisticsSolidBlock;
 import logisticspipes.client.model.solid.SolidBlockModelParts;
+import logisticspipes.world.level.block.LogisticsSolidBlock;
 
 public class SolidBlockRenderState extends BlockEntityRenderState {
 
     /** Null when the block is not an LP solid block, or the models are not loaded yet. */
-    public LogisticsSolidBlock.@Nullable Type type;
+    public @Nullable LogisticsSolidBlock block;
 
     @Nullable
     public TextureAtlasSprite icon;

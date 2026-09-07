@@ -15,7 +15,6 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
-import logisticspipes.blocks.stats.LogisticsStatisticsTileEntity;
 import logisticspipes.blocks.stats.TrackingTask;
 import logisticspipes.network.to_server.block.RequestTrackableItemsMessage;
 import logisticspipes.network.to_server.block.TrackItemMessage;
@@ -28,16 +27,17 @@ import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.utils.gui.SubGuiScreen;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
+import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 import network.rs485.logisticspipes.util.TextUtil;
 
 public class GuiAddTracking extends SubGuiScreen implements IItemSearch {
 
     private static final String PREFIX = "gui.networkstatistics.add.";
-    private final LogisticsStatisticsTileEntity tile;
+    private final LogisticsStatisticsBlockEntity tile;
     ItemDisplay itemDisplay;
     InputBar search;
 
-    public GuiAddTracking(LogisticsStatisticsTileEntity tile) {
+    public GuiAddTracking(LogisticsStatisticsBlockEntity tile) {
         super(160, 200, 0, 0);
         this.tile = tile;
     }

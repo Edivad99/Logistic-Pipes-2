@@ -10,9 +10,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.LogisticsSecurityTileEntity;
 import logisticspipes.client.gui.screen.SecurityStationScreen;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 /**
  * The state of the security station's two checkboxes.
@@ -45,8 +45,8 @@ public record SecurityStationFlagsMessage(BlockPos pos, boolean allowCC, boolean
     private static final class Client {
 
         static void handle(SecurityStationFlagsMessage message, IPayloadContext context) {
-            final LogisticsSecurityTileEntity be = TargetLookup.blockEntityAt(
-                    context.player(), message.pos, LogisticsSecurityTileEntity.class);
+            final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+                    context.player(), message.pos, LogisticsSecurityBlockEntity.class);
             if (be == null) {
                 return;
             }

@@ -9,8 +9,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.blocks.powertile.LogisticsPowerProviderTileEntity;
 import logisticspipes.network.TargetLookup;
+import logisticspipes.world.level.block.entity.LogisticsPowerProviderBlockEntity;
 
 /**
  * How much power a provider is holding, for its GUI and its HUD.
@@ -35,8 +35,8 @@ public record PowerProviderLevelMessage(BlockPos pos, double stored) implements 
     }
 
     public static void handle(PowerProviderLevelMessage message, IPayloadContext context) {
-        final LogisticsPowerProviderTileEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsPowerProviderTileEntity.class);
+        final LogisticsPowerProviderBlockEntity be = TargetLookup.blockEntityAt(
+                context.player(), message.pos, LogisticsPowerProviderBlockEntity.class);
         if (be != null) {
             be.handlePowerPacket(message.stored);
         }
