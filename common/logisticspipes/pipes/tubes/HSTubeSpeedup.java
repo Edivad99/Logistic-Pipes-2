@@ -101,7 +101,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public void addCollisionBoxesToList(List<AABB> arraylist, AABB axisalignedbb) {
+	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
 		DoubleCoordinates pos = getLPPosition();
 		DoubleCoordinates posMin = new DoubleCoordinates(LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS);
 		DoubleCoordinates posMax = new DoubleCoordinates(LPConstants.PIPE_MAX_POS, LPConstants.PIPE_MAX_POS, -3);
@@ -177,8 +177,8 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public Direction getExitForInput(Direction commingFrom) {
-		return commingFrom.getOpposite();
+	public @Nullable Direction getExitForInput(Direction comingFrom) {
+		return comingFrom.getOpposite();
 	}
 
 	@Override

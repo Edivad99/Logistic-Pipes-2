@@ -72,7 +72,7 @@ public class HSTubeLine extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public void addCollisionBoxesToList(List<AABB> arraylist, AABB axisalignedbb) {
+	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
 		DoubleCoordinates pos = getLPPosition();
 		LPPositionSet<DoubleCoordinates> set = new LPPositionSet<>(DoubleCoordinates.class);
 		set.addFrom(TubeCollision.completeBox(TubeModels.Kind.LINE, orientation));
@@ -123,8 +123,8 @@ public class HSTubeLine extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public Direction getExitForInput(Direction commingFrom) {
-		return commingFrom.getOpposite();
+	public @Nullable Direction getExitForInput(Direction comingFrom) {
+		return comingFrom.getOpposite();
 	}
 
 	@Override

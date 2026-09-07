@@ -9,6 +9,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
@@ -30,10 +32,9 @@ public abstract class CoreMultiBlockPipe extends CoreUnroutedPipe {
 		GAIN_B
 	}
 
-	private static List<Pair<SubBlockTypeForShare, SubBlockTypeForShare>> allowedCombinations;
+	private static final List<Pair<SubBlockTypeForShare, SubBlockTypeForShare>> allowedCombinations = new ArrayList<>();
 
 	static {
-		allowedCombinations = new ArrayList<>();
 		allowedCombinations.add(new Pair<>(SubBlockTypeForShare.S_CURVE_A, SubBlockTypeForShare.S_CURVE_B));
 		allowedCombinations.add(new Pair<>(SubBlockTypeForShare.S_CURVE_A, SubBlockTypeForShare.S_CURVE_A));
 		allowedCombinations.add(new Pair<>(SubBlockTypeForShare.CURVE_OUT_A, SubBlockTypeForShare.CURVE_INNER_A));
@@ -84,7 +85,7 @@ public abstract class CoreMultiBlockPipe extends CoreUnroutedPipe {
 
 	public abstract LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getRotatedSubBlocks();
 
-	public abstract void addCollisionBoxesToList(List<AABB> arraylist, AABB axisalignedbb);
+	public abstract void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb);
 
 	public abstract AABB getCompleteBox();
 
@@ -100,7 +101,7 @@ public abstract class CoreMultiBlockPipe extends CoreUnroutedPipe {
 		return (float) (getItemRenderYaw(getPipeLength(), item) - getItemRenderYaw(0.0F, item));
 	}
 
-	public abstract Direction getExitForInput(Direction commingFrom);
+	public abstract @Nullable Direction getExitForInput(Direction comingFrom);
 
 	public abstract BlockEntity getConnectedEndTile(Direction output);
 

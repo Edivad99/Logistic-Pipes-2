@@ -82,7 +82,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public void addCollisionBoxesToList(List<AABB> arraylist, AABB axisalignedbb) {
+	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
 		if (boxes == null || boxes.isEmpty()) {
 			boxes = new ArrayList<>();
 			double x = getX();
@@ -213,11 +213,11 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public Direction getExitForInput(Direction commingFrom) {
-		if (orientation.dir.getOpposite() == commingFrom) {
+	public @Nullable Direction getExitForInput(Direction comingFrom) {
+		if (orientation.dir.getOpposite() == comingFrom) {
 			return orientation.dir;
 		}
-		if (orientation.dir == commingFrom) {
+		if (orientation.dir == comingFrom) {
 			return orientation.dir.getOpposite();
 		}
 		return null;

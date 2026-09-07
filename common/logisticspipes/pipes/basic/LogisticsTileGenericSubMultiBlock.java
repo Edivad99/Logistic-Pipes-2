@@ -40,7 +40,6 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 	private List<CoreMultiBlockPipe.SubBlockTypeForShare> subTypes = new ArrayList<>();
 	private TileBuffer[] tileBuffer;
 
-	@Deprecated
 	public LogisticsTileGenericSubMultiBlock(BlockPos blockPos, BlockState blockState) {
 		super(LPBlockEntityTypes.SUB_PIPE.get(), blockPos, blockState);
 	}
