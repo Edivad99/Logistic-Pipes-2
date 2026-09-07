@@ -26,14 +26,14 @@ import logisticspipes.utils.tuples.Pair;
 
 public class ClientRouter implements IRouter {
 
-	private final int xCoord;
-	private final int yCoord;
-	private final int zCoord;
+	private final UUID id;
+	private final Identifier dimension;
+    private final BlockPos pos;
 
-	public ClientRouter(UUID id, Identifier dimension, int xCoord, int yCoord, int zCoord) {
-		this.xCoord = xCoord;
-		this.yCoord = yCoord;
-		this.zCoord = zCoord;
+	public ClientRouter(@Nullable UUID id, Identifier dimension, BlockPos pos) {
+		this.id = id != null ? id : UUID.randomUUID();
+		this.dimension = dimension;
+		this.pos = pos;
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class ClientRouter implements IRouter {
 		if (level == null) {
 			return null;
 		}
-        if (level.getBlockEntity(new BlockPos(xCoord, yCoord, zCoord)) instanceof LogisticsTileGenericPipe pipe) {
+        if (level.getBlockEntity(this.pos) instanceof LogisticsTileGenericPipe pipe) {
             if (pipe.pipe instanceof CoreRoutedPipe coreRoutedPipe) {
                 return coreRoutedPipe;
             }
@@ -109,26 +109,26 @@ public class ClientRouter implements IRouter {
 
 	@Override
 	public boolean isInDim(Identifier dimension) {
-		return true;
+		return this.dimension.equals(dimension);
 	}
 
 	@Override
-	public boolean isAt(Identifier dimension, int xCoord, int yCoord, int zCoord) {
-		return this.xCoord == xCoord && this.yCoord == yCoord && this.zCoord == zCoord;
+	public boolean isAt(Identifier dimension, BlockPos pos) {
+		return this.dimension.equals(dimension) && this.pos.equals(pos);
 	}
 
 	@Override
 	public DoubleCoordinates getLPPosition() {
-		return new DoubleCoordinates(xCoord, yCoord, zCoord);
+		return new DoubleCoordinates(this.pos);
 	}
 
 	@Override
 	public UUID getId() {
-		return UUID.randomUUID();
+		return id;
 	}
 
 	@Override
-	public LogisticsModule getLogisticsModule() {
+	public @Nullable LogisticsModule getLogisticsModule() {
 		CoreRoutedPipe pipe = getPipe();
 		if (pipe == null) {
 			return null;
@@ -177,7 +177,7 @@ public class ClientRouter implements IRouter {
 
 	@Override
 	public String toString() {
-		return String.format("ServerRouter: {UUID: %s, AT: (%d, %d, %d)}", getId(), xCoord, yCoord, zCoord);
+		return String.format("ClientRouter: {UUID: %s, AT: (%s)}", getId(), pos);
 	}
 
 	@Override

@@ -39,6 +39,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
@@ -110,11 +111,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	protected final Lock routingTableUpdateWriteLock = routingTableUpdateLock.writeLock();
 	protected final int simpleID;
 	@Getter
-	private final int xCoord;
-	@Getter
-	private final int yCoord;
-	@Getter
-	private final int zCoord;
+	private final BlockPos pos;
 	// these are maps, not hashMaps because they are unmodifiable Collections to avoid concurrentModification exceptions.
 	public Map<CoreRoutedPipe, ExitRoute> adjacent = new HashMap<>();
 	public Map<ServerRouter, ExitRoute> adjacentRouter = new HashMap<>();
@@ -134,7 +131,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	private EnumSet<Direction> routedExits = EnumSet.noneOf(Direction.class);
 	private EnumMap<Direction, Integer> subPowerExits = new EnumMap<>(Direction.class);
 	private final Identifier dimension;
-	private WeakReference<CoreRoutedPipe> myPipeCache = null;
+	private @Nullable WeakReference<CoreRoutedPipe> myPipeCache = null;
 	private final LinkedList<Pair<Integer, IRouterQueuedTask>> queue = new LinkedList<>();
 	int connectionNeedsChecking = 0;
 	private final List<DoubleCoordinates> causedBy = new LinkedList<>();
@@ -165,16 +162,14 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	private Set<List<ITileEntityChangeListener>> listenedPipes = new HashSet<>();
 	private Set<LPTileEntityObject> oldTouchedPipes = new HashSet<>();
 
-	public ServerRouter(UUID globalID, Identifier dimension, int xCoord, int yCoord, int zCoord) {
+	public ServerRouter(@Nullable UUID globalID, Identifier dimension, BlockPos pos) {
 		if (globalID != null) {
 			id = globalID;
 		} else {
 			id = UUID.randomUUID();
 		}
 		this.dimension = dimension;
-		this.xCoord = xCoord;
-		this.yCoord = yCoord;
-		this.zCoord = zCoord;
+        this.pos = pos;
 		clearPipeCache();
 		myLsa = new LSA();
 		myLsa.neighboursWithMetric = new HashMap<>();
@@ -183,11 +178,11 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		try {
 			simpleID = ServerRouter.claimSimpleID();
 			if (ServerRouter.SharedLSADatabase.length <= simpleID) {
-				int newlength = ((int) (simpleID * 1.5)) + 1;
-				LSA[] new_SharedLSADatabase = new LSA[newlength];
+				int newLength = ((int) (simpleID * 1.5)) + 1;
+				LSA[] new_SharedLSADatabase = new LSA[newLength];
 				System.arraycopy(ServerRouter.SharedLSADatabase, 0, new_SharedLSADatabase, 0, ServerRouter.SharedLSADatabase.length);
 				ServerRouter.SharedLSADatabase = new_SharedLSADatabase;
-				int[] new_lastLSAVersion = new int[newlength];
+				int[] new_lastLSAVersion = new int[newLength];
 				System.arraycopy(ServerRouter.lastLsaVersion, 0, new_lastLSAVersion, 0, ServerRouter.lastLsaVersion.length);
 				ServerRouter.lastLsaVersion = new_lastLSAVersion;
 			}
@@ -301,13 +296,13 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	}
 
 	@Override
-	public boolean isAt(Identifier dimension, int xCoord, int yCoord, int zCoord) {
-		return this.dimension.equals(dimension) && this.xCoord == xCoord && this.yCoord == yCoord && this.zCoord == zCoord;
+	public boolean isAt(Identifier dimension, BlockPos pos) {
+		return this.dimension.equals(dimension) && this.pos.equals(pos);
 	}
 
 	@Override
 	public DoubleCoordinates getLPPosition() {
-		return new DoubleCoordinates(xCoord, yCoord, zCoord);
+		return new DoubleCoordinates(this.pos);
 	}
 
 	@Override
@@ -319,41 +314,26 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		Level level = null;
 		var server = ServerLifecycleHooks.getCurrentServer();
 		if (server != null) {
-			level = server.getLevel(ResourceKey.create(
-					Registries.DIMENSION, dimension));
+			level = server.getLevel(ResourceKey.create(Registries.DIMENSION, dimension));
 		}
 		if (level == null) {
 			return null;
 		}
-		BlockPos pos = new BlockPos(xCoord, yCoord, zCoord);
-		// Deliberately not world.getBlockEntity(pos): that goes through getChunkAt(), which
-		// *loads* the chunk at FULL status if it is not resident. A router must never resurrect
-		// a chunk just to look at its own pipe, and the case that made this fatal is chunk
-		// unload itself: LevelChunk.clearAllBlockEntities -> LogisticsTileGenericPipe.setRemoved
-		// -> CoreRoutedPipe.invalidate -> ServerRouter.destroy -> the adjacency rescan lands
-		// back here and re-requests the very chunk being unloaded. That registers a
-		// TicketType.UNKNOWN ticket from inside ChunkMap.processUnloads — after the tick's
-		// purgeStaleTickets — so the ticket can never expire, the chunk never becomes
-		// isReadyForSaving(), and scheduleUnload busy-retries forever: the game hangs on
-		// "Saving world" burning a core. A chunk that is not loaded has no pipe to return.
+		// Deliberately not level.getBlockEntity(pos)
 		LevelChunk chunk = level.getChunkSource().getChunkNow(
 				SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
 		if (chunk == null) {
 			return null;
 		}
-		BlockEntity tile = chunk.getBlockEntity(pos);
 
-		if (!(tile instanceof LogisticsTileGenericPipe)) {
-			return null;
-		}
-		LogisticsTileGenericPipe pipe = (LogisticsTileGenericPipe) tile;
-		if (!(pipe.pipe instanceof CoreRoutedPipe)) {
-			return null;
-		}
-		myPipeCache = new WeakReference<>((CoreRoutedPipe) pipe.pipe);
-
-		return (CoreRoutedPipe) pipe.pipe;
-	}
+        if (chunk.getBlockEntity(pos) instanceof LogisticsTileGenericPipe pipe) {
+            if (pipe.pipe instanceof CoreRoutedPipe coreRoutedPipe) {
+                myPipeCache = new WeakReference<>(coreRoutedPipe);
+                return coreRoutedPipe;
+            }
+        }
+        return null;
+    }
 
 	@Override
 	public @Nullable CoreRoutedPipe getCachedPipe() {
@@ -1157,7 +1137,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 
 	@Override
 	public boolean hasRoute(int id, boolean active, ItemIdentifier type) {
-		if (!SimpleServiceLocator.routerManager.isRouterUnsafe(id, false)) {
+		if (!SimpleServiceLocator.routerManager.isRouterUnsafe(id)) {
 			return false;
 		}
 		ensureLatestRoutingTable();
@@ -1189,7 +1169,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	}
 
 	@Override
-	public LogisticsModule getLogisticsModule() {
+	public @Nullable LogisticsModule getLogisticsModule() {
 		CoreRoutedPipe pipe = getPipe();
 		if (pipe == null) {
 			return null;
@@ -1321,7 +1301,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 
 	@Override
 	public String toString() {
-		return String.format("ServerRouter: {ID: %d, UUID: %s, AT: (%s, %d, %d, %d), Version: %d), Destroyed: %s}", simpleID, getId(), dimension, xCoord, yCoord, zCoord, lsaVersion, isDestroyed);
+		return String.format("ServerRouter: {ID: %d, UUID: %s, AT: (%s, %s), Version: %d), Destroyed: %s}", simpleID, getId(), dimension, pos, lsaVersion, isDestroyed);
 	}
 
 	@Override

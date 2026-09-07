@@ -91,7 +91,7 @@ public class LogisticsHUDRenderer {
 
 	private void refreshList(double x, double y, double z) {
 		ArrayList<Pair<Double, IHeadUpDisplayRendererProvider>> newList = new ArrayList<>();
-		for (IRouter router : SimpleServiceLocator.routerManager.getRouters()) {
+		for (IRouter router : SimpleServiceLocator.clientRouterManager.getRouters()) {
 			if (router == null) {
 				continue;
 			}

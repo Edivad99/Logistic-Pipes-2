@@ -237,7 +237,7 @@ public class LogisticsEventListener {
             }
         }
 		if (event.getLevel().isClientSide()) {
-			SimpleServiceLocator.routerManager.clearClientRouters();
+			SimpleServiceLocator.clientRouterManager.clear();
 			LogisticsHUDRenderer.instance().clear();
 		}
 	}

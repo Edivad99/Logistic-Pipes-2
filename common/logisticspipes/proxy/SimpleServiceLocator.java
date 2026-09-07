@@ -20,6 +20,7 @@ import logisticspipes.proxy.progressprovider.MachineProgressProvider;
 import logisticspipes.proxy.specialconnection.SpecialPipeConnection;
 import logisticspipes.proxy.specialconnection.SpecialTileConnection;
 import logisticspipes.proxy.specialtankhandler.SpecialTankHandler;
+import logisticspipes.routing.ClientRouterManager;
 import logisticspipes.routing.RouterManager;
 import logisticspipes.routing.pathfinder.PipeInformationManager;
 import logisticspipes.utils.InventoryUtilFactory;
@@ -42,6 +43,7 @@ public final class SimpleServiceLocator {
 	}
 
 	public static RouterManager routerManager;
+	public static ClientRouterManager clientRouterManager = new ClientRouterManager();
 
 	public static void setRouterManager(final RouterManager routerMngr) {
 		SimpleServiceLocator.routerManager = routerMngr;

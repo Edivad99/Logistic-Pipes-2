@@ -80,14 +80,13 @@ object LogisticsManager {
                     !routersToExclude.contains(it.destination.simpleID) &&
                     it.containsFlag(PipeRoutingConnectionType.canRouteTo) &&
                     it.filters.none { filter -> filter.blockRouting() || filter.isBlocked == filter.isFilteredItem(itemid) } &&
-                    it.destination.logisticsModule != null &&
-                    it.destination.logisticsModule.receivePassive() &&
+                    it.destination.logisticsModule?.receivePassive() == true &&
                     it.destination.pipe != null &&
                     it.destination.pipe!!.isEnabled &&
                     (sourcePipe == null || !it.destination.pipe!!.isOnSameContainer(sourcePipe))
         }.sorted().forEachOrdered {
             val reply: SinkReply?
-            val module: LogisticsModule = it.destination.logisticsModule
+            val module: LogisticsModule = it.destination.logisticsModule ?: return@forEachOrdered
             reply = when {
                 result == null -> module.sinksItem(stack, itemid, -1, 0, canBeDefault, true, true)
                 result!!.maxNumberOfItems < 0 -> null

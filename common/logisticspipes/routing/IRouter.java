@@ -10,6 +10,7 @@ package logisticspipes.routing;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 
@@ -50,11 +51,11 @@ public interface IRouter {
 
 	boolean isInDim(Identifier dimension);
 
-	boolean isAt(Identifier dimension, int xCoord, int yCoord, int zCoord);
+	boolean isAt(Identifier dimension, BlockPos pos);
 
 	UUID getId();
 
-	LogisticsModule getLogisticsModule();
+	@Nullable LogisticsModule getLogisticsModule();
 
 	void clearPipeCache();
 

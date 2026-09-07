@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -34,12 +35,10 @@ import logisticspipes.interfaces.ISecurityStationManager;
 import logisticspipes.interfaces.routing.IChannelConnectionManager;
 import logisticspipes.network.to_client.security.SecurityAuthorizedListMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
-import logisticspipes.proxy.MainProxy;
 import logisticspipes.routing.channels.ChannelConnection;
 
 public class RouterManager implements IChannelConnectionManager, ISecurityStationManager {
 
-	private final ArrayList<IRouter> routersClient = new ArrayList<>();
 	private final ArrayList<ServerRouter> routersServer = new ArrayList<>();
 	private final Map<UUID, Integer> uuidMap = new HashMap<>();
 
@@ -50,12 +49,10 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 
 	@Nullable
 	public IRouter getRouter(int id) {
-		// MainProxy.isClient() checks Thread.currentThread() — fast, no world needed
-		if (id <= 0 || MainProxy.isClient()) {
+		if (id <= 0 || id >= routersServer.size()) {
 			return null;
-		} else {
-			return routersServer.get(id);
 		}
+		return routersServer.get(id);
 	}
 
 	@Nullable
@@ -79,50 +76,36 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 	}
 
 	public void removeRouter(int id) {
-		// MainProxy.isClient() checks Thread.currentThread() — fast, no world needed.
-		// During world unload the list may already have been cleared; tolerate out-of-range ids.
-		if (!MainProxy.isClient() && id >= 0 && id < routersServer.size()) {
+		if (id >= 0 && id < routersServer.size()) {
 			routersServer.set(id, null);
 		}
 	}
 
-	public IRouter getOrCreateRouter(UUID UUid, Level level, int xCoord, int yCoord, int zCoord) {
+	public IRouter getOrCreateRouter(UUID UUid, Level level, BlockPos pos) {
 		IRouter r;
 		int id = getIDforUUID(UUid);
 		if (id > 0) {
 			getRouter(id);
 		}
 		Identifier dimId = level.dimension().identifier();
-		if (MainProxy.isClient(level)) {
-			synchronized (routersClient) {
-				for (IRouter r2 : routersClient) {
-					if (r2.isAt(dimId, xCoord, yCoord, zCoord)) {
-						return r2;
-					}
+		synchronized (routersServer) {
+			for (IRouter r2 : routersServer) {
+				if (r2 != null && r2.isAt(dimId, pos)) {
+					return r2;
 				}
-				r = new ClientRouter(UUid, dimId, xCoord, yCoord, zCoord);
-				routersClient.add(r);
 			}
-		} else {
-			synchronized (routersServer) {
-				for (IRouter r2 : routersServer) {
-					if (r2 != null && r2.isAt(dimId, xCoord, yCoord, zCoord)) {
-						return r2;
-					}
-				}
-				final ServerRouter serverRouter = new ServerRouter(UUid, dimId, xCoord, yCoord, zCoord);
+			final ServerRouter serverRouter = new ServerRouter(UUid, dimId, pos);
 
-				int rId = serverRouter.getSimpleID();
-				if (routersServer.size() <= rId) {
-					routersServer.ensureCapacity(rId + 1);
-					while (routersServer.size() <= rId) {
-						routersServer.add(null);
-					}
+			int rId = serverRouter.getSimpleID();
+			if (routersServer.size() <= rId) {
+				routersServer.ensureCapacity(rId + 1);
+				while (routersServer.size() <= rId) {
+					routersServer.add(null);
 				}
-				routersServer.set(rId, serverRouter);
-				uuidMap.put(serverRouter.getId(), serverRouter.getSimpleID());
-				r = serverRouter;
 			}
+			routersServer.set(rId, serverRouter);
+			uuidMap.put(serverRouter.getId(), serverRouter.getSimpleID());
+			r = serverRouter;
 		}
 		return r;
 	}
@@ -136,20 +119,8 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 	 *            false for server, true for client.
 	 * @return is this a router for the side.
 	 */
-	public boolean isRouterUnsafe(int id, boolean side) {
-		if (side) {
-			return true;
-		} else {
-			return routersServer.get(id) != null;
-		}
-	}
-
-	public List<IRouter> getRouters() {
-		if (MainProxy.isClient()) {
-			return Collections.unmodifiableList(routersClient);
-		} else {
-			return Collections.unmodifiableList(routersServer);
-		}
+	public boolean isRouterUnsafe(int id) {
+		return routersServer.get(id) != null;
 	}
 
 	@Override
@@ -161,7 +132,7 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 
 	@Override
 	public boolean addChannelConnection(UUID ident, IRouter router) {
-		if (MainProxy.isClient()) {
+		if (!(router instanceof ServerRouter)) {
 			return false;
 		}
 		int routerSimpleID = router.getSimpleID();
@@ -196,7 +167,7 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 
 	@Override
 	public void removeChannelConnection(IRouter router) {
-		if (MainProxy.isClient()) {
+		if (!(router instanceof ServerRouter)) {
 			return;
 		}
 		Optional<ChannelConnection> channel = channelConnectedPipes.stream()
@@ -215,11 +186,6 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 		security.clear();
 	}
 
-	public void clearClientRouters() {
-		synchronized (routersClient) {
-			routersClient.clear();
-		}
-	}
 
 	@Override
 	public void add(LogisticsSecurityTileEntity tile) {
