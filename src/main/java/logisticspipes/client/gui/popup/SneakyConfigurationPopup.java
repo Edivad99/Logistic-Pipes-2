@@ -6,10 +6,13 @@ import java.util.Optional;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import logisticspipes.network.to_server.pipe.SetSneakyUpgradeSideMessage;
+import logisticspipes.pipes.upgrades.SneakyUpgradeConfig;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.LPGuiGraphics;
@@ -45,6 +48,14 @@ public class SneakyConfigurationPopup extends SubGuiScreen {
         };
         configDisplay.init();
         configDisplay.renderNeighbours = true;
+
+        // The upgrade stores one side, the face of the inventory it pulls from, and it applies to
+        // whichever neighbour is used -- so it is marked on all of them rather than on a chosen one.
+        Direction configured = SneakyUpgradeConfig.getSide(pos.getItem());
+        if (configured != null) {
+            config.forEach(coords -> configDisplay.highlight(
+                new BlockPos(coords.getXInt(), coords.getYInt(), coords.getZInt()), configured));
+        }
 
         SmallGuiButton cancel = new SmallGuiButton(0, right - 106, bottom - 26, 100, 20, "Cancel");
         cancel.setPressListener(b -> exitGui());

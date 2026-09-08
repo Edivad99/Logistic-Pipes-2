@@ -5,11 +5,13 @@ import java.util.Optional;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.BlockPos;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import logisticspipes.network.to_server.pipe.ToggleDisconnectionUpgradeSideMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
+import logisticspipes.pipes.upgrades.ConnectionUpgradeConfig;
 import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.utils.gui.SubGuiScreen;
@@ -43,6 +45,11 @@ public class DisconnectionConfigurationPopup extends SubGuiScreen {
         };
         configDisplay.init();
         configDisplay.renderNeighbours = true;
+
+        // Unlike the sneaky upgrade this one holds a set of sides, all of them on the pipe itself.
+        BlockPos pipePos = new BlockPos(pipe.getX(), pipe.getY(), pipe.getZ());
+        ConnectionUpgradeConfig.getSides(pos.getItem())
+            .forEach(side -> configDisplay.highlight(pipePos, side));
 
         SmallGuiButton okBtn = new SmallGuiButton(0, right - 106, bottom - 26, 100, 20, "OK");
         okBtn.setPressListener(b -> exitGui());

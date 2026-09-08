@@ -84,7 +84,7 @@ public class SneakyUpgradeConfig implements IConfigPipeUpgrade {
 	}
 
 	@Nullable
-	public Direction getSide(ItemStack stack) {
+	public static Direction getSide(ItemStack stack) {
 		if (stack.isEmpty()) return null;
 		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 		String sideString = tag.getStringOr(SIDE_KEY, "");

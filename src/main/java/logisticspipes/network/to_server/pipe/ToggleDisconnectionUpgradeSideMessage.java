@@ -50,7 +50,7 @@ public record ToggleDisconnectionUpgradeSideMessage(int slot, Optional<Direction
         final String sideName = ConnectionUpgradeConfig.Sides.getNameForDirection(message.side.orElse(null));
         stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, customData -> {
             final var tag = customData.copyTag();
-            tag.putBoolean(sideName, tag.getBooleanOr(sideName, false));
+            tag.putBoolean(sideName, !tag.getBooleanOr(sideName, false));
             return CustomData.of(tag);
         });
         slot.set(stack);

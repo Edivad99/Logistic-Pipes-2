@@ -145,7 +145,7 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 			IPipeUpgrade upgrade = upgrades[i];
 			if (upgrade instanceof SneakyUpgradeConfig && sneakyOrientation == null) {
 				ItemStack stack = inv.getItem(i);
-				sneakyOrientation = ((SneakyUpgradeConfig) upgrade).getSide(stack);
+				sneakyOrientation = SneakyUpgradeConfig.getSide(stack);
 			} else if (upgrade instanceof AdvancedSatelliteUpgrade) {
 				isAdvancedCrafter = true;
 			} else if (upgrade instanceof FuzzyUpgrade) {

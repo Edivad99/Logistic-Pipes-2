@@ -41,12 +41,14 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
 import org.joml.Vector4d;
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.client.renderer.ImmediateSubmitCollector;
 import logisticspipes.client.renderer.LPRenderTypes;
 import logisticspipes.client.renderer.pip.SideConfigSceneState;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.textures.Textures;
+import logisticspipes.utils.Color;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.LPPositionSet;
@@ -56,6 +58,8 @@ public abstract class SideConfigDisplay {
 	private static final float FOV = 30.0f;
 	private static final float Z_NEAR = 0.05f;
 	private static final float Z_FAR = 50.0f;
+
+    private static final int HIGHLIGHT_TINT = Color.getValue(Color.RED);
 
 	private static final Vector3dc SCENE_CENTER = new Vector3d(0, 0, 0);
 	private static final Vector3dc SCENE_UP = new Vector3d(0, 1, 0);
@@ -92,7 +96,7 @@ public abstract class SideConfigDisplay {
 	 * level always comes from the player, so it holds the client type directly rather than casting
 	 * at the one call site that needs it.
 	 */
-	private ClientLevel level;
+	private final @Nullable ClientLevel level;
 
 	private final Vector3d origin = new Vector3d();
 	private final Vector3d eye = new Vector3d();
@@ -108,7 +112,10 @@ public abstract class SideConfigDisplay {
 	private List<DoubleCoordinates> configurables = new ArrayList<>();
 	private List<DoubleCoordinates> neighbours = new ArrayList<>();
 
-	private SelectedFace selection;
+	private @Nullable SelectedFace selection;
+
+	/** Faces already configured when the popup opened, drawn alongside whatever a click picks. */
+	private final List<HighlightedFace> highlights = new ArrayList<>();
 
 	public boolean renderNeighbours = true;
 
@@ -165,6 +172,17 @@ public abstract class SideConfigDisplay {
 
 	public abstract void handleSelection(SelectedFace selection);
 
+	/** A face the selection marker is painted on. */
+	public record HighlightedFace(BlockPos pos, Direction face) {}
+
+	/**
+	 * Marks a face as already configured, so opening the popup shows what the upgrade is set to
+	 * rather than an empty scene. Independent of {@link #getSelection}, which is what a click picks.
+	 */
+	public void highlight(BlockPos pos, Direction face) {
+		highlights.add(new HighlightedFace(pos, face));
+	}
+
 	public void init() {
 		initTime = System.currentTimeMillis();
 	}
@@ -217,7 +235,6 @@ public abstract class SideConfigDisplay {
 			});
 		}
 	}
-
 
 	public static HitResult getClosestHit(Vec3 origin, Collection<HitResult> candidates) {
 		double minLengthSquared = Double.POSITIVE_INFINITY;
@@ -303,13 +320,14 @@ public abstract class SideConfigDisplay {
 	}
 
 	private void renderSelection(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource) {
-		// The highlight sprite is one of the textures still waiting to be registered on 26.1, so the
-		// face a click selected simply goes unmarked rather than taking the scene down with it.
-		if (selection == null || !(Textures.LOGISTICS_SIDE_SELECTION instanceof TextureAtlasSprite icon)) {
+		// TextureRegistrar binds the sprite during the block atlas stitch; before that has run, or
+		// on a resource pack without it, the marked faces simply go unmarked.
+		if (!(Textures.LOGISTICS_SIDE_SELECTION instanceof TextureAtlasSprite icon)) {
 			return;
 		}
-		List<FaceCorner> corners = faceCorners(selection.config.getBlockPos(), selection.face,
-				icon.getU0(), icon.getU1(), icon.getV0(), icon.getV1());
+		if (highlights.isEmpty() && selection == null) {
+			return;
+		}
 
 		// The block atlas, the translucent blend and the disabled depth test are all carried by
 		// the render type. 1.21.6 removed every RenderType.gui* factory, so what used to be
@@ -317,13 +335,23 @@ public abstract class SideConfigDisplay {
 		// depth test off, so the highlight still paints over the blocks behind it.
 		RenderType renderType = LPRenderTypes.TEXTURED_OVERLAY.apply(RenderUtil.BLOCK_TEX);
 		VertexConsumer buf = bufferSource.getBuffer(renderType);
-		for (FaceCorner c : corners) {
+		for (HighlightedFace marked : highlights) {
+			drawFace(buf, poseStack, marked.pos(), marked.face(), icon);
+		}
+		if (selection != null) {
+			drawFace(buf, poseStack, selection.config.getBlockPos(), selection.face, icon);
+		}
+		bufferSource.endBatch(renderType);
+	}
+
+	private void drawFace(VertexConsumer buf, PoseStack poseStack, BlockPos pos, Direction face,
+			TextureAtlasSprite icon) {
+		for (FaceCorner c : faceCorners(pos, face, icon.getU0(), icon.getU1(), icon.getV0(), icon.getV1())) {
 			buf.addVertex(poseStack.last(), (float) (c.x() - origin.x), (float) (c.y() - origin.y),
 					(float) (c.z() - origin.z))
 				.setUv(c.u(), c.v())
-				.setColor(0xFFFFFFFF);
+				.setColor(HIGHLIGHT_TINT);
 		}
-		bufferSource.endBatch(renderType);
 	}
 
 	/** One corner of the highlighted face: a world position and the atlas UV that goes on it. */

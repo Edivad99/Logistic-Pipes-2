@@ -113,6 +113,8 @@ public class TextureRegistrar {
 				Textures.LPpipeIconProvider.setIcon(e.index, sprite);
 			}
 		}
+		Textures.LOGISTICS_SIDE_SELECTION = event.getAtlas().getSprite(LPConstants.rl("blocks/sideselection"));
+
 		NEW_PIPE_SPRITES.clear();
 		for (Entry e : NEW_ENTRIES) {
 			TextureAtlasSprite sprite = event.getAtlas().getSprite(e.rl);

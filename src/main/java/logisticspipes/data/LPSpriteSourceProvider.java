@@ -34,6 +34,7 @@ public class LPSpriteSourceProvider extends SpriteSourceProvider {
             .addSource(singleFile("blocks/pipes/innerbox"))
             .addSource(singleFile("blocks/pipes/glass_texture_center"))
             .addSource(singleFile("blocks/blank_pipe"))
+            .addSource(singleFile("blocks/sideselection"))
 
             .addSource(singleFile("items/eastereggs/guipsp"))
             .addSource(singleFile("items/liquids/empty"))

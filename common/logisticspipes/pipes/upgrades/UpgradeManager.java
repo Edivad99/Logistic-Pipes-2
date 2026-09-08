@@ -164,11 +164,11 @@ public class UpgradeManager
 		for (int i = 0; i < upgrades.length; i++) {
 			IPipeUpgrade upgrade = upgrades[i];
 			if (upgrade instanceof SneakyUpgradeConfig && sneakyOrientation == null && !isCombinedSneakyUpgrade) {
-				sneakyOrientation = ((SneakyUpgradeConfig) upgrade).getSide(getInv().getItem(i));
+				sneakyOrientation = SneakyUpgradeConfig.getSide(getInv().getItem(i));
 			} else if (upgrade instanceof SpeedUpgrade) {
 				speedUpgradeCount += inv.getItem(i).getCount();
 			} else if (upgrade instanceof ConnectionUpgradeConfig) {
-				((ConnectionUpgradeConfig) upgrade).getSides(getInv().getItem(i)).forEach(disconnectedSides::add);
+				ConnectionUpgradeConfig.getSides(getInv().getItem(i)).forEach(disconnectedSides::add);
 			} else if (upgrade instanceof AdvancedSatelliteUpgrade) {
 				isAdvancedCrafter = true;
 			} else if (upgrade instanceof FuzzyUpgrade) {
@@ -231,7 +231,7 @@ public class UpgradeManager
 			IPipeUpgrade upgrade = sneakyUpgrades[i];
 			if (upgrade instanceof SneakyUpgradeConfig) {
 				ItemStack stack = sneakyInv.getItem(i);
-				combinedSneakyOrientation[i] = ((SneakyUpgradeConfig) upgrade).getSide(stack);
+				combinedSneakyOrientation[i] = SneakyUpgradeConfig.getSide(stack);
 			}
 			if (upgrade instanceof IConfigPipeUpgrade) {
 				guiUpgrades[i + 9] = true;
