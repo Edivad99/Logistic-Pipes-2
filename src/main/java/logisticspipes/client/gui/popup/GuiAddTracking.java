@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
-import logisticspipes.blocks.stats.TrackingTask;
+import logisticspipes.util.TrackingTask;
 import logisticspipes.network.to_server.block.RequestTrackableItemsMessage;
 import logisticspipes.network.to_server.block.TrackItemMessage;
 import logisticspipes.utils.gui.IItemSearch;
@@ -66,9 +66,7 @@ public class GuiAddTracking extends SubGuiScreen implements IItemSearch {
             } else {
                 ClientPacketDistributor.sendToServer(new TrackItemMessage(
                     tile.getBlockPos(), itemDisplay.getSelectedItem().getItem(), true));
-                TrackingTask task = new TrackingTask();
-                task.item = itemDisplay.getSelectedItem().getItem();
-                tile.tasks.add(task);
+                tile.tasks.add(new TrackingTask(itemDisplay.getSelectedItem().getItem()));
                 exitGui();
             }
         });

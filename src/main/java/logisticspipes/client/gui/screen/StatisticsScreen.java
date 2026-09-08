@@ -4,7 +4,6 @@ import java.io.IOException;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.pow;
-import static java.lang.Math.round;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,7 +25,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.stats.TrackingTask;
+import logisticspipes.util.TrackingTask;
 import logisticspipes.client.gui.popup.GuiAddTracking;
 import logisticspipes.network.to_server.block.RequestRunningCraftingTasksMessage;
 import logisticspipes.network.to_server.block.RequestTrackableItemsMessage;
@@ -36,6 +35,7 @@ import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.ItemDisplay;
 import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
+import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
 import logisticspipes.utils.math.Vec2;
 import logisticspipes.utils.string.StringUtils;
@@ -171,6 +171,11 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
         tabTracker.handlePacket(items);
     }
 
+    /** The tracked items or their recorded history changed while the screen was open. */
+    public void handleTrackingTasks() {
+        tabTracker.updateItemList();
+    }
+
     public void handleRunningCraftingTasks(List<ItemIdentifierStack> tasks) {
         tabCrafting.handlePacket(tasks);
     }
@@ -203,6 +208,12 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
 
     private class TabTracker implements StatisticsTab {
 
+        private static final int GRAPH_WIDTH = 150;
+        private static final int GRAPH_HEIGHT = 80;
+        /** Where the value zero sits before panning, as an offset from the horizontal axis. */
+        private static final float Y_VIEWPORT_CENTER = 40;
+        private static final float X_VIEWPORT_CENTER = 75;
+
         private final List<AbstractButton> BUTTONS = new ArrayList<>();
         private final List<String> graphTexts = new ArrayList<>();
         private final List<int[]> graphTextPos = new ArrayList<>();
@@ -216,6 +227,9 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
         private boolean isDraggingYBar = false;
         // Buffered text labels populated in draw(), drawn in drawForegroundLayer()
         private String taskNameLabel = null;
+        // What the vertical scale was fitted to, so panning and zooming survive a redraw
+        private @Nullable ItemIdentifier fittedItem;
+        private long fittedMax = -1;
 
         @Override
         public void init() {
@@ -265,6 +279,12 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
                 TrackingTask task = getSelectedTask();
 
                 if (task != null) {
+                    long recordedMax = maxRecorded(task);
+                    if (task.item != fittedItem || recordedMax > fittedMax) {
+                        fitVertically(recordedMax);
+                        fittedItem = task.item;
+                        fittedMax = recordedMax;
+                    }
                     LPGuiGraphics.drawSlotBackground(guiGraphics, leftPos + 10, topPos + 99);
                     guiGraphics.item(task.item.makeNormalStack(1), leftPos + 12, topPos + 101);
                     taskNameLabel = StringUtils.getWithMaxWidth(task.item.getFriendlyName(), 136, font);
@@ -272,17 +292,14 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
                     int xOrigo = xCenter - 72;
                     int yOrigo = yCenter + 90;
 
-                    drawLine(guiGraphics, xOrigo, yOrigo, xOrigo + 150, yOrigo, Color.DARKER_GREY);
-                    drawLine(guiGraphics, xOrigo, yOrigo, xOrigo, yOrigo - 80, Color.DARKER_GREY);
+                    drawLine(guiGraphics, xOrigo, yOrigo, xOrigo + GRAPH_WIDTH, yOrigo, Color.DARKER_GREY);
+                    drawLine(guiGraphics, xOrigo, yOrigo, xOrigo, yOrigo - GRAPH_HEIGHT, Color.DARKER_GREY);
 
-                    drawLine(guiGraphics, xOrigo - 4, yOrigo - 80, xOrigo, yOrigo - 80, Color.DARKER_GREY);
+                    drawLine(guiGraphics, xOrigo - 4, yOrigo - GRAPH_HEIGHT, xOrigo, yOrigo - GRAPH_HEIGHT, Color.DARKER_GREY);
 
-                    drawLine(guiGraphics, xOrigo + 150, yOrigo - 1, xOrigo + 150, yOrigo + 4, Color.DARKER_GREY);
+                    drawLine(guiGraphics, xOrigo + GRAPH_WIDTH, yOrigo - 1, xOrigo + GRAPH_WIDTH, yOrigo + 4, Color.DARKER_GREY);
 
                     long[] data = getTaskData(task);
-
-                    float xViewportCenter = 75;
-                    float yViewportCenter = 40;
 
                     Set<Integer> labeledYPixels = new HashSet<>();
                     int rightLimit = 2; // we want to draw one more graph part past the right edge
@@ -303,26 +320,26 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
 
                         x += xViewportOffset;
                         x *= xViewportScale;
-                        x += xViewportCenter;
+                        x += X_VIEWPORT_CENTER;
                         prevX += xViewportOffset;
                         prevX *= xViewportScale;
-                        prevX += xViewportCenter;
+                        prevX += X_VIEWPORT_CENTER;
 
                         y -= yViewportOffset;
                         y *= yViewportScale;
-                        y += yViewportCenter;
+                        y += Y_VIEWPORT_CENTER;
                         prevY -= yViewportOffset;
                         prevY *= yViewportScale;
-                        prevY += yViewportCenter;
+                        prevY += Y_VIEWPORT_CENTER;
 
-                        if (x <= 150) {
+                        if (x <= GRAPH_WIDTH) {
                             rightLimit = 2;
                         }
                         if (x < 0) {
                             continue;
                         }
 
-                        if (x <= 150) {
+                        if (x <= GRAPH_WIDTH) {
                             int interval = max(1, (int) (40 / xViewportScale) + 1);
                             if (i % interval == 0) {
                                 String s = formatTime(data.length - i - 1);
@@ -336,7 +353,7 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
                             }
                         }
 
-                        if (y > 0 && y < 80) {
+                        if (y >= 0 && y < GRAPH_HEIGHT) {
                             drawLine(guiGraphics, xOrigo - 4, yOrigo - (int) y, xOrigo, yOrigo - (int) y,
                                 Color.DARKER_GREY);
                             int yPixel = (int) y;
@@ -373,6 +390,28 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
             return null;
         }
 
+        /**
+         * Scales the graph so the largest amount recorded sits just below the top of the frame.
+         *
+         * <p>A fixed scale puts anything past five items off screen, which leaves the line where
+         * it cannot be seen until the view is dragged back to it by hand. Refitting happens when
+         * another item is picked and when a new high arrives, so a zoom set by hand survives the
+         * samples in between.
+         */
+        private long maxRecorded(TrackingTask task) {
+            long max = 0;
+            for (long amount : task.amountRecorded) {
+                max = max(max, amount);
+            }
+            return max;
+        }
+
+        private void fitVertically(long max) {
+            yViewportScale = max > 0 ? GRAPH_HEIGHT * 0.875f / max : 15;
+            // Places the zero line on the horizontal axis rather than halfway up the frame.
+            yViewportOffset = Y_VIEWPORT_CENTER / yViewportScale;
+        }
+
         private long[] getTaskData(TrackingTask task) {
             long[] data = new long[task.amountRecorded.length];
             System.arraycopy(task.amountRecorded, task.arrayPos, data, 0, task.amountRecorded.length - task.arrayPos);
@@ -406,21 +445,16 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
         public void handleClick(int mouseX, int mouseY, int mouseButton) {
             if (itemDisplay.handleClick(mouseX, mouseY, mouseButton)) {
                 xViewportOffset = max(-1439, min(xViewportOffset, 0));
-                TrackingTask task = getSelectedTask();
-                if (task != null) {
-                    long[] data = getTaskData(task);
-                    yViewportOffset = data[round(-xViewportOffset)];
-                }
             }
 
             int xOrigo = xCenter - 72;
             int yOrigo = yCenter + 90;
             isDraggingGraph =
-                mouseButton == 0 && mouseX > xOrigo && mouseX < xOrigo + 150 && mouseY < yOrigo && mouseY > yOrigo - 80;
-            isDraggingXBar = mouseButton == 0 && mouseX > xOrigo && mouseX < xOrigo + 150 && mouseY < yOrigo + 16
+                mouseButton == 0 && mouseX > xOrigo && mouseX < xOrigo + GRAPH_WIDTH && mouseY < yOrigo && mouseY > yOrigo - GRAPH_HEIGHT;
+            isDraggingXBar = mouseButton == 0 && mouseX > xOrigo && mouseX < xOrigo + GRAPH_WIDTH && mouseY < yOrigo + 16
                 && mouseY > yOrigo + 4;
             isDraggingYBar = mouseButton == 0 && mouseX > xOrigo - 16 && mouseX < xOrigo - 4 && mouseY < yOrigo
-                && mouseY > yOrigo - 80;
+                && mouseY > yOrigo - GRAPH_HEIGHT;
         }
 
         @Override
@@ -464,16 +498,16 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
                 Vec2 min = new Vec2(left.x, min(left.y, right.y));
                 Vec2 max = new Vec2(right.x, max(left.y, right.y));
 
-                if (!(min.x < 150 && max.x > 0 && min.y < 80 && max.y > 0)) {
+                if (!(min.x < GRAPH_WIDTH && max.x > 0 && min.y < GRAPH_HEIGHT && max.y > 0)) {
                     return;
                 }
             }
 
             // clamp to the edges of the graph
             right = clampCorner(left, right, Vec2.ORIGIN, true);
-            right = clampCorner(left, right, new Vec2(150, 80), false);
+            right = clampCorner(left, right, new Vec2(GRAPH_WIDTH, GRAPH_HEIGHT), false);
             left = clampCorner(right, left, Vec2.ORIGIN, true);
-            left = clampCorner(right, left, new Vec2(150, 80), false);
+            left = clampCorner(right, left, new Vec2(GRAPH_WIDTH, GRAPH_HEIGHT), false);
 
             drawLine(guiGraphics, xOrigo + (int) left.x, yOrigo - (int) left.y, xOrigo + (int) right.x,
                 yOrigo - (int) right.y, Color.RED);
@@ -483,12 +517,12 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
                 radius = 1;
             }
 
-            if (prevX >= 0 && prevX <= 150 && prevY >= 0 && prevY <= 80) {
+            if (prevX >= 0 && prevX <= GRAPH_WIDTH && prevY >= 0 && prevY <= GRAPH_HEIGHT) {
                 guiGraphics.fill(xOrigo + prevX - radius + 1, yOrigo - prevY - radius + 1, xOrigo + prevX + radius,
                     yOrigo - prevY + radius, Color.getValue(Color.BLACK));
             }
 
-            if (x >= 0 && x <= 150 && y >= 0 && y <= 80) {
+            if (x >= 0 && x <= GRAPH_WIDTH && y >= 0 && y <= GRAPH_HEIGHT) {
                 guiGraphics.fill(xOrigo + x - radius + 1, yOrigo - y - radius + 1, xOrigo + x + radius,
                     yOrigo - y + radius, Color.getValue(Color.BLACK));
             }

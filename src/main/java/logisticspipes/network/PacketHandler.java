@@ -17,6 +17,7 @@ import logisticspipes.network.to_client.block.PowerJunctionLevelMessage;
 import logisticspipes.network.to_client.block.PowerProviderLevelMessage;
 import logisticspipes.network.to_client.block.RunningCraftingTasksMessage;
 import logisticspipes.network.to_client.block.TrackableItemsMessage;
+import logisticspipes.network.to_client.block.TrackingTasksMessage;
 import logisticspipes.network.to_client.channel.ChannelInformationMessage;
 import logisticspipes.network.to_client.channel.ChannelManagerPopupMessage;
 import logisticspipes.network.to_client.channel.ChannelSelectPopupMessage;
@@ -417,6 +418,8 @@ public class PacketHandler {
                 RunningCraftingTasksMessage.STREAM_CODEC, RunningCraftingTasksMessage::handle);
         registrar.playToClient(TrackableItemsMessage.TYPE,
                 TrackableItemsMessage.STREAM_CODEC, TrackableItemsMessage::handle);
+        registrar.playToClient(TrackingTasksMessage.TYPE,
+                TrackingTasksMessage.STREAM_CODEC, TrackingTasksMessage::handle);
         registrar.playToClient(ChestContentMessage.TYPE,
                 ChestContentMessage.STREAM_CODEC, ChestContentMessage::handle);
         registrar.playToClient(InvSysConContentMessage.TYPE,

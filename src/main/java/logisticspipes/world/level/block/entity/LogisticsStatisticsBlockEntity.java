@@ -16,18 +16,23 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.blocks.stats.TrackingTask;
+import logisticspipes.util.TrackingTask;
 import logisticspipes.interfaces.IBlockEntityMenuProvider;
+import logisticspipes.interfaces.IScreenOpenController;
+import logisticspipes.network.to_client.block.TrackingTasksMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
+import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.world.inventory.StatisticsMenu;
 import network.rs485.logisticspipes.connection.NeighborTileEntity;
 import network.rs485.logisticspipes.world.WorldCoordinatesWrapper;
 
-public class LogisticsStatisticsBlockEntity extends LogisticsSolidBlockEntity implements IBlockEntityMenuProvider {
+public class LogisticsStatisticsBlockEntity extends LogisticsSolidBlockEntity
+    implements IBlockEntityMenuProvider, IScreenOpenController {
 
     public List<TrackingTask> tasks = new ArrayList<>();
+    private final PlayerCollectionList guiListener = new PlayerCollectionList();
     private int tickCount;
     private @Nullable CoreRoutedPipe cachedConnectedPipe;
 
@@ -44,13 +49,33 @@ public class LogisticsStatisticsBlockEntity extends LogisticsSolidBlockEntity im
     public void setTracked(ItemIdentifier item, boolean tracked) {
         if (tracked) {
             if (tasks.stream().noneMatch(task -> task.item.equals(item))) {
-                final TrackingTask task = new TrackingTask();
-                task.item = item;
+                final TrackingTask task = new TrackingTask(item);
+                final CoreRoutedPipe pipe = getConnectedPipe();
+                if (pipe != null) {
+                    // Otherwise the graph reads zero until the next sample, a minute away.
+                    task.record(pipe);
+                }
                 tasks.add(task);
             }
         } else {
             tasks.removeIf(task -> task.item.equals(item));
         }
+        setChanged();
+        updateClients();
+    }
+
+    private void updateClients() {
+        guiListener.send(new TrackingTasksMessage(getBlockPos(), tasks));
+    }
+
+    @Override
+    public void screenOpenedByPlayer(Player player) {
+        guiListener.add(player);
+    }
+
+    @Override
+    public void screenClosedByPlayer(Player player) {
+        guiListener.remove(player);
     }
 
     @Override
@@ -65,31 +90,30 @@ public class LogisticsStatisticsBlockEntity extends LogisticsSolidBlockEntity im
             return;
         }
         tickCount++;
-        if (getConnectedPipe() == null) {
+        if (tickCount % TrackingTask.TICKS_PER_SAMPLE != 0 || tasks.isEmpty()) {
+            return;
+        }
+        final CoreRoutedPipe pipe = getConnectedPipe();
+        if (pipe == null) {
             return;
         }
         for (TrackingTask task : tasks) {
-            task.tick(tickCount, getConnectedPipe());
+            task.record(pipe);
         }
+        setChanged();
+        updateClients();
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        for (ValueInput entry : input.childrenListOrEmpty("Tasks")) {
-            TrackingTask task = new TrackingTask();
-            task.deserialize(entry);
-            tasks.add(task);
-        }
+        tasks.addAll(input.read("Tasks", TrackingTask.CODEC.listOf()).orElse(List.of()));
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        ValueOutput.ValueOutputList list = output.childrenList("Tasks");
-        for (TrackingTask task : tasks) {
-            task.serialize(list.addChild());
-        }
+        output.store("Tasks", TrackingTask.CODEC.listOf(), tasks);
     }
 
     @Override
