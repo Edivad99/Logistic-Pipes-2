@@ -27,6 +27,7 @@ import net.minecraft.world.item.SignItem;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -57,7 +58,6 @@ import static logisticspipes.LPConstants.PIPE_MAX_POS;
 import static logisticspipes.LPConstants.PIPE_MIN_POS;
 import logisticspipes.LogisticsPipes;
 import logisticspipes.interfaces.IRotationProvider;
-import logisticspipes.interfaces.ITickable;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.pipes.basic.ltgpmodcompat.LPMicroblockBlock;
@@ -66,6 +66,7 @@ import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.util.DoubleCoordinatesType;
 import logisticspipes.utils.LPPositionSet;
 import logisticspipes.world.item.ItemLogisticsPipe;
+import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 import logisticspipes.world.level.block.LPBlocks;
 
 // BlockStateContainer removed — use StateDefinition.Builder in createBlockStateDefinition()
@@ -150,16 +151,10 @@ public class LogisticsBlockGenericPipe extends LPMicroblockBlock {
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-			Level level,
-			BlockState state,
-			BlockEntityType<T> type) {
-		// Without a ticker registered on the owning block, BlockEntity.tick equivalents
-		// (here: LogisticsTileGenericPipe.update via ITickable) are never called and the
-		// entire mod — routing graph updates, module logic, item transport — sits idle.
-		return (lvl, pos, st, be) -> {
-			if (be instanceof ITickable tickable) tickable.update();
-		};
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+        BlockEntityType<T> type) {
+        return BaseEntityBlock.createTickerHelper(type, LPBlockEntityTypes.PIPE.get(),
+            level.isClientSide() ? LogisticsTileGenericPipe::clientTick : LogisticsTileGenericPipe::serverTick);
 	}
 
 	@Override

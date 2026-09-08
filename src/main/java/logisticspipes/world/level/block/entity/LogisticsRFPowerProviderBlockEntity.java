@@ -117,15 +117,13 @@ public class LogisticsRFPowerProviderBlockEntity extends LogisticsPowerProviderB
     }
 
     @Override
-    public void update() {
-        super.update();
-        if (!level.isClientSide()) {
-            if (freeSpace() > 0) {
-                if (LPConfigs.COMMON.POWER_SOURCE_MODE.get().equals(LPConfigs.PowerSourceMode.ADJACENT)) {
-                    pullFromAdjacentStorage();
-                } else {
-                    addStoredRF();
-                }
+    public void serverTick() {
+        super.serverTick();
+        if (freeSpace() > 0) {
+            if (LPConfigs.COMMON.POWER_SOURCE_MODE.get().equals(LPConfigs.PowerSourceMode.ADJACENT)) {
+                pullFromAdjacentStorage();
+            } else {
+                addStoredRF();
             }
         }
     }

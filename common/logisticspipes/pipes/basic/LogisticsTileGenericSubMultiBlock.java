@@ -14,6 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import com.mojang.serialization.Codec;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.interfaces.ITickable;
 import logisticspipes.network.UpdateTagPayload;
 import logisticspipes.network.to_client.block.MultiBlockPositionMessage;
 import logisticspipes.routing.pathfinder.IPipeInformationProvider;
@@ -33,7 +33,7 @@ import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.TileBuffer;
 import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 
-public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements ISubMultiBlockPipeInformationProvider, ITickable {
+public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements ISubMultiBlockPipeInformationProvider {
 
 	private Set<DoubleCoordinates> mainPipePos = new HashSet<>();
 	private List<LogisticsTileGenericPipe> mainPipe;
@@ -127,14 +127,10 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 		return Collections.unmodifiableList(subTypes);
 	}
 
-	@Override
-	public void update() {
-		if (getLevel().isClientSide()) {
-			return;
-		}
-		List<LogisticsTileGenericPipe> pipes = getMainPipe();
-		for (LogisticsTileGenericPipe pipe : pipes) {
-			pipe.subMultiBlock.add(new DoubleCoordinates(this));
+	public static void serverTick(Level level, BlockPos pos, BlockState state,
+        LogisticsTileGenericSubMultiBlock blockEntity) {
+		for (LogisticsTileGenericPipe pipe : blockEntity.getMainPipe()) {
+			pipe.subMultiBlock.add(new DoubleCoordinates(blockEntity));
 		}
 	}
 

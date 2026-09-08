@@ -13,6 +13,7 @@ import org.jspecify.annotations.Nullable;
  * MCMultiPart integration (IMultipartContainer) was removed for 1.20.1 — no 1.20.1 port exists.
  * Previously implemented mcmultipart.api.container.IMultipartContainer.
  */
+@Deprecated(forRemoval = true)
 public abstract class LPMicroblockTileEntity extends BlockEntity {
 
 	public LPMicroblockTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -24,9 +25,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.interfaces.ITickable;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.world.level.block.LPBlocks;
+import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 
 public class LogisticsBlockGenericSubMultiBlock extends Block implements EntityBlock {
 
@@ -95,9 +96,9 @@ public class LogisticsBlockGenericSubMultiBlock extends Block implements EntityB
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return (lvl, pos, st, be) -> {
-			if (be instanceof ITickable) ((ITickable) be).update();
-		};
+		return level.isClientSide() ? null
+            : BaseEntityBlock.createTickerHelper(type, LPBlockEntityTypes.SUB_PIPE.get(),
+            LogisticsTileGenericSubMultiBlock::serverTick);
 	}
 
 	@Override

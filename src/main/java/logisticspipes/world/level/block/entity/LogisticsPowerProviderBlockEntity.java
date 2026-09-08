@@ -81,15 +81,32 @@ public abstract class LogisticsPowerProviderBlockEntity extends LogisticsSolidBl
     }
 
     @Override
-    public void update() {
-        super.update();
-        pauseRequesting = false;
+    public void clientTick() {
+        super.clientTick();
         if (!init) {
-            if (level.isClientSide()) {
-                LogisticsHUDRenderer.instance().add(this);
-            }
+            LogisticsHUDRenderer.instance().add(this);
             init = true;
         }
+        distributePower();
+    }
+
+    @Override
+    public void serverTick() {
+        super.serverTick();
+        distributePower();
+        if (internalStorage != lastUpdateStorage) {
+            updateClients();
+            lastUpdateStorage = internalStorage;
+        }
+    }
+
+    /**
+     * Runs on both sides, as it did before the tick was split in two: {@code orders} is only ever
+     * filled server side, so on the client the requested total is zero and this comes down to
+     * clearing an empty map.
+     */
+    private void distributePower() {
+        pauseRequesting = false;
         double globalRequest = orders.values().stream().reduce(Double::sum).orElse(0.0);
         if (globalRequest > 0) {
             final double fullfillRatio = Math.min(1, Math.min(internalStorage, getMaxProvidePerTick()) / globalRequest);
@@ -134,12 +151,6 @@ public abstract class LogisticsPowerProviderBlockEntity extends LogisticsSolidBl
             }
         }
         orders.clear();
-        if (!level.isClientSide()) {
-            if (internalStorage != lastUpdateStorage) {
-                updateClients();
-                lastUpdateStorage = internalStorage;
-            }
-        }
     }
 
     protected abstract void handlePower(CoreRoutedPipe pipe, double toSend);

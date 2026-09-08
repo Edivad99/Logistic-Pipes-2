@@ -24,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -77,7 +78,7 @@ import network.rs485.logisticspipes.connection.PipeInventoryConnectionChecker;
 public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		implements ILPPipeTile, IPipeInformationProvider, /*IItemDuct,*/
 		// ManagedPeripheral, Environment, SidedEnvironment — added at runtime by @ModDependentInterface ASM when OC is present
-		ILogicControllerTile, ILPTEInformation, logisticspipes.interfaces.ITickable {
+		ILogicControllerTile, ILPTEInformation {
 
 	// ILPTEInformation — previously injected by ASM, now implemented directly
     @Nullable
@@ -195,17 +196,39 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		}
 	}
 
-	// Ticked via BlockEntityTicker in LogisticsBlockGenericPipe (ITickable.update)
-	public void update() {
-		final Info superDebug = StackTraceUtil.addSuperTraceInformation(() -> "Time: " + getLevel().getGameTime());
-		final Info debug = StackTraceUtil.addTraceInformation(() -> "(" + getBlockPos() + ")", superDebug);
-		if (sendInitPacket && !getLevel().isClientSide()) {
-			sendInitPacket = false;
-			getRenderController().sendInit();
+	public static void clientTick(Level level, BlockPos pos, BlockState state, LogisticsTileGenericPipe blockEntity) {
+		final Info debug = blockEntity.beginTickTrace();
+		blockEntity.tickShared();
+		debug.end();
+	}
+
+	public static void serverTick(Level level, BlockPos pos, BlockState state, LogisticsTileGenericPipe blockEntity) {
+		final Info debug = blockEntity.beginTickTrace();
+		// Before the liveness checks, as it was: the init packet is owed even by a container whose
+		// pipe has not been built yet.
+		if (blockEntity.sendInitPacket) {
+			blockEntity.sendInitPacket = false;
+			blockEntity.getRenderController().sendInit();
 		}
+		if (blockEntity.tickShared()) {
+			blockEntity.serverTickPipe();
+		}
+		debug.end();
+	}
+
+	private Info beginTickTrace() {
+		final Info superDebug = StackTraceUtil.addSuperTraceInformation(() -> "Time: " + getLevel().getGameTime());
+		return StackTraceUtil.addTraceInformation(() -> "(" + getBlockPos() + ")", superDebug);
+	}
+
+	/**
+	 * The half of the tick both sides run.
+	 *
+	 * @return whether the pipe is live enough for the server half to follow
+	 */
+	private boolean tickShared() {
 		if (pipe == null) {
-			debug.end();
-			return;
+			return false;
 		}
 
 		// Both sides. onLoad() clears this flag every time the tile is (re)added to the level, which
@@ -219,26 +242,20 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		}
 
 		if (!LogisticsBlockGenericPipe.isValid(pipe)) {
-			debug.end();
-			return;
+			return false;
 		}
 
 		pipe.updateEntity();
+		return true;
+	}
 
-		if (level.isClientSide()) {
-			debug.end();
-			return;
-		}
-
+	private void serverTickPipe() {
 		if (blockNeighborChange) {
 			computeConnections();
 			pipe.onNeighborBlockChange();
 			blockNeighborChange = false;
 			refreshRenderState = true;
-
-			if (!level.isClientSide()) {
-				TargetLookup.sendToChunkWatchers(this, new PipeRenderUpdateMessage(getBlockPos()));
-			}
+			TargetLookup.sendToChunkWatchers(this, new PipeRenderUpdateMessage(getBlockPos()));
 		}
 
 		//Sideblocks need to be checked before this
@@ -261,7 +278,6 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		}
 
 		getRenderController().onUpdate();
-		debug.end();
 	}
 
 	private void refreshRenderState() {

@@ -13,11 +13,10 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IRotationProvider;
-import logisticspipes.interfaces.ITickable;
 import logisticspipes.network.to_server.block.RequestBlockRotationMessage;
 import logisticspipes.util.DoubleCoordinates;
 
-public class LogisticsSolidBlockEntity extends BlockEntity implements ITickable, IRotationProvider {
+public class LogisticsSolidBlockEntity extends BlockEntity implements IRotationProvider {
 
     public int rotation = 0;
     private boolean init = false;
@@ -38,14 +37,14 @@ public class LogisticsSolidBlockEntity extends BlockEntity implements ITickable,
         output.putInt("rotation", rotation);
     }
 
-    @Override
-    public void update() {
-        if (level.isClientSide()) {
-            if (!init) {
-                ClientPacketDistributor.sendToServer(new RequestBlockRotationMessage(getBlockPos()));
-                init = true;
-            }
+    public void clientTick() {
+        if (!init) {
+            ClientPacketDistributor.sendToServer(new RequestBlockRotationMessage(getBlockPos()));
+            init = true;
         }
+    }
+
+    public void serverTick() {
     }
 
     // shouldRefresh() removed in 1.20.1 — block entities are replaced on block change by default

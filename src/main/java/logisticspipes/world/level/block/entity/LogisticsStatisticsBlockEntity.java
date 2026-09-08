@@ -85,10 +85,8 @@ public class LogisticsStatisticsBlockEntity extends LogisticsSolidBlockEntity
     }
 
     @Override
-    public void update() {
-        if (level.isClientSide()) {
-            return;
-        }
+    public void serverTick() {
+        super.serverTick();
         tickCount++;
         if (tickCount % TrackingTask.TICKS_PER_SAMPLE != 0 || tasks.isEmpty()) {
             return;

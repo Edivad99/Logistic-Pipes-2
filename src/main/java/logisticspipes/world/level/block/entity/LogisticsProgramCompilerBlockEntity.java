@@ -112,11 +112,8 @@ public class LogisticsProgramCompilerBlockEntity extends LogisticsSolidBlockEnti
     }
 
     @Override
-    public void update() {
-        super.update();
-        if (this.level.isClientSide()) {
-            return;
-        }
+    public void serverTick() {
+        super.serverTick();
         if (currentTask == null) {
             return;
         }

@@ -137,18 +137,19 @@ public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity
     }
 
     @Override
-    public void update() {
-        super.update();
-        if (!level.isClientSide()) {
-            if (internalStorage != lastUpdateStorage) {
-                updateClients();
-            }
-        }
+    public void clientTick() {
+        super.clientTick();
         if (!init) {
-            if (level.isClientSide()) {
-                LogisticsHUDRenderer.instance().add(this);
-            }
+            LogisticsHUDRenderer.instance().add(this);
             init = true;
+        }
+    }
+
+    @Override
+    public void serverTick() {
+        super.serverTick();
+        if (internalStorage != lastUpdateStorage) {
+            updateClients();
         }
     }
 

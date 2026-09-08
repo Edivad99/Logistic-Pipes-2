@@ -17,8 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -29,7 +27,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IRotationProvider;
-import logisticspipes.interfaces.ITickable;
 import logisticspipes.world.level.block.entity.LogisticsCraftingTableBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
 
@@ -95,18 +92,6 @@ public abstract class LogisticsSolidBlock extends Block implements EntityBlock {
         if (placer != null && be instanceof IRotationProvider rotationProvider) {
             rotationProvider.setFacing(placer.getDirection().getOpposite());
         }
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-        BlockEntityType<T> type) {
-        // Tick all ITickable solid block entities
-        return (lvl, pos, st, be) -> {
-            if (be instanceof ITickable tickable) {
-                tickable.update();
-            }
-        };
     }
 
     @Override
