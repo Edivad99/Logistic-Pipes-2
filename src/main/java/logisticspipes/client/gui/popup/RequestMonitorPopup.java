@@ -19,6 +19,8 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConstants;
 import logisticspipes.LogisticsPipes;
 import logisticspipes.pipes.PipeBlockRequestTable;
@@ -26,6 +28,7 @@ import logisticspipes.routing.order.IOrderInfoProvider;
 import logisticspipes.routing.order.LinkedLogisticsOrderList;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.SimpleGraphics;
+import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.utils.gui.SubGuiScreen;
 import logisticspipes.utils.item.ItemIdentifierStack;
@@ -46,8 +49,17 @@ public class RequestMonitorPopup extends SubGuiScreen {
     private int maxY = 0;
     private int minX = -800;
     private int maxX = 800;
+    /**
+     * The opening in gui_border.png, where the frame's pixels are transparent: x 20..235,
+     * y 21..165 of the 256x202 region the panel blits. Ends are exclusive.
+     */
+    private static final int FRAME_LEFT = 20;
+    private static final int FRAME_TOP = 21;
+    private static final int FRAME_RIGHT = 236;
+    private static final int FRAME_BOTTOM = 166;
+
     private ZOOM_LEVEL zoom = ZOOM_LEVEL.NORMAL;
-    private OrderTooltip tooltip = null;
+    private @Nullable OrderTooltip tooltip = null;
 
     public RequestMonitorPopup(PipeBlockRequestTable table, int orderId) {
         super(256, 202, 0, 0);
@@ -290,8 +302,26 @@ public class RequestMonitorPopup extends SubGuiScreen {
         int leftSide = ((width - xSize) / 2);
         int topSide = ((height - ySize) / 2);
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RequestMonitorPopup.achievementTextures, leftSide, topSide, 0.0f,
-            0.0f, xSize, ySize, 256, 256);
+        // gui_border is only a frame -- its middle is fully transparent -- so without this the
+        // parent screen shows straight through the tree. It goes under the tree; the frame itself
+        // is blitted again at the end, over the top, to mask whatever ran past the edges.
+        LPGuiGraphics.drawGuiBackGround(guiGraphics, leftSide, topSide, leftSide + xSize, topSide + ySize,
+            0.0f, true);
+
+        // The tree is a map that can run far past the panel in every direction, and the frame
+        // blitted at the end only covers its own edges -- so without clipping, nodes drawn above or
+        // beside the popup land on the screen behind it. The rectangle is gui_border's opening,
+        // measured from the texture's transparent middle, and is set before the zoom so it stays in
+        // screen coordinates whatever the tree is scaled to.
+        guiGraphics.enableScissor(leftSide + FRAME_LEFT, topSide + FRAME_TOP,
+            leftSide + FRAME_RIGHT, topSide + FRAME_BOTTOM);
+
+        // Everything below is written in unzoomed coordinates and divided by the zoom, which only
+        // lands in the right place if the matrix scales it back. The GlStateManager.scale that used
+        // to do that was lost on the way to GuiGraphics, leaving zooming to push the tree off
+        // towards the bottom right instead of shrinking it.
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(zoom.zoom, zoom.zoom);
 
         guiTop *= 1 / zoom.zoom;
         guiLeft *= 1 / zoom.zoom;
@@ -339,6 +369,9 @@ public class RequestMonitorPopup extends SubGuiScreen {
         ySize *= zoom.zoom;
         leftSide *= zoom.zoom;
         topSide *= zoom.zoom;
+
+        guiGraphics.pose().popMatrix();
+        guiGraphics.disableScissor();
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RequestMonitorPopup.achievementTextures, leftSide, topSide, 0.0f,
             0.0f, xSize, ySize, 256, 256);
