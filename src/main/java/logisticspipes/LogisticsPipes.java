@@ -44,6 +44,7 @@ import logisticspipes.proxy.PowerProxy;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.proxy.SpecialInventoryHandlerManager;
 import logisticspipes.proxy.SpecialTankHandlerManager;
+import logisticspipes.proxy.progressprovider.FurnaceProgressProvider;
 import logisticspipes.proxy.progressprovider.MachineProgressProvider;
 import logisticspipes.proxy.recipeproviders.LogisticsCraftingTable;
 import logisticspipes.proxy.specialconnection.SpecialPipeConnection;
@@ -162,7 +163,9 @@ public class LogisticsPipes {
         SimpleServiceLocator.setSpecialConnectionHandler(new SpecialPipeConnection());
         SimpleServiceLocator.setSpecialConnectionHandler(new SpecialTileConnection());
         SimpleServiceLocator.setSpecialTankHandler(new SpecialTankHandler());
-        SimpleServiceLocator.setMachineProgressProvider(new MachineProgressProvider());
+        MachineProgressProvider machineProgress = new MachineProgressProvider();
+        machineProgress.registerProgressProvider(new FurnaceProgressProvider());
+        SimpleServiceLocator.setMachineProgressProvider(machineProgress);
         SimpleServiceLocator.setRoutedItemHelper(new RoutedItemHelper());
         SimpleServiceLocator.setChannelManagerProvider(new ChannelManagerProvider());
 

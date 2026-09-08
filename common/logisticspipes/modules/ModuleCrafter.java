@@ -801,7 +801,7 @@ public class ModuleCrafter extends LogisticsModule
 				BlockEntity tile = lastAccessedCrafter.get();
 				if (tile != null) {
 					service.getItemOrderManager()
-							.setMachineProgress(SimpleServiceLocator.machineProgressProvider.getProgressForTile(tile));
+							.setMachineProgress(SimpleServiceLocator.machineProgressProvider.getProgressForBlockEntity(tile));
 				} else {
 					service.getItemOrderManager().setMachineProgress((byte) 0);
 				}

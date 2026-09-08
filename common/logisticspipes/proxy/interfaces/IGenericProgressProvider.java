@@ -4,7 +4,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IGenericProgressProvider {
 
-	boolean isType(BlockEntity tile);
+	boolean isType(BlockEntity blockEntity);
 
-	byte getProgress(BlockEntity tile);
+	byte getProgress(BlockEntity blockEntity);
 }

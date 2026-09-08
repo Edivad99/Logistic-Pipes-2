@@ -16,7 +16,7 @@ public class MachineProgressProvider {
 		providers.add(provider);
 	}
 
-	public byte getProgressForTile(BlockEntity blockEntity) {
+	public byte getProgressForBlockEntity(BlockEntity blockEntity) {
 		if (blockEntity instanceof IProgressProvider provider) {
 			return provider.getMachineProgressForLP();
 		}
