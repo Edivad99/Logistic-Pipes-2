@@ -119,7 +119,6 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 	private boolean sendInitPacket = true;
 	@Getter
 	private boolean initialized = false;
-	private boolean deletePipe = false;
     @Nullable
 	private TileBuffer[] tileBuffer;
 	private boolean sendClientUpdate = false;
@@ -204,10 +203,6 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 			sendInitPacket = false;
 			getRenderController().sendInit();
 		}
-		if (!level.isClientSide() && deletePipe) {
-			level.removeBlock(getBlockPos(), false);
-		}
-
 		if (pipe == null) {
 			debug.end();
 			return;
@@ -395,7 +390,8 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		}
 
 		coreState.pipeIdName = savedPipeId;
-		Item pipeItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(savedPipeId));
+		Identifier pipeId = Identifier.tryParse(savedPipeId);
+		Item pipeItem = pipeId == null ? null : BuiltInRegistries.ITEM.getValue(pipeId);
 		pipe = LogisticsBlockGenericPipe.createPipe(pipeItem);
 		// load() can run more than once on the client (initial chunk tag + later data packets).
 		// Each run replaces the pipe object, so the bind must be redone or the fresh pipe keeps a
@@ -407,8 +403,11 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 			pipe.deserialize(input);
 			pipe.finishInit();
 		} else {
-			LogisticsPipes.LOG.warn("Pipe failed to load from NBT at {}", getBlockPos());
-			deletePipe = true;
+			// The type is gone from the registry -- renamed, or its mod removed. The block stays
+			// put and keeps coreState.pipeIdName, so it saves the same id back and comes alive
+			// again if that type ever returns; deleting it made the loss permanent instead.
+			LogisticsPipes.LOG.warn("Pipe at {} has an unknown type '{}'; leaving the block in place",
+					getBlockPos(), savedPipeId);
 		}
 
 		for (int i = 0; i < turtleConnect.length; i++) {
