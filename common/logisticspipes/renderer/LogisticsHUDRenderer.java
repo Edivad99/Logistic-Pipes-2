@@ -21,6 +21,7 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Quaternionf;
+import org.joml.Vector3d;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConfigs;
@@ -36,7 +37,6 @@ import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.IRouter;
 import logisticspipes.routing.LaserData;
 import logisticspipes.routing.PipeRoutingConnectionType;
-import logisticspipes.utils.math.Vector3d;
 import logisticspipes.utils.tuples.Pair;
 
 public class LogisticsHUDRenderer {
@@ -471,72 +471,45 @@ public class LogisticsHUDRenderer {
 		Minecraft mc = Minecraft.getInstance();
 		Player player = mc.player;
 
-		Vector3d playerView = Vector3d.getFromAngles((270 - player.getYRot()) / 360 * -2 * Math.PI, (player.getXRot()) / 360 * -2 * Math.PI);
-		Vector3d playerPos = new Vector3d();
-		playerPos.x = player.getX();
-		playerPos.y = player.getY() + player.getEyeHeight();
-		playerPos.z = player.getZ();
-
-		Vector3d panelPos = new Vector3d();
-		panelPos.x = renderer.getX() + 0.5;
-		panelPos.y = renderer.getY() + 0.5;
-		panelPos.z = renderer.getZ() + 0.5;
-
-		Vector3d panelView = new Vector3d();
-		panelView.x = playerPos.x - panelPos.x;
-		panelView.y = playerPos.y - panelPos.y;
-		panelView.z = playerPos.z - panelPos.z;
+		Vec3 look = player.getLookAngle();
+		Vector3d playerView = new Vector3d(look.x, look.y, look.z);
+		Vector3d playerPos = new Vector3d(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
+		Vector3d panelPos = new Vector3d(renderer.getX() + 0.5, renderer.getY() + 0.5, renderer.getZ() + 0.5);
+		Vector3d panelView = playerPos.sub(panelPos, new Vector3d());
 
 		// Cursor plane tracks the rendered panel: LP1 used 0.44 for a 0.4 panel offset.
-		panelPos.add(panelView, PANEL_OFFSET + 0.04D);
+		panelPos.add(panelView.normalize(PANEL_OFFSET + 0.04D, new Vector3d()));
 
-		double d = panelPos.x * panelView.x + panelPos.y * panelView.y + panelPos.z * panelView.z;
-		double c = panelView.x * playerPos.x + panelView.y * playerPos.y + panelView.z * playerPos.z;
-		double b = panelView.x * playerView.x + panelView.y * playerView.y + panelView.z * playerView.z;
+		double d = panelPos.dot(panelView);
+		double c = panelView.dot(playerPos);
+		double b = panelView.dot(playerView);
 		double a = (d - c) / b;
 
-		Vector3d viewPos = new Vector3d();
-		viewPos.x = playerPos.x + a * playerView.x - panelPos.x;
-		viewPos.y = playerPos.y + a * playerView.y - panelPos.y;
-		viewPos.z = playerPos.z + a * playerView.z - panelPos.z;
+		Vector3d viewPos = new Vector3d(
+				playerPos.x + a * playerView.x - panelPos.x,
+				playerPos.y + a * playerView.y - panelPos.y,
+				playerPos.z + a * playerView.z - panelPos.z);
 
-		Vector3d panelScalVector1 = new Vector3d();
+		Vector3d panelUp = panelUpAxis(panelView);
+		Vector3d panelRight = panelRightAxis(panelView);
 
-		if (panelView.y == 0) {
-			panelScalVector1.x = 0;
-			panelScalVector1.y = 1;
-			panelScalVector1.z = 0;
-		} else {
-			panelScalVector1 = panelView.getOrtogonal(-panelView.x, null, -panelView.z).makeVectorLength(1.0D);
-		}
-
-		Vector3d panelScalVector2 = new Vector3d();
-
-		if (panelView.z == 0) {
-			panelScalVector2.x = 0;
-			panelScalVector2.y = 0;
-			panelScalVector2.z = 1;
-		} else {
-			panelScalVector2 = panelView.getOrtogonal(1.0D, 0.0D, null).makeVectorLength(1.0D);
-		}
-
-		if (panelScalVector1.y == 0) {
+		if (panelUp.y == 0) {
 			return new int[] {};
 		}
 
-		double cursorY = -viewPos.y / panelScalVector1.y;
+		double cursorY = -viewPos.y / panelUp.y;
 
-		Vector3d restViewPos = viewPos.clone();
-		restViewPos.x += cursorY * panelScalVector1.x;
+		Vector3d restViewPos = new Vector3d(viewPos);
+		restViewPos.x += cursorY * panelUp.x;
 		restViewPos.y = 0;
-		restViewPos.z += cursorY * panelScalVector1.z;
+		restViewPos.z += cursorY * panelUp.z;
 
 		double cursorX;
 
-		if (panelScalVector2.x == 0) {
-			cursorX = restViewPos.z / panelScalVector2.z;
+		if (panelRight.x == 0) {
+			cursorX = restViewPos.z / panelRight.z;
 		} else {
-			cursorX = restViewPos.x / panelScalVector2.x;
+			cursorX = restViewPos.x / panelRight.x;
 		}
 
 		// 50 px = panel half-width in blocks (50 * scale), with LP1's 0.94 plane fudge (0.47/0.5).
@@ -550,6 +523,29 @@ public class LogisticsHUDRenderer {
 		}
 
 		return new int[] { (int) cursorX, (int) cursorY };
+	}
+
+	/**
+	 * The panel's vertical axis: the unit vector orthogonal to {@code view} lying in the plane that
+	 * {@code view} spans with the Y axis. Falls back to straight up when {@code view} is level and
+	 * that plane is undefined.
+	 */
+	private static Vector3d panelUpAxis(Vector3d view) {
+		if (view.y == 0) {
+			return new Vector3d(0, 1, 0);
+		}
+		return new Vector3d(-view.x, (view.x * view.x + view.z * view.z) / view.y, -view.z).normalize();
+	}
+
+	/**
+	 * The panel's horizontal axis: the level unit vector orthogonal to {@code view}, pointing along
+	 * +X. Falls back to +Z when {@code view} has no Z component to divide by.
+	 */
+	private static Vector3d panelRightAxis(Vector3d view) {
+		if (view.z == 0) {
+			return new Vector3d(0, 0, 1);
+		}
+		return new Vector3d(1, 0, -view.x / view.z).normalize();
 	}
 
 	public boolean displayRenderer() {

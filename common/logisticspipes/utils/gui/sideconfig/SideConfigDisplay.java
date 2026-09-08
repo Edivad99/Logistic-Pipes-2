@@ -36,6 +36,11 @@ import com.mojang.blaze3d.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.joml.Matrix4d;
+import org.joml.Matrix4f;
+import org.joml.Vector3d;
+import org.joml.Vector3dc;
+import org.joml.Vector4d;
 
 import logisticspipes.client.renderer.ImmediateSubmitCollector;
 import logisticspipes.client.renderer.LPRenderTypes;
@@ -45,17 +50,22 @@ import logisticspipes.textures.Textures;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.LPPositionSet;
-import logisticspipes.utils.math.BoundingBox;
-import logisticspipes.utils.math.Camera;
-import logisticspipes.utils.math.Matrix4d;
-import logisticspipes.utils.math.Vector3d;
-import logisticspipes.utils.math.Vertex;
 
 public abstract class SideConfigDisplay {
 
 	private static final float FOV = 30.0f;
 	private static final float Z_NEAR = 0.05f;
 	private static final float Z_FAR = 50.0f;
+
+	private static final Vector3dc SCENE_CENTER = new Vector3d(0, 0, 0);
+	private static final Vector3dc SCENE_UP = new Vector3d(0, 1, 0);
+
+	/**
+	 * Stops the orbit a hair short of the pole. At exactly +-90 the eye sits on {@link #SCENE_UP},
+	 * leaving the look-at basis undefined and every matrix NaN. The hand-rolled math this replaced
+	 * only escaped that because {@code Math.cos} of a right angle is not quite zero.
+	 */
+	private static final float MAX_PITCH = 89.99f;
 
 	/** Owns the GPU-side projection uniform this display uploads its own matrices through. */
 	private final ProjectionMatrixBuffer projectionBuffer =
@@ -86,9 +96,12 @@ public abstract class SideConfigDisplay {
 
 	private final Vector3d origin = new Vector3d();
 	private final Vector3d eye = new Vector3d();
-	private final Camera camera = new Camera();
-	private final Matrix4d pitchRot = new Matrix4d();
-	private final Matrix4d yawRot = new Matrix4d();
+	private final Matrix4d viewMatrix = new Matrix4d();
+	private final Matrix4d projectionMatrix = new Matrix4d();
+	private int viewportWidth;
+	private int viewportHeight;
+	/** Both matrices and the viewport are set together by {@link #updateCamera}, or not at all. */
+	private boolean cameraValid;
 
 	public DoubleCoordinates originBC;
 
@@ -125,19 +138,15 @@ public abstract class SideConfigDisplay {
 				max.set(Math.max(bc.getXDouble(), max.x), Math.max(bc.getYDouble(), max.y), Math
 						.max(bc.getZDouble(), max.z));
 			}
-			size = new Vector3d(max);
-			size.sub(min);
-			size.multiply(0.5);
+			size = new Vector3d(max).sub(min).mul(0.5);
 			c = new Vector3d(min.x + size.x, min.y + size.y, min.z + size.z);
-			size.multiply(2);
+			size.mul(2);
 		}
 
 		originBC = new DoubleCoordinates((int) c.x, (int) c.y, (int) c.z);
 		origin.set(c);
-		pitchRot.setIdentity();
-		yawRot.setIdentity();
 
-		pitch = -mc.player.getXRot();
+		pitch = Math.clamp(-mc.player.getXRot(), -MAX_PITCH, MAX_PITCH);
 		yaw = 180 - mc.player.getYRot();
 
 		distance = Math.max(Math.max(size.x, size.y), size.z) + 4;
@@ -169,7 +178,7 @@ public abstract class SideConfigDisplay {
 		if (button == 0) {
 			yaw += (float) dx;
 			pitch += (float) dy;
-			pitch = Math.clamp(pitch, -90, 90);
+			pitch = Math.clamp(pitch, -MAX_PITCH, MAX_PITCH);
 		}
 	}
 
@@ -228,23 +237,33 @@ public abstract class SideConfigDisplay {
 
 	/** Called by the parent Screen on left-click; performs a ray cast and fires handleSelection if a face is hit. */
 	public void onMouseClicked(int screenMouseX, int screenMouseY, Rectangle sceneRect) {
-		if (!camera.isValid()) return;
+		if (!cameraValid) return;
 		// Convert screen pixel to ray in camera space, then fire updateSelection. The ray is built
 		// in clip space, where y points up, while a mouse position grows downward: without the flip
 		// a click picks the face opposite the one under the cursor.
 		int relX = screenMouseX - sceneRect.x;
 		int relY = sceneRect.height - (screenMouseY - sceneRect.y);
-		Vector3d rayEye = new Vector3d();
-		Vector3d rayDir = new Vector3d();
-		if (camera.getRayForPixel(relX, relY, rayEye, rayDir)) {
-			Vector3d end = new Vector3d(rayDir);
-			end.multiply(100);
-			end.add(rayEye);
-			updateSelection(rayEye, end);
-			if (selection != null) {
-				handleSelection(selection);
-			}
+
+		Matrix4d inverseView = viewMatrix.invert(new Matrix4d());
+		Matrix4d clipToWorld = inverseView.mul(projectionMatrix.invert(new Matrix4d()), new Matrix4d());
+		Vector3d rayEye = inverseView.getTranslation(new Vector3d());
+
+		double clipX = (double) relX / viewportWidth * 2.0 - 1.0;
+		double clipY = (double) relY / viewportHeight * 2.0 - 1.0;
+		Vector3d near = unproject(clipToWorld, clipX, clipY, -1.0);
+		Vector3d far = unproject(clipToWorld, clipX, clipY, 1.0);
+
+		Vector3d end = far.sub(near).normalize().mul(100).add(rayEye);
+		updateSelection(rayEye, end);
+		if (selection != null) {
+			handleSelection(selection);
 		}
+	}
+
+	/** The world point a clip-space position maps back to, perspective divide included. */
+	private static Vector3d unproject(Matrix4d clipToWorld, double clipX, double clipY, double clipZ) {
+		Vector4d p = clipToWorld.transform(new Vector4d(clipX, clipY, clipZ, 1.0));
+		return new Vector3d(p.x / p.w, p.y / p.w, p.z / p.w);
 	}
 
 	/**
@@ -277,7 +296,7 @@ public abstract class SideConfigDisplay {
 				ProjectionType.PERSPECTIVE
 		);
 		poseStack.setIdentity();
-		poseStack.mulPose(toJoml(camera.getViewMatrix()));
+		poseStack.mulPose(new Matrix4f(viewMatrix));
 
 		renderScene(poseStack, bufferSource);
 		renderSelection(poseStack, bufferSource);
@@ -289,8 +308,8 @@ public abstract class SideConfigDisplay {
 		if (selection == null || !(Textures.LOGISTICS_SIDE_SELECTION instanceof TextureAtlasSprite icon)) {
 			return;
 		}
-		BoundingBox bb = new BoundingBox(new DoubleCoordinates(selection.config));
-		List<Vertex> corners = bb.getCornersWithUvForFace(selection.face, icon.getU0(), icon.getU1(), icon.getV0(), icon.getV1());
+		List<FaceCorner> corners = faceCorners(selection.config.getBlockPos(), selection.face,
+				icon.getU0(), icon.getU1(), icon.getV0(), icon.getV1());
 
 		// The block atlas, the translucent blend and the disabled depth test are all carried by
 		// the render type. 1.21.6 removed every RenderType.gui* factory, so what used to be
@@ -298,13 +317,62 @@ public abstract class SideConfigDisplay {
 		// depth test off, so the highlight still paints over the blocks behind it.
 		RenderType renderType = LPRenderTypes.TEXTURED_OVERLAY.apply(RenderUtil.BLOCK_TEX);
 		VertexConsumer buf = bufferSource.getBuffer(renderType);
-		for (Vertex v : corners) {
-			buf.addVertex(poseStack.last(), (float) (v.x() - origin.x), (float) (v.y() - origin.y),
-					(float) (v.z() - origin.z))
-				.setUv(v.u(), v.v())
+		for (FaceCorner c : corners) {
+			buf.addVertex(poseStack.last(), (float) (c.x() - origin.x), (float) (c.y() - origin.y),
+					(float) (c.z() - origin.z))
+				.setUv(c.u(), c.v())
 				.setColor(0xFFFFFFFF);
 		}
 		bufferSource.endBatch(renderType);
+	}
+
+	/** One corner of the highlighted face: a world position and the atlas UV that goes on it. */
+	private record FaceCorner(float x, float y, float z, float u, float v) {}
+
+	/**
+	 * The four corners of one face of the block at {@code pos}, wound the way the overlay quad
+	 * wants them. Only the highlight needs this, so there is no normal and no colour.
+	 */
+	private static List<FaceCorner> faceCorners(BlockPos pos, Direction face,
+			float minU, float maxU, float minV, float maxV) {
+		float minX = pos.getX();
+		float minY = pos.getY();
+		float minZ = pos.getZ();
+		float maxX = minX + 1;
+		float maxY = minY + 1;
+		float maxZ = minZ + 1;
+		return switch (face) {
+			case NORTH -> List.of(
+					new FaceCorner(maxX, minY, minZ, minU, minV),
+					new FaceCorner(minX, minY, minZ, maxU, minV),
+					new FaceCorner(minX, maxY, minZ, maxU, maxV),
+					new FaceCorner(maxX, maxY, minZ, minU, maxV));
+			case SOUTH -> List.of(
+					new FaceCorner(minX, minY, maxZ, maxU, minV),
+					new FaceCorner(maxX, minY, maxZ, minU, minV),
+					new FaceCorner(maxX, maxY, maxZ, minU, maxV),
+					new FaceCorner(minX, maxY, maxZ, maxU, maxV));
+			case EAST -> List.of(
+					new FaceCorner(maxX, maxY, minZ, maxU, maxV),
+					new FaceCorner(maxX, maxY, maxZ, minU, maxV),
+					new FaceCorner(maxX, minY, maxZ, minU, minV),
+					new FaceCorner(maxX, minY, minZ, maxU, minV));
+			case WEST -> List.of(
+					new FaceCorner(minX, minY, minZ, maxU, minV),
+					new FaceCorner(minX, minY, maxZ, minU, minV),
+					new FaceCorner(minX, maxY, maxZ, minU, maxV),
+					new FaceCorner(minX, maxY, minZ, maxU, maxV));
+			case UP -> List.of(
+					new FaceCorner(maxX, maxY, maxZ, minU, minV),
+					new FaceCorner(maxX, maxY, minZ, minU, maxV),
+					new FaceCorner(minX, maxY, minZ, maxU, maxV),
+					new FaceCorner(minX, maxY, maxZ, maxU, minV));
+			case DOWN -> List.of(
+					new FaceCorner(minX, minY, minZ, maxU, maxV),
+					new FaceCorner(maxX, minY, minZ, minU, maxV),
+					new FaceCorner(maxX, minY, maxZ, minU, minV),
+					new FaceCorner(minX, minY, maxZ, maxU, minV));
+		};
 	}
 
 	/** Reused across blocks and frames, the way an entity render state is. */
@@ -355,27 +423,15 @@ public abstract class SideConfigDisplay {
 		}
 		// The viewport is the scene rectangle itself, so a click maps to a ray without knowing
 		// where on the screen the rectangle sits or how large a GUI pixel currently is.
-		camera.setViewport(0, 0, width, height);
-		camera.setProjectionMatrixAsPerspective(FOV, Z_NEAR, Z_FAR, width, height);
-		eye.set(0, 0, distance);
-		pitchRot.makeRotationX(Math.toRadians(pitch));
-		yawRot.makeRotationY(Math.toRadians(yaw));
-		pitchRot.transform(eye);
-		yawRot.transform(eye);
-		camera.setViewMatrixAsLookAt(eye, RenderUtil.ZERO_V, RenderUtil.UP_V);
-		return camera.isValid();
-	}
-
-	/** Convert our row-major Matrix4d to a JOML column-major Matrix4f for RenderSystem. */
-	private static org.joml.Matrix4f toJoml(Matrix4d m) {
-		// JOML Matrix4f(m00,m01,...) fills column 0 rows 0-3, then column 1, etc.
-		// Our Matrix4d.mRC is row R, col C; swap to get column-major layout.
-		return new org.joml.Matrix4f(
-			(float) m.m00, (float) m.m10, (float) m.m20, (float) m.m30,
-			(float) m.m01, (float) m.m11, (float) m.m21, (float) m.m31,
-			(float) m.m02, (float) m.m12, (float) m.m22, (float) m.m32,
-			(float) m.m03, (float) m.m13, (float) m.m23, (float) m.m33
-		);
+		viewportWidth = width;
+		viewportHeight = height;
+		projectionMatrix.setPerspective(Math.toRadians(FOV), (double) width / height, Z_NEAR, Z_FAR);
+		eye.set(0, 0, distance)
+				.rotateX(Math.toRadians(pitch))
+				.rotateY(Math.toRadians(yaw));
+		viewMatrix.setLookAt(eye, SCENE_CENTER, SCENE_UP);
+		cameraValid = true;
+		return true;
 	}
 
 	public static class SelectedFace {
@@ -443,8 +499,6 @@ public abstract class SideConfigDisplay {
 */
 	private static class RenderUtil {
 
-		public static final Vector3d UP_V = new Vector3d(0, 1, 0);
-		public static final Vector3d ZERO_V = new Vector3d(0, 0, 0);
 		public static final Identifier BLOCK_TEX = TextureAtlas.LOCATION_BLOCKS;
 	}
 }

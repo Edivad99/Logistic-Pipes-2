@@ -23,6 +23,8 @@ import net.minecraft.world.item.Items;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.util.TrackingTask;
@@ -37,7 +39,6 @@ import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
-import logisticspipes.utils.math.Vec2;
 import logisticspipes.utils.string.StringUtils;
 import logisticspipes.world.inventory.StatisticsMenu;
 import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
@@ -490,13 +491,13 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
 
         private void drawGraphPart(GuiGraphicsExtractor guiGraphics, int xOrigo, int yOrigo, int prevX, int prevY,
             int x, int y) {
-            Vec2 left = new Vec2(prevX, prevY);
-            Vec2 right = new Vec2(x, y);
+            Vector2f left = new Vector2f(prevX, prevY);
+            Vector2f right = new Vector2f(x, y);
 
             // bounds check
             {
-                Vec2 min = new Vec2(left.x, min(left.y, right.y));
-                Vec2 max = new Vec2(right.x, max(left.y, right.y));
+                Vector2f min = new Vector2f(left.x, min(left.y, right.y));
+                Vector2f max = new Vector2f(right.x, max(left.y, right.y));
 
                 if (!(min.x < GRAPH_WIDTH && max.x > 0 && min.y < GRAPH_HEIGHT && max.y > 0)) {
                     return;
@@ -504,10 +505,10 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
             }
 
             // clamp to the edges of the graph
-            right = clampCorner(left, right, Vec2.ORIGIN, true);
-            right = clampCorner(left, right, new Vec2(GRAPH_WIDTH, GRAPH_HEIGHT), false);
-            left = clampCorner(right, left, Vec2.ORIGIN, true);
-            left = clampCorner(right, left, new Vec2(GRAPH_WIDTH, GRAPH_HEIGHT), false);
+            right = clampCorner(left, right, new Vector2f(), true);
+            right = clampCorner(left, right, new Vector2f(GRAPH_WIDTH, GRAPH_HEIGHT), false);
+            left = clampCorner(right, left, new Vector2f(), true);
+            left = clampCorner(right, left, new Vector2f(GRAPH_WIDTH, GRAPH_HEIGHT), false);
 
             drawLine(guiGraphics, xOrigo + (int) left.x, yOrigo - (int) left.y, xOrigo + (int) right.x,
                 yOrigo - (int) right.y, Color.RED);
@@ -528,32 +529,34 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
             }
         }
 
-        private Vec2 clampYPlane(Vec2 v, Vec2 toClamp, float x0, boolean greater) {
-            if (toClamp.x == x0) {
-                return toClamp;
+        /** Every clamp returns a fresh vector: JOML's are mutable, where the arguments must not be. */
+        private Vector2f clampYPlane(Vector2fc v, Vector2fc toClamp, float x0, boolean greater) {
+            if (toClamp.x() == x0) {
+                return new Vector2f(toClamp);
             }
-            if (toClamp.x == v.x) {
-                return toClamp;
-            }
-
-            if ((!greater && toClamp.x < x0) || (greater && toClamp.x > x0)) {
-                return toClamp;
+            if (toClamp.x() == v.x()) {
+                return new Vector2f(toClamp);
             }
 
-            Vec2 dir = toClamp.sub(v);
-            dir = dir.div(dir.x); // let dir.x=1 but keep vector's direction
-            float dist = (x0 - toClamp.x);
-            return toClamp.add(dir.mul(dist));
+            if ((!greater && toClamp.x() < x0) || (greater && toClamp.x() > x0)) {
+                return new Vector2f(toClamp);
+            }
+
+            Vector2f dir = toClamp.sub(v, new Vector2f());
+            dir.div(dir.x); // let dir.x=1 but keep vector's direction
+            float dist = (x0 - toClamp.x());
+            return dir.mul(dist).add(toClamp);
         }
 
         @SuppressWarnings("SuspiciousNameCombination")
-        private Vec2 clampXPlane(Vec2 from, Vec2 to, float y0, boolean greater) {
-            final Vec2 vec2 = clampYPlane(new Vec2(from.y, from.x), new Vec2(to.y, to.x), y0, greater);
-            return new Vec2(vec2.y, vec2.x);
+        private Vector2f clampXPlane(Vector2fc from, Vector2fc to, float y0, boolean greater) {
+            final Vector2f swapped = clampYPlane(new Vector2f(from.y(), from.x()), new Vector2f(to.y(), to.x()), y0,
+                greater);
+            return new Vector2f(swapped.y, swapped.x);
         }
 
-        private Vec2 clampCorner(Vec2 from, Vec2 to, Vec2 corner, boolean greater) {
-            return clampXPlane(from, clampYPlane(from, to, corner.x, greater), corner.y, greater);
+        private Vector2f clampCorner(Vector2fc from, Vector2fc to, Vector2fc corner, boolean greater) {
+            return clampXPlane(from, clampYPlane(from, to, corner.x(), greater), corner.y(), greater);
         }
 
         private String formatTime(int minutes) {
