@@ -199,7 +199,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 	// Ticked via BlockEntityTicker in LogisticsBlockGenericPipe (ITickable.update)
 	public void update() {
 		final Info superDebug = StackTraceUtil.addSuperTraceInformation(() -> "Time: " + getLevel().getGameTime());
-		final Info debug = StackTraceUtil.addTraceInformation(() -> "(" + getX() + ", " + getY() + ", " + getZ() + ")", superDebug);
+		final Info debug = StackTraceUtil.addTraceInformation(() -> "(" + getBlockPos() + ")", superDebug);
 		if (sendInitPacket && !getLevel().isClientSide()) {
 			sendInitPacket = false;
 			getRenderController().sendInit();
@@ -363,7 +363,7 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 				output.putString(NBT_PIPE_ID, key.toString());
 			}
 			pipe.serialize(output);
-		} else if (coreState.pipeIdName != null) {
+		} else if (coreState.pipeIdName != null && !coreState.pipeIdName.isEmpty()) {
 			output.putString(NBT_PIPE_ID, coreState.pipeIdName);
 		}
 
@@ -386,13 +386,16 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		}
 		super.loadAdditional(input);
 
-		if (input.getString(NBT_PIPE_ID).isEmpty()) return;
-
-		coreState.pipeIdName = input.getStringOr(NBT_PIPE_ID, "");
-		Item pipeItem = null;
-		if (coreState.pipeIdName != null && !coreState.pipeIdName.isEmpty()) {
-			pipeItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(coreState.pipeIdName));
+        final String savedPipeId = input.getStringOr(NBT_PIPE_ID, "");
+		if (savedPipeId.isEmpty()) {
+			if (level != null && !level.isClientSide()) {
+				LogisticsPipes.LOG.warn("Pipe at {} has no saved type; leaving the block in place", getBlockPos());
+			}
+			return;
 		}
+
+		coreState.pipeIdName = savedPipeId;
+		Item pipeItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(savedPipeId));
 		pipe = LogisticsBlockGenericPipe.createPipe(pipeItem);
 		// load() can run more than once on the client (initial chunk tag + later data packets).
 		// Each run replaces the pipe object, so the bind must be redone or the fresh pipe keeps a
