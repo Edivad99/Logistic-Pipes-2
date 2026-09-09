@@ -103,7 +103,7 @@ public class PipeItemsProviderLogistics extends CoreRoutedPipe implements IProvi
 
 	@Override
 	public @Nullable Level getLevelForHUD() {
-		return getWorld();
+		return getLevel();
 	}
 
 	@Override

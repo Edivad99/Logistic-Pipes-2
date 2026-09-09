@@ -73,7 +73,7 @@ import logisticspipes.interfaces.ISecurityProvider;
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.interfaces.ISubSystemPowerProvider;
 import logisticspipes.interfaces.IWatchingHandler;
-import logisticspipes.interfaces.IWorldProvider;
+import logisticspipes.interfaces.ILevelProvider;
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.interfaces.routing.IRequestItems;
@@ -143,7 +143,7 @@ import network.rs485.logisticspipes.property.UtilKt;
 
 @CCType(name = "LogisticsPipes:Normal")
 public abstract class CoreRoutedPipe extends CoreUnroutedPipe
-		implements IRequestItems, ITrackStatistics, IWorldProvider, IWatchingHandler, IPipeServiceProvider, IQueueCCEvent, ILPPositionProvider {
+		implements IRequestItems, ITrackStatistics, ILevelProvider, IWatchingHandler, IPipeServiceProvider, IQueueCCEvent, ILPPositionProvider {
 
 	private static int pipecount = 0;
 	public final PlayerCollectionList watchers = new PlayerCollectionList();
@@ -362,7 +362,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 		// Double-chest: one pipe is adjacent to the left half, the other to the right half.
 		// ChestBlock.getConnectedDirection() points from one half to the partner half.
-		Level level = getWorld();
+		Level level = getLevel();
 		if (level == null) return false;
 		for (BlockPos pos : myPositions) {
 			BlockState state = level.getBlockState(pos);
@@ -379,7 +379,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	 */
 	public void firstInitialiseTick() {
 		getRouter();
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			ClientPacketDistributor.sendToServer(new RequestPipeSignsMessage(getPos()));
 		}
 	}
@@ -422,7 +422,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 			if (delayTo < System.currentTimeMillis()) {
 				delayTo = System.currentTimeMillis() + 200;
 				repeatFor--;
-				getWorld().updateNeighborsAt(getPos(), getWorld().getBlockState(getPos()).getBlock());
+				getLevel().updateNeighborsAt(getPos(), getLevel().getBlockState(getPos()).getBlock());
 			}
 		}
 
@@ -438,7 +438,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		}
 		//update router before ticking logic/transport
 		final boolean doFullRefresh =
-				getWorld().getGameTime() % LPConfigs.COMMON.LOGISTICS_DETECTION_FREQUENCY.getAsInt() == delayOffset
+				getLevel().getGameTime() % LPConfigs.COMMON.LOGISTICS_DETECTION_FREQUENCY.getAsInt() == delayOffset
 				|| initialInit || recheckConnections;
 		if (doFullRefresh) {
 			// update adjacent cache first, so interests can be gathered correctly
@@ -489,7 +489,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
                 }
             }
 		}
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 		checkTexturePowered();
@@ -517,7 +517,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public boolean isNthTick(int n) {
-		return ((getWorld().getGameTime() + delayOffset) % n == 0);
+		return ((getLevel().getGameTime() + delayOffset) % n == 0);
 	}
 
 	private void doDebugStuff(Player entityplayer) {
@@ -717,7 +717,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		if (!hasQueuedParticles) {
 			return;
 		}
-        if (getWorld() instanceof ServerLevel serverLevel) {
+        if (getLevel() instanceof ServerLevel serverLevel) {
             for (int i = 0; i < this.queuedParticles.length; i++) {
                 if (this.queuedParticles[i] > 0) {
                     var amount = this.queuedParticles[i];
@@ -725,7 +725,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
                         getPos().getX(), getPos().getY(), getPos().getZ(), amount, 0, 0, 0, 1);
                 }
             }
-        } else if (getWorld() instanceof ClientLevel) {
+        } else if (getLevel() instanceof ClientLevel) {
             if (Minecraft.getInstance().options.graphicsPreset().get() != GraphicsPreset.FAST) {
                 for (int i = 0; i < queuedParticles.length; i++) {
                     if (this.queuedParticles[i] > 0) {
@@ -850,7 +850,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
     public IRouter getRouter() {
 		if (stillNeedReplace) {
 			LogisticsPipes.LOG.debug("Pipe not ready at ({}, '{}')", this.getPos(),
-					getWorld() != null ? getWorld().dimension().identifier().toString() : "unknown");
+					getLevel() != null ? getLevel().dimension().identifier().toString() : "unknown");
 		}
 		if (router == null) {
 			synchronized (routerIdLock) {
@@ -859,9 +859,9 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 				if (routerId != null && !routerId.isEmpty()) {
 					routerIntId = UUID.fromString(routerId);
 				}
-				router = getWorld().isClientSide()
-						? SimpleServiceLocator.clientRouterManager.getOrCreateRouter(routerIntId, getWorld(), getPos())
-						: SimpleServiceLocator.routerManager.getOrCreateRouter(routerIntId, getWorld(), getPos());
+				router = getLevel().isClientSide()
+						? SimpleServiceLocator.clientRouterManager.getOrCreateRouter(routerIntId, getLevel(), getPos())
+						: SimpleServiceLocator.routerManager.getOrCreateRouter(routerIntId, getLevel(), getPos());
 			}
 		}
 		return router;
@@ -951,7 +951,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 			return true;
 		}
 
-		if (!(player.isCrouching()) && getOriginalUpgradeManager().tryIserting(getWorld(), player)) {
+		if (!(player.isCrouching()) && getOriginalUpgradeManager().tryIserting(getLevel(), player)) {
 			return true;
 		}
 
@@ -1103,10 +1103,10 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	public void connectionUpdate() {
 		if (getContainer() != null && !stillNeedReplace) {
-			if (getWorld().isClientSide()) throw new IllegalStateException("Wont do connectionUpdate on client-side");
+			if (getLevel().isClientSide()) throw new IllegalStateException("Wont do connectionUpdate on client-side");
 			getContainer().scheduleNeighborChange();
-			BlockState state = getWorld().getBlockState(getPos());
-			getWorld().updateNeighborsAt(getPos(), state.getBlock());
+			BlockState state = getLevel().getBlockState(getPos());
+			getLevel().updateNeighborsAt(getPos(), state.getBlock());
 		}
 	}
 
@@ -1120,7 +1120,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
     @Nullable
 	public List<Pair<ILogisticsPowerProvider, List<IFilter>>> getRoutedPowerProviders() {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return null;
 		}
 		if (stillNeedReplace) {
@@ -1147,7 +1147,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public boolean canUseEnergy(int amount, @Nullable List<Object> providersToIgnore) {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return false;
 		}
 		if (LPConfigs.COMMON.LOGISTICS_POWER_USAGE_DISABLED.getAsBoolean()) {
@@ -1183,7 +1183,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	private boolean useEnergy(int amount, @Nullable List<Object> providersToIgnore, boolean sparkles) {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return false;
 		}
 		if (LPConfigs.COMMON.LOGISTICS_POWER_USAGE_DISABLED.getAsBoolean()) {
@@ -1352,7 +1352,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		if (this instanceof IRequireReliableFluidTransport) {
 			ItemIdentifierStack stack = information.getItem();
 			if (stack.getItem().isFluidContainer()) {
-				FluidIdentifierStack liquid = SimpleServiceLocator.logisticsFluidManager.getFluidFromContainer(stack, getWorld().registryAccess());
+				FluidIdentifierStack liquid = SimpleServiceLocator.logisticsFluidManager.getFluidFromContainer(stack, getLevel().registryAccess());
 				if (liquid != null) {
 					((IRequireReliableFluidTransport) this).liquidArrived(liquid.getFluid(), liquid.getAmount());
 				}
@@ -1644,7 +1644,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	public void handleSignPacket(List<Integer> types) {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			return;
 		}
 		for (int i = 0; i < 6; i++) {
@@ -1684,7 +1684,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public boolean isOpaque() {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return LPConfigs.COMMON.OPAQUE.getAsBoolean() || isOpaqueClientSide;
 		} else {
 			return LPConfigs.COMMON.OPAQUE.getAsBoolean() || this.getUpgradeManager().isOpaque();
@@ -1760,7 +1760,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	public void finishInit() {
 		super.finishInit();
 		if (isInitialized()) {
-			final Level level = getWorld();
+			final Level level = getLevel();
 			if (level != null && !level.isClientSide() && this instanceof PropertyHolder) {
 				UtilKt.addObserver(((PropertyHolder) this).getProperties(), (prop) -> {
 					markTileDirty();

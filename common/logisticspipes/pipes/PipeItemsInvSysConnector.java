@@ -175,7 +175,8 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 							if (inv instanceof ITransactor) {
 								((ITransactor) inv).add(toSend, dir.getOpposite(), true);
 							} else {
-								getContainer().getLevel().addFreshEntity(ItemIdentifierStack.getFromStack(toSend).makeEntityItem(getWorld(), getContainer().getPos()));
+								getContainer().getLevel().addFreshEntity(ItemIdentifierStack.getFromStack(toSend).makeEntityItem(
+                                        getLevel(), getContainer().getPos()));
 							}
 							new UnsupportedOperationException("The extracted amount didn't match the requested one. (" + inv + ")").printStackTrace();
 							return contentChanged;
@@ -287,7 +288,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 	}
 
 	private boolean hasRemoteConnection() {
-		return hasConnectionUUID() && getWorld() != null && SimpleServiceLocator.connectionManager.hasChannelConnection(getRouter());
+		return hasConnectionUUID() && getLevel() != null && SimpleServiceLocator.connectionManager.hasChannelConnection(getRouter());
 	}
 
 	private boolean isInventoryConnected(@Nullable BlockEntity tileEntityFilter) {
@@ -390,7 +391,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 
 	@Override
 	public @Nullable Level getLevelForHUD() {
-		return getWorld();
+		return getLevel();
 	}
 
 	private void updateContentListener() {
@@ -444,7 +445,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 			PacketDistributor.sendToPlayer(serverPlayer, new InvSysConResistanceMessage(getPos(), resistance));
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
-			IChannelManager manager = SimpleServiceLocator.channelManagerProvider.getChannelManager(this.getWorld());
+			IChannelManager manager = SimpleServiceLocator.channelManagerProvider.getChannelManager(this.getLevel());
 			manager.getChannels().stream()
 					.filter(chan -> chan.getChannelIdentifier().equals(getConnectionUUID()))
 					.findFirst()
@@ -459,7 +460,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 	}
 
 	private void sendChannelInformationToPlayers() {
-		IChannelManager manager = SimpleServiceLocator.channelManagerProvider.getChannelManager(this.getWorld());
+		IChannelManager manager = SimpleServiceLocator.channelManagerProvider.getChannelManager(this.getLevel());
 		Optional<ChannelInformation> channel = manager.getChannels().stream()
 				.filter(chan -> chan.getChannelIdentifier().equals(getConnectionUUID()))
 				.findFirst();

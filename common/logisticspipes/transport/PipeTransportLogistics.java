@@ -40,7 +40,7 @@ import logisticspipes.LogisticsPipes;
 import logisticspipes.api.ILogisticsPowerProvider;
 import logisticspipes.interfaces.IBufferItems;
 import logisticspipes.interfaces.IInventoryUtil;
-import logisticspipes.interfaces.IItemAdvancedExistance;
+import logisticspipes.interfaces.IItemAdvancedExistence;
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.interfaces.ISpecialInsertion;
 import logisticspipes.interfaces.ISubSystemPowerProvider;
@@ -610,8 +610,8 @@ public class PipeTransportLogistics {
 	}
 
 	protected boolean isItemUnwanted(ItemIdentifierStack itemIdentifierStack) {
-		if (itemIdentifierStack != null && itemIdentifierStack.makeNormalStack().getItem() instanceof IItemAdvancedExistance) {
-			return !((IItemAdvancedExistance) itemIdentifierStack.makeNormalStack().getItem()).canExistInNormalInventory(itemIdentifierStack.makeNormalStack());
+		if (itemIdentifierStack != null && itemIdentifierStack.makeNormalStack().getItem() instanceof IItemAdvancedExistence) {
+			return !((IItemAdvancedExistence) itemIdentifierStack.makeNormalStack().getItem()).canExistInNormalInventory(itemIdentifierStack.makeNormalStack());
 		}
 		return false;
 	}

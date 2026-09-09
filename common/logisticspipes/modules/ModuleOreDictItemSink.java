@@ -37,7 +37,7 @@ import logisticspipes.interfaces.IClientInformationProvider;
 import logisticspipes.interfaces.IHUDModuleHandler;
 import logisticspipes.interfaces.IHUDModuleRenderer;
 import logisticspipes.interfaces.IModuleMenuProvider;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.to_client.module.OreDictItemSinkListMessage;
 import logisticspipes.network.to_server.module.SetOreDictItemSinkListMessage;
@@ -53,7 +53,7 @@ import network.rs485.logisticspipes.property.Property;
 import network.rs485.logisticspipes.property.StringListProperty;
 
 public class ModuleOreDictItemSink extends LogisticsModule
-    implements IClientInformationProvider, IHUDModuleHandler, IModuleWatchReciver, IModuleMenuProvider {
+    implements IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver, IModuleMenuProvider {
 
     @Getter
     private final StringListProperty oreList = new StringListProperty("");

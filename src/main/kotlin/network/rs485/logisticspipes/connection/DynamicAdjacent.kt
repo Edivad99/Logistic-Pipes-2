@@ -56,7 +56,7 @@ class DynamicAdjacent(private val parent: CoreRoutedPipe, private val cache: Arr
         .mapIndexedNotNull { index, connectionType ->
             connectionType?.let {
                 Direction.entries[index].let { dir ->
-                    parent.getWorld()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { LPNeighborTileEntity(it, dir) to connectionType }
+                    parent.getLevel()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { LPNeighborTileEntity(it, dir) to connectionType }
                 }
             }
         }
@@ -66,7 +66,7 @@ class DynamicAdjacent(private val parent: CoreRoutedPipe, private val cache: Arr
         .filter { it?.isItem() ?: false }
         .mapIndexedNotNull { index, _ ->
             Direction.entries[index].let { dir ->
-                parent.getWorld()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { it to dir }
+                parent.getLevel()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { it to dir }
             }
         }
         .mapNotNull { (tile, dir) -> LPNeighborTileEntity(tile, dir).takeIf { it.canHandleItems() } }
@@ -75,7 +75,7 @@ class DynamicAdjacent(private val parent: CoreRoutedPipe, private val cache: Arr
         .filter { it?.isFluid() ?: false }
         .mapIndexedNotNull { index, _ ->
             Direction.entries[index].let { dir ->
-                parent.getWorld()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { it to dir }
+                parent.getLevel()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { it to dir }
             }
         }
         .mapNotNull { (tile, dir) -> LPNeighborTileEntity(tile, dir).takeIf { it.canHandleFluids() } }

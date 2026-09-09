@@ -22,7 +22,7 @@ import logisticspipes.interfaces.IHUDModuleHandler;
 import logisticspipes.interfaces.IHUDModuleRenderer;
 import logisticspipes.interfaces.IModuleInventoryReceive;
 import logisticspipes.interfaces.IModuleMenuProvider;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.interfaces.IPipeServiceProvider;
 import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.to_client.module.ModuleInventoryMessage;
@@ -44,7 +44,7 @@ import network.rs485.logisticspipes.property.Property;
 
 @CCType(name = "Terminus Module")
 public class ModuleTerminus extends LogisticsModule
-		implements SimpleFilter, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReciver,
+		implements SimpleFilter, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver,
 		ISimpleInventoryEventHandler, IModuleInventoryReceive, IModuleMenuProvider {
 
 	public final ItemIdentifierInventoryProperty filterInventory = new ItemIdentifierInventoryProperty(

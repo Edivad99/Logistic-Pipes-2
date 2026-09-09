@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import logisticspipes.LogisticsPipes;
 import logisticspipes.client.gui.popup.GuiEditCCAccessTable;
 import logisticspipes.client.gui.popup.GuiSecurityStationPopup;
-import logisticspipes.interfaces.PlayerListReciver;
+import logisticspipes.interfaces.PlayerListReceiver;
 import logisticspipes.network.to_server.channel.RequestChannelManagerMessage;
 import logisticspipes.network.to_server.security.OpenSecurityPlayerMessage;
 import logisticspipes.network.to_server.security.RequestPlayerListMessage;
@@ -36,7 +36,7 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.Card
 import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.SecurityFlag;
 import network.rs485.logisticspipes.util.TextUtil;
 
-public class SecurityStationScreen extends LogisticsBaseGuiScreen<SecurityStationMenu> implements PlayerListReciver {
+public class SecurityStationScreen extends LogisticsBaseGuiScreen<SecurityStationMenu> implements PlayerListReceiver {
 
     //Player name:
     protected static final int searchWidth = 250;

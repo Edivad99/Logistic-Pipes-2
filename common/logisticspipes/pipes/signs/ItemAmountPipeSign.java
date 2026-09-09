@@ -255,7 +255,7 @@ public class ItemAmountPipeSign implements IPipeSign, ISimpleInventoryEventHandl
 	}
 
 	private void sendUpdatePacket() {
-		if (!pipe.getWorld().isClientSide()) {
+		if (!pipe.getLevel().isClientSide()) {
 			TargetLookup.sendToChunkWatchers(pipe.getContainer(), getPacket());
 		}
 	}

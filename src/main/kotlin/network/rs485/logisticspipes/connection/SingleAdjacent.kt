@@ -57,20 +57,20 @@ class SingleAdjacent(private val parent: CoreRoutedPipe, val dir: Direction, pri
     }
 
     override fun neighbors(): Map<NeighborTileEntity<BlockEntity>, ConnectionType> =
-        parent.getWorld()?.getBlockEntity(parent.getPos()!!.relative(dir))
+        parent.getLevel()?.getBlockEntity(parent.getPos()!!.relative(dir))
             ?.let { mapOf(LPNeighborTileEntity(it, dir) to adjacentType) }
             ?: emptyMap()
 
     override fun inventories(): List<NeighborTileEntity<BlockEntity>> =
         if (adjacentType.isItem()) {
-            listOfNotNull(parent.getWorld()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { tile ->
+            listOfNotNull(parent.getLevel()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { tile ->
                 LPNeighborTileEntity(tile, dir).takeIf { it.canHandleItems() }
             })
         } else emptyList()
 
     override fun fluidTanks(): List<NeighborTileEntity<BlockEntity>> =
         if (adjacentType.isFluid()) {
-            listOfNotNull(parent.getWorld()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { tile ->
+            listOfNotNull(parent.getLevel()?.getBlockEntity(parent.getPos()!!.relative(dir))?.let { tile ->
                 LPNeighborTileEntity(tile, dir).takeIf { it.canHandleFluids() }
             })
         } else emptyList()

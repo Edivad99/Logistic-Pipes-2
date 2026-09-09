@@ -168,7 +168,7 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 	public void onChunkUnload() {}
 
 	@Nullable
-	public Level getWorld() {
+	public Level getLevel() {
 		if (container == null) return null;
 		return container.getLevel();
 	}
@@ -383,7 +383,7 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 
 	@Nullable
 	public Level getLevelForHUD() {
-		return getWorld();
+		return getLevel();
 	}
 
 

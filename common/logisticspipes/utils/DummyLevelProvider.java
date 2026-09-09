@@ -2,9 +2,9 @@ package logisticspipes.utils;
 
 import net.minecraft.world.level.Level;
 
-import logisticspipes.interfaces.IWorldProvider;
+import logisticspipes.interfaces.ILevelProvider;
 
-public class DummyLevelProvider implements IWorldProvider {
+public class DummyLevelProvider implements ILevelProvider {
 
 	private final Level level;
 
@@ -13,7 +13,7 @@ public class DummyLevelProvider implements IWorldProvider {
 	}
 
 	@Override
-	public Level getWorld() {
+	public Level getLevel() {
 		return level;
 	}
 }

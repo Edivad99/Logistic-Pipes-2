@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConstants;
-import logisticspipes.interfaces.ISendQueueContentRecieiver;
+import logisticspipes.interfaces.ISendQueueContentReceiver;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.utils.item.ItemIdentifierStack;
@@ -35,7 +35,7 @@ public record SendQueueContentMessage(BlockPos pos, List<@Nullable ItemIdentifie
     public static void handle(SendQueueContentMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
             TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof ISendQueueContentRecieiver receiver) {
+        if (be != null && be.pipe instanceof ISendQueueContentReceiver receiver) {
             receiver.handleSendQueueItemIdentifierList(message.queued);
         }
     }

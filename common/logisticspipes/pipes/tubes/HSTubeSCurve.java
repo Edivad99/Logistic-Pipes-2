@@ -24,7 +24,6 @@ import logisticspipes.client.model.tube.TubeModels;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.interfaces.ITubeRenderOrientation;
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
-import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
@@ -248,7 +247,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 			PositionRotation rotation = new PositionRotation();
 			orientation.rotatePositions(rotation);
 			BlockPos offset = rotation.apply(new BlockPos(1, 0, -3));
-			BlockEntity subTile = getWorld().getBlockEntity(getPos().offset(offset));
+			BlockEntity subTile = getLevel().getBlockEntity(getPos().offset(offset));
 			if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
 				return ((LogisticsTileGenericSubMultiBlock) subTile).getTile(output);
 			}

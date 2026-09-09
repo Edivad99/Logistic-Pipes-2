@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IModuleMenuProvider;
 import logisticspipes.interfaces.IPipeServiceProvider;
-import logisticspipes.interfaces.IWorldProvider;
+import logisticspipes.interfaces.ILevelProvider;
 import logisticspipes.logisticspipes.ItemModuleInformationManager;
 import logisticspipes.modules.LogisticsModule;
 import logisticspipes.modules.LogisticsModule.ModulePositionType;
@@ -127,7 +127,7 @@ public class ItemModule extends LogisticsItem {
     @Nullable
     public LogisticsModule getModule(
         @Nullable LogisticsModule currentModule,
-        @Nullable IWorldProvider world,
+        @Nullable ILevelProvider world,
         @Nullable IPipeServiceProvider service
     ) {
         if (currentModule != null) {
@@ -144,7 +144,7 @@ public class ItemModule extends LogisticsItem {
     public LogisticsModule getModuleForItem(
         ItemStack itemStack,
         @Nullable LogisticsModule currentModule,
-        @Nullable IWorldProvider world,
+        @Nullable ILevelProvider world,
         @Nullable IPipeServiceProvider service
     ) {
 

@@ -2,9 +2,9 @@ package logisticspipes.world.item;
 
 import net.minecraft.world.item.ItemStack;
 
-import logisticspipes.interfaces.IItemAdvancedExistance;
+import logisticspipes.interfaces.IItemAdvancedExistence;
 
-public class LogisticsBrokenItem extends LogisticsItem implements IItemAdvancedExistance {
+public class LogisticsBrokenItem extends LogisticsItem implements IItemAdvancedExistence {
 
     private static final String PREFIX = "tooltip.brokenItem.";
 

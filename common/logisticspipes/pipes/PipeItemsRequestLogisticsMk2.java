@@ -42,7 +42,7 @@ public class PipeItemsRequestLogisticsMk2 extends PipeItemsRequestLogistics impl
 		if (ItemPipeController.isHeldBy(entityplayer) && !(entityplayer.isCrouching())) {
 			return false;
 		}
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (settings == null || settings.openGui) {
 				openGui(entityplayer);
 			} else {
@@ -91,15 +91,15 @@ public class PipeItemsRequestLogisticsMk2 extends PipeItemsRequestLogistics impl
 
 	@Override
 	public void onAllowedRemoval() {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			dropDisk();
 		}
 	}
 
 	public void dropDisk() {
 		if (!disk.isEmpty()) {
-			ItemEntity item = new ItemEntity(getWorld(), getPos().getX(), getPos().getY(), getPos().getZ(), disk);
-			getWorld().addFreshEntity(item);
+			ItemEntity item = new ItemEntity(getLevel(), getPos().getX(), getPos().getY(), getPos().getZ(), disk);
+			getLevel().addFreshEntity(item);
 			disk = ItemStack.EMPTY;
 		}
 	}

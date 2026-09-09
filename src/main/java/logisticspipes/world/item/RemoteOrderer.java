@@ -33,7 +33,7 @@ public class RemoteOrderer extends LogisticsItem {
 
     public static void connectToPipe(ItemStack stack, PipeItemsRemoteOrdererLogistics pipe) {
         stack.set(LPDataComponents.CONNECTED_PIPE, GlobalPos.of(
-            Objects.requireNonNull(pipe.getWorld()).dimension(),
+            Objects.requireNonNull(pipe.getLevel()).dimension(),
             Objects.requireNonNull(pipe.getPos())
         ));
     }
@@ -76,7 +76,7 @@ public class RemoteOrderer extends LogisticsItem {
             PipeItemsRemoteOrdererLogistics pipe = RemoteOrderer.getPipe(serverLevel.getServer(), par1ItemStack);
             if (pipe != null) {
                 int energyUse = 0;
-                if (pipe.getWorld() != level) {
+                if (pipe.getLevel() != level) {
                     energyUse += 2500;
                 }
                 final BlockPos pipePos = pipe.getPos();

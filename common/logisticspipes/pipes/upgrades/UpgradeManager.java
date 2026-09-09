@@ -238,7 +238,7 @@ public class UpgradeManager
 			}
 		}
 		if (needUpdate) {
-			final Level level = pipe.getWorld();
+			final Level level = pipe.getLevel();
 			if (level != null && !level.isClientSide()) {
 				pipe.connectionUpdate();
 				if (pipe.getContainer() != null) {
@@ -305,7 +305,7 @@ public class UpgradeManager
 			public void screenClosedByPlayer(Player player) {
 				players.remove(player);
 				if (players.isEmpty() && !isCombinedSneakyUpgrade) {
-					sneakyInv.dropContents(pipe.getWorld(), pipe.getPos());
+					sneakyInv.dropContents(pipe.getLevel(), pipe.getPos());
 				}
 			}
 		};
@@ -318,8 +318,8 @@ public class UpgradeManager
 	}
 
 	public void dropUpgrades() {
-		inv.dropContents(pipe.getWorld(), pipe.getPos());
-		sneakyInv.dropContents(pipe.getWorld(), pipe.getPos());
+		inv.dropContents(pipe.getLevel(), pipe.getPos());
+		sneakyInv.dropContents(pipe.getLevel(), pipe.getPos());
 	}
 
 	@Override

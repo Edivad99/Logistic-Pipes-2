@@ -101,7 +101,7 @@ public class LogisticsHUDRenderer {
 			if (!(pipe instanceof IHeadUpDisplayRendererProvider)) {
 				continue;
 			}
-			if (pipe.getWorld() == Minecraft.getInstance().level) {
+			if (pipe.getLevel() == Minecraft.getInstance().level) {
 				final BlockPos pipePos = pipe.getPos();
 				double dis = Math.hypot(pipePos.getX() - x + 0.5,
 						Math.hypot(pipePos.getY() - y + 0.5, pipePos.getZ() - z + 0.5));

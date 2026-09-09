@@ -4,8 +4,8 @@ import net.minecraft.world.level.Level;
 
 import org.jspecify.annotations.Nullable;
 
-public interface IWorldProvider {
+public interface ILevelProvider {
 
 	@Nullable
-    Level getWorld();
+    Level getLevel();
 }

@@ -66,7 +66,7 @@ import kotlinx.coroutines.Deferred
 
 
 class AsyncAdvancedExtractor : AsyncModule<ExtractorJob, Unit>(), SimpleFilter, SneakyDirection,
-    IClientInformationProvider, IHUDModuleHandler, IModuleWatchReciver, IModuleInventoryReceive,
+    IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver, IModuleInventoryReceive,
     ISimpleInventoryEventHandler, IModuleMenuProvider {
 
     companion object {
@@ -107,7 +107,7 @@ class AsyncAdvancedExtractor : AsyncModule<ExtractorJob, Unit>(), SimpleFilter, 
         super.finishInit()
         if (isInitialized) return
         if (service != null) {
-            val level = worldProvider?.getWorld()
+            val level = worldProvider?.getLevel()
             if (level?.isClientSide == false) {
                 itemsIncluded.addObserver {
                     extractor.localModeWatchers.send(
@@ -120,7 +120,7 @@ class AsyncAdvancedExtractor : AsyncModule<ExtractorJob, Unit>(), SimpleFilter, 
 
     override fun getLPName(): String = name
 
-    override fun registerHandler(world: IWorldProvider?, service: IPipeServiceProvider?) {
+    override fun registerHandler(world: ILevelProvider?, service: IPipeServiceProvider?) {
         super.registerHandler(world, service)
         extractor.registerHandler(world, service)
     }

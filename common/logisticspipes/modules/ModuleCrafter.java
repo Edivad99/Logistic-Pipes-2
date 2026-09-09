@@ -36,11 +36,11 @@ import logisticspipes.interfaces.IHUDModuleHandler;
 import logisticspipes.interfaces.IHUDModuleRenderer;
 import logisticspipes.interfaces.IInventoryUtil;
 import logisticspipes.interfaces.IModuleMenuProvider;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.interfaces.IPipeServiceProvider;
 import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.ISlotUpgradeManager;
-import logisticspipes.interfaces.IWorldProvider;
+import logisticspipes.interfaces.ILevelProvider;
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.ICraftItems;
 import logisticspipes.interfaces.routing.IFilter;
@@ -116,7 +116,7 @@ import network.rs485.logisticspipes.property.UUIDProperty;
 import network.rs485.logisticspipes.property.UUIDPropertyKt;
 
 public class ModuleCrafter extends LogisticsModule
-		implements ICraftItems, IHUDModuleHandler, IModuleWatchReciver, IScreenOpenController, IModuleMenuProvider {
+		implements ICraftItems, IHUDModuleHandler, IModuleWatchReceiver, IScreenOpenController, IModuleMenuProvider {
 
 	public final ItemIdentifierInventoryProperty dummyInventory = new ItemIdentifierInventoryProperty(
 			new ItemIdentifierInventory(11, "Requested items", 127), "dummyInv");
@@ -183,7 +183,7 @@ public class ModuleCrafter extends LogisticsModule
 	 * assumes that the invProvider is also IRequest items.
 	 */
 	@Override
-	public void registerHandler(IWorldProvider world, IPipeServiceProvider service) {
+	public void registerHandler(ILevelProvider world, IPipeServiceProvider service) {
 		super.registerHandler(world, service);
 		invRequester = (IRequestItems) service;
 	}

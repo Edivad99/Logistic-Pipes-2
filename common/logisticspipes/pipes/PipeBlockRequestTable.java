@@ -128,7 +128,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		if (ItemPipeController.isHeldBy(entityplayer) && !(entityplayer.isCrouching())) {
 			return false;
 		}
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (settings == null || settings.openGui) {
 				openGui(entityplayer);
 			} else {
@@ -142,19 +142,19 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 	public void ignoreDisableUpdateEntity() {
 		super.ignoreDisableUpdateEntity();
 		if (tick++ == 5) {
-			if (getWorld() != null) {
-				BlockState state = getWorld().getBlockState(getPos());
-				getWorld().sendBlockUpdated(getPos(), state, state, 3);
+			if (getLevel() != null) {
+				BlockState state = getLevel().getBlockState(getPos());
+				getLevel().sendBlockUpdated(getPos(), state, state, 3);
 			}
 		}
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			if (!init) {
 				ClientPacketDistributor.sendToServer(new RequestBlockRotationMessage(getPos()));
 				init = true;
 			}
 			return;
 		}
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 		if (tick % 2 == 0 && !localGuiWatcher.isEmpty()) {
@@ -294,10 +294,10 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 
 	@Override
 	public void onAllowedRemoval() {
-		if (!getWorld().isClientSide()) {
-			inv.dropContents(getWorld(), getPos());
-			toSortInv.dropContents(getWorld(), getPos());
-			diskInv.dropContents(getWorld(), getPos());
+		if (!getLevel().isClientSide()) {
+			inv.dropContents(getLevel(), getPos());
+			toSortInv.dropContents(getLevel(), getPos());
+			diskInv.dropContents(getLevel(), getPos());
 		}
 	}
 
@@ -313,7 +313,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		CraftingInput craftingInput = CraftingInput.of(3,3, craftInv.getItems());
 		List<RecipeHolder<CraftingRecipe>> list = new ArrayList<>();
 		for (RecipeHolder<CraftingRecipe> r : CraftingUtil.getRecipeList()) {
-			if (r.value().matches(craftingInput, getWorld())) {
+			if (r.value().matches(craftingInput, getLevel())) {
 				list.add(r);
 			}
 		}
@@ -346,7 +346,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		} else {
 			targetType = null;
 		}
-		if (targetType != oldTargetType && !localGuiWatcher.isEmpty() && getWorld() != null && !getWorld().isClientSide()) {
+		if (targetType != oldTargetType && !localGuiWatcher.isEmpty() && getLevel() != null && !getLevel().isClientSide()) {
 			localGuiWatcher.send(new CraftingTargetMessage(getPos(), Optional.ofNullable(targetType)));
 		}
 	}
@@ -365,7 +365,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		CraftingInput craftingInput = CraftingInput.of(3,3, craftInv.getItems());
 		List<RecipeHolder<CraftingRecipe>> list = new ArrayList<>();
 		for (RecipeHolder<CraftingRecipe> r : CraftingUtil.getRecipeList()) {
-			if (r.value().matches(craftingInput, getWorld())) {
+			if (r.value().matches(craftingInput, getLevel())) {
 				list.add(r);
 			}
 		}
@@ -406,7 +406,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 			craftingInput = CraftingInput.of(3,3, craftInv.getItems());
 			targetType = ItemIdentifier.get(cache.value().assemble(craftingInput));
 		}
-		if (!localGuiWatcher.isEmpty() && getWorld() != null && !getWorld().isClientSide()) {
+		if (!localGuiWatcher.isEmpty() && getLevel() != null && !getLevel().isClientSide()) {
 			localGuiWatcher.send(new CraftingTargetMessage(getPos(), Optional.ofNullable(targetType)));
 		}
 		cacheRecipe();
@@ -467,7 +467,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 			}
 		}
 		var craftingInput = CraftingInput.of(3,3, crafter.getItems());
-		if (!cache.value().matches(craftingInput, getWorld())) {
+		if (!cache.value().matches(craftingInput, getLevel())) {
 			return ItemStack.EMPTY; //Fix MystCraft
 		}
 		ItemStack result = cache.value().assemble(craftingInput);
@@ -487,7 +487,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		craftingInput = CraftingInput.of(3,3, crafter.getItems());
 		result = cache.value().assemble(craftingInput);
 		if (fake == null) {
-			fake = FakePlayers.of(getWorld());
+			fake = FakePlayers.of(getLevel());
 		}
 		result = result.copy();
 
@@ -500,7 +500,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 			if (!left.isEmpty()) {
 				left.setCount(inv.addCompressed(left, false));
 				if (left.getCount() > 0) {
-					ItemIdentifierInventory.dropItems(getWorld(), left, getPos().getX(), getPos().getY(), getPos().getZ());
+					ItemIdentifierInventory.dropItems(getLevel(), left, getPos().getX(), getPos().getY(), getPos().getZ());
 				}
 			}
 		}
@@ -510,7 +510,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 			if (!left.isEmpty()) {
 				left.setCount(inv.addCompressed(left, false));
 				if (left.getCount() > 0) {
-					ItemIdentifierInventory.dropItems(getWorld(), left, getPos().getX(), getPos().getY(), getPos().getZ());
+					ItemIdentifierInventory.dropItems(getLevel(), left, getPos().getX(), getPos().getY(), getPos().getZ());
 				}
 			}
 		}
@@ -518,7 +518,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 	}
 
 	public ItemStack getResultForClick() {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			ItemStack result = getOutput(true);
 			if (result.isEmpty()) {
 				result = getOutput(false);
@@ -642,14 +642,14 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 
 	@Override
 	public void handleClientSideListInfo(int id, IResource stack, LinkedLogisticsOrderList orders) {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			watchedRequests.put(id, new Pair<>(stack, orders));
 		}
 	}
 
 	@Override
 	public void handleClientSideRemove(int id) {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			if (id == -1) {
 				watchedRequests.clear();
 			} else {

@@ -324,7 +324,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 	}
 
 	private static void cacheTileToPreventRemoval(CoreUnroutedPipe pipe) {
-		final Level worldCache = pipe.getWorld();
+		final Level worldCache = pipe.getLevel();
 		final BlockPos posCache = pipe.getPos();
 		final BlockEntity tileCache = pipe.getContainer();
 		final CoreUnroutedPipe fPipe = pipe;

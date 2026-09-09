@@ -100,7 +100,7 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
         super(menu, inventory, title, 410, 240, 0, 0);
         table = menu.getTable();
         entityPlayer = inventory.player;
-        dimension = table.getWorld().dimension().identifier();
+        dimension = table.getLevel().dimension().identifier();
         menu.setScreenForJEI(this);
         refreshItems();
     }

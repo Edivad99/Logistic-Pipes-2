@@ -355,7 +355,7 @@ public class DebugController implements IRoutingDebugAdapter {
 	}
 
 	@Override
-	public void newCanidate(ExitRoute next) {
+	public void newCandidate(ExitRoute next) {
 		next.debug.index = cachedRoutes.size();
 		cachedRoutes.add(new WeakReference<>(next));
 		sendToPlayer(new RoutingDebugCandidateMessage(RouteDebugInfo.of(next)));

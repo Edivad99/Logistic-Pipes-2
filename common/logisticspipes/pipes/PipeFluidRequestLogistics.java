@@ -37,7 +37,7 @@ public class PipeFluidRequestLogistics extends FluidRoutedPipe implements IReque
 
 	@Override
 	public boolean handleClick(Player entityplayer, @Nullable SecuritySettings settings) {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (settings == null || settings.openRequest) {
 				openGui(entityplayer);
 			} else {

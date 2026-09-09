@@ -9,12 +9,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
-import logisticspipes.interfaces.IItemAdvancedExistance;
+import logisticspipes.interfaces.IItemAdvancedExistence;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.utils.FluidIdentifierStack;
 import logisticspipes.utils.item.ItemIdentifierStack;
 
-public class LogisticsFluidContainer extends LogisticsItem implements IItemAdvancedExistance {
+public class LogisticsFluidContainer extends LogisticsItem implements IItemAdvancedExistence {
 
     static int capacity = 8000;
 

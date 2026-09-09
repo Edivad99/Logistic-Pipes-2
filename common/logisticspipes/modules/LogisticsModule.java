@@ -24,7 +24,7 @@ import logisticspipes.interfaces.IHUDModuleHandler;
 import logisticspipes.interfaces.IModuleMenuProvider;
 import logisticspipes.interfaces.IPipeServiceProvider;
 import logisticspipes.interfaces.ISlotUpgradeManager;
-import logisticspipes.interfaces.IWorldProvider;
+import logisticspipes.interfaces.ILevelProvider;
 import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.to_server.module.ModuleWatchMessage;
 import logisticspipes.proxy.computers.interfaces.CCCommand;
@@ -45,7 +45,7 @@ public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeH
 
 	private final Object[] ccTypeHolder = new Object[1];
 	@Nullable
-	protected IWorldProvider worldProvider;
+	protected ILevelProvider worldProvider;
 	@Nullable
 	protected IPipeServiceProvider service;
 	@Getter
@@ -61,7 +61,7 @@ public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeH
 	 * @param world   that the module is in.
 	 * @param service Inventory access, power and utility functions provided by the pipe.
 	 */
-	public void registerHandler(@Nullable IWorldProvider world, @Nullable IPipeServiceProvider service) {
+	public void registerHandler(@Nullable ILevelProvider world, @Nullable IPipeServiceProvider service) {
 		this.worldProvider = world;
 		this.service = service;
 	}
@@ -105,9 +105,9 @@ public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeH
 
 	@Nullable
 	public Level getWorld() {
-		final IWorldProvider worldProvider = this.worldProvider;
+		final ILevelProvider worldProvider = this.worldProvider;
 		if (worldProvider == null) return null;
-		return worldProvider.getWorld();
+		return worldProvider.getLevel();
 	}
 
     @Override
@@ -209,7 +209,7 @@ public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeH
 		}
 		String in = "{world is null}";
 		if (worldProvider != null) {
-			in = Objects.toString(worldProvider.getWorld());
+			in = Objects.toString(worldProvider.getLevel());
 		}
 		return String.format("%s at %s in %s", getClass().getName(), at, in);
 	}
@@ -230,7 +230,7 @@ public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeH
 			return;
 		}
 		if (service != null) {
-			final Level blockAccess = worldProvider == null ? null : worldProvider.getWorld();
+			final Level blockAccess = worldProvider == null ? null : worldProvider.getLevel();
 			if (blockAccess != null && !blockAccess.isClientSide()) {
 				UtilKt.addObserver(getProperties(), (_) -> {
 					service.markTileDirty();

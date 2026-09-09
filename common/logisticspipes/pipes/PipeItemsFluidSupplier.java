@@ -151,7 +151,7 @@ public class PipeItemsFluidSupplier extends CoreRoutedPipe implements IRequestIt
 			return;
 		}
 
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 		super.throttledUpdateEntity();

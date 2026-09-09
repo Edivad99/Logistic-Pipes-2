@@ -23,7 +23,7 @@ public class DummyRoutingDebugAdapter implements IRoutingDebugAdapter {
 	public void handledPipe() {}
 
 	@Override
-	public void newCanidate(ExitRoute next) {}
+	public void newCandidate(ExitRoute next) {}
 
 	@Override
 	public void stepOneDone() {}

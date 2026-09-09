@@ -25,7 +25,7 @@ import logisticspipes.interfaces.IHUDModuleRenderer;
 import logisticspipes.interfaces.IInventoryUtil;
 import logisticspipes.interfaces.IModuleInventoryReceive;
 import logisticspipes.interfaces.IModuleMenuProvider;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.interfaces.IPipeServiceProvider;
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.network.ModuleTarget;
@@ -44,7 +44,7 @@ import network.rs485.logisticspipes.property.ItemIdentifierInventoryProperty;
 import network.rs485.logisticspipes.property.Property;
 
 public class ModulePassiveSupplier extends LogisticsModule
-		implements SimpleFilter, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReciver,
+		implements SimpleFilter, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver,
 		IModuleInventoryReceive, ISimpleInventoryEventHandler, IModuleMenuProvider {
 
 	public final ItemIdentifierInventoryProperty filterInventory = new ItemIdentifierInventoryProperty(

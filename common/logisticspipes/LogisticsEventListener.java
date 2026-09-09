@@ -56,7 +56,7 @@ import net.neoforged.neoforgespi.language.IModInfo;
 
 import vazkii.patchouli.api.PatchouliAPI;
 
-import logisticspipes.interfaces.IItemAdvancedExistance;
+import logisticspipes.interfaces.IItemAdvancedExistence;
 import logisticspipes.network.to_client.config.PlayerConfigMessage;
 import logisticspipes.network.to_server.module.QuickSortChestWatchMessage;
 import logisticspipes.pipes.PipeLogisticsChassis;
@@ -96,7 +96,7 @@ public class LogisticsEventListener {
 	@SubscribeEvent
 	public void onItemToss(ItemTossEvent event) {
 		final ItemStack stack = event.getEntity().getItem();
-		if (!stack.isEmpty() && stack.getItem() instanceof IItemAdvancedExistance existence
+		if (!stack.isEmpty() && stack.getItem() instanceof IItemAdvancedExistence existence
 				&& !existence.canExistInWorld(stack)) {
 			event.setCanceled(true);
 			event.getPlayer().getInventory().placeItemBackInInventory(stack);
@@ -108,7 +108,7 @@ public class LogisticsEventListener {
 		if (event.getEntity() instanceof ItemEntity itemEntity && !event.getLevel().isClientSide()) {
 			ItemStack stack = itemEntity.getItem();
 			if (!stack.isEmpty() &&
-					stack.getItem() instanceof IItemAdvancedExistance itemAdvancedExistence &&
+					stack.getItem() instanceof IItemAdvancedExistence itemAdvancedExistence &&
 					!itemAdvancedExistence.canExistInWorld(stack)) {
 				event.setCanceled(true);
 				return;

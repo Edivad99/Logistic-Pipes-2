@@ -2,7 +2,7 @@ package logisticspipes.interfaces;
 
 import java.util.List;
 
-public interface PlayerListReciver {
+public interface PlayerListReceiver {
 
 	void receivePlayerList(List<String> list);
 }

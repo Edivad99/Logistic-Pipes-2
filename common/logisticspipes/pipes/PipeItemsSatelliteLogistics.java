@@ -171,7 +171,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 
 	@Override
 	public @Nullable Level getLevelForHUD() {
-		return getWorld();
+		return getLevel();
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	public void deserialize(ValueInput input) {
 		super.deserialize(input);
 		satellitePipeName = input.getStringOr("satellitePipeName", "");
-		final Level level = getWorld();
+		final Level level = getLevel();
 		if (level != null && !level.isClientSide()) {
 			ensureAllSatelliteStatus();
 		}
@@ -198,7 +198,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	@Override
 	public void initialize() {
 		super.initialize();
-		final Level level = getWorld();
+		final Level level = getLevel();
 		if (level != null && !level.isClientSide()) {
 			ensureAllSatelliteStatus();
 		}
@@ -221,7 +221,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 
 	@Override
 	public void onAllowedRemoval() {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 		PipeItemsSatelliteLogistics.AllSatellites.remove(this);

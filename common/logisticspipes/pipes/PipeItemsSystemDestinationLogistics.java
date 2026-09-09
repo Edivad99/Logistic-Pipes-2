@@ -84,8 +84,8 @@ public class PipeItemsSystemDestinationLogistics extends CoreRoutedPipe implemen
 		if (itemident == null) {
 			return;
 		}
-		ItemEntity item = new ItemEntity(getWorld(), getPos().getX(), getPos().getY(), getPos().getZ(), itemident.makeNormalStack());
-		getWorld().addFreshEntity(item);
+		ItemEntity item = new ItemEntity(getLevel(), getPos().getX(), getPos().getY(), getPos().getZ(), itemident.makeNormalStack());
+		getLevel().addFreshEntity(item);
 		inv.clearInventorySlotContents(0);
 	}
 

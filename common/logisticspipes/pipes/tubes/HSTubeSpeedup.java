@@ -23,7 +23,6 @@ import logisticspipes.client.model.tube.TubeModels;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.interfaces.ITubeRenderOrientation;
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
-import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.transport.LPTravelingItem;
@@ -182,7 +181,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 			PositionRotation rotation = new PositionRotation();
 			orientation.rotatePositions(rotation);
 			BlockPos offset = rotation.apply(new BlockPos(0, 0, -3));
-			BlockEntity subTile = getWorld().getBlockEntity(getPos().offset(offset));
+			BlockEntity subTile = getLevel().getBlockEntity(getPos().offset(offset));
 			if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
 				return ((LogisticsTileGenericSubMultiBlock) subTile).getTile(output);
 			}

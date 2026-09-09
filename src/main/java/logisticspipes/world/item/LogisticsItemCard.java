@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
-import logisticspipes.interfaces.IItemAdvancedExistance;
+import logisticspipes.interfaces.IItemAdvancedExistence;
 import logisticspipes.world.item.component.LPDataComponents;
 import network.rs485.logisticspipes.util.TextUtil;
 
@@ -21,7 +21,7 @@ import network.rs485.logisticspipes.util.TextUtil;
  * metadata used to work. The security card is {@link LogisticsSecurityCard} now: what a stack is
  * belongs in the registry, not in a field that reads as durability.
  */
-public class LogisticsItemCard extends LogisticsItem implements IItemAdvancedExistance {
+public class LogisticsItemCard extends LogisticsItem implements IItemAdvancedExistence {
 
     public LogisticsItemCard(Properties properties) {
         super(properties.stacksTo(64));

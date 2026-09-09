@@ -25,10 +25,10 @@ import logisticspipes.interfaces.IClientInformationProvider;
 import logisticspipes.interfaces.IHUDModuleHandler;
 import logisticspipes.interfaces.IHUDModuleRenderer;
 import logisticspipes.interfaces.IModuleMenuProvider;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.interfaces.IPipeServiceProvider;
 import logisticspipes.interfaces.IStringBasedModule;
-import logisticspipes.interfaces.IWorldProvider;
+import logisticspipes.interfaces.ILevelProvider;
 import logisticspipes.network.ModuleTarget;
 import logisticspipes.network.to_client.module.StringBasedItemSinkListMessage;
 import logisticspipes.network.to_server.module.SetStringBasedItemSinkListMessage;
@@ -43,7 +43,7 @@ import network.rs485.logisticspipes.property.Property;
 import network.rs485.logisticspipes.property.StringListProperty;
 
 public class ModuleModBasedItemSink extends LogisticsModule
-		implements IStringBasedModule, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReciver, IModuleMenuProvider {
+		implements IStringBasedModule, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver, IModuleMenuProvider {
 
 	public final StringListProperty modList = new StringListProperty("");
 
@@ -123,10 +123,10 @@ public class ModuleModBasedItemSink extends LogisticsModule
 
 	@Override
 	public void listChanged() {
-		final IWorldProvider worldProvider = this.worldProvider;
+		final ILevelProvider worldProvider = this.worldProvider;
 		if (worldProvider == null) return;
 		final List<String> names = List.copyOf(modList);
-		if (worldProvider.getWorld() instanceof ServerLevel) {
+		if (worldProvider.getLevel() instanceof ServerLevel) {
 			localModeWatchers.send(new StringBasedItemSinkListMessage(ModuleTarget.of(this), names));
 		} else {
 			ClientPacketDistributor.sendToServer(

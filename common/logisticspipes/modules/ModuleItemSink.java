@@ -30,7 +30,7 @@ import logisticspipes.interfaces.IHUDModuleHandler;
 import logisticspipes.interfaces.IHUDModuleRenderer;
 import logisticspipes.interfaces.IModuleInventoryReceive;
 import logisticspipes.interfaces.IModuleMenuProvider;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.interfaces.IPipeServiceProvider;
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.network.ModuleTarget;
@@ -61,7 +61,7 @@ import network.rs485.logisticspipes.util.FuzzyUtil;
 
 @CCType(name = "ItemSink Module")
 public class ModuleItemSink extends LogisticsModule
-	implements SimpleFilter, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReciver,
+	implements SimpleFilter, IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver,
 	ISimpleInventoryEventHandler, IModuleInventoryReceive, IModuleMenuProvider {
 
 	public final ItemIdentifierInventoryProperty filterInventory = new ItemIdentifierInventoryProperty(

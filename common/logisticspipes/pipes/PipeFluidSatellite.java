@@ -136,7 +136,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 
 	@Override
 	public @Nullable Level getLevelForHUD() {
-		return getWorld();
+		return getLevel();
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	public void deserialize(ValueInput input) {
 		super.deserialize(input);
 		satellitePipeName = input.getStringOr("satellitePipeName", "");
-		final Level level = getWorld();
+		final Level level = getLevel();
 		if (level != null && !level.isClientSide()) {
 			ensureAllSatelliteStatus();
 		}
@@ -193,7 +193,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	@Override
 	public void initialize() {
 		super.initialize();
-		final Level level = getWorld();
+		final Level level = getLevel();
 		if (level != null && !level.isClientSide()) {
 			ensureAllSatelliteStatus();
 		}
@@ -216,7 +216,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 
 	@Override
 	public void onAllowedRemoval() {
-		if (getWorld().isClientSide()) {
+		if (getLevel().isClientSide()) {
 			return;
 		}
 		PipeFluidSatellite.AllSatellites.remove(this);

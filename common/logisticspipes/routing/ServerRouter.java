@@ -44,7 +44,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import it.unimi.dsi.fastutil.objects.ObjectSets;
-import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConfigs;
@@ -449,7 +448,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		if (changed) {
 			CoreRoutedPipe pipe = getPipe();
 			if (pipe != null) {
-				pipe.getWorld().sendBlockUpdated(pipe.getPos(), pipe.getWorld().getBlockState(pipe.getPos()), pipe.getWorld().getBlockState(pipe.getPos()), 3);
+				pipe.getLevel().sendBlockUpdated(pipe.getPos(), pipe.getLevel().getBlockState(pipe.getPos()), pipe.getLevel().getBlockState(pipe.getPos()), 3);
 				pipe.refreshConnectionAndRender(false);
 			}
 			adjacentChanged = true;
@@ -546,7 +545,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 					routedexits.add(pipe.getValue().exitOrientation);
 				}
 				if (!subpowerexits.containsKey(pipe.getValue().exitOrientation) && pipe.getValue().connectionDetails.contains(PipeRoutingConnectionType.canPowerSubSystemFrom)) {
-					subpowerexits.put(pipe.getValue().exitOrientation, PathFinder.messureDistanceToNextRoutedPipe(getPos(), pipe.getValue().exitOrientation, pipe.getKey().getWorld()));
+					subpowerexits.put(pipe.getValue().exitOrientation, PathFinder.messureDistanceToNextRoutedPipe(getPos(), pipe.getValue().exitOrientation, pipe.getKey().getLevel()));
 				}
 			}
 			this.adjacent = Collections.unmodifiableMap(adjacent);
@@ -703,7 +702,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 			if (newRouter != null) {
 				ExitRoute newER = new ExitRoute(newRouter, newRouter, currentE.distanceToDestination, currentE.connectionDetails, currentE.filters, new ArrayList<>(0), currentE.blockDistance);
 				candidatesCost.add(newER);
-				debug.newCanidate(newER);
+				debug.newCandidate(newER);
 			}
 		}
 
@@ -828,7 +827,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 						ExitRoute next = new ExitRoute(lowestCostNode.root, newCandidate.getKey(), candidateCost, newCT, lowestCostNode.filters, newCandidate.getValue().getValue3(), blockDistance);
 						next.debug.isTraced = lowestCostNode.debug.isTraced;
 						candidatesCost.add(next);
-						debug.newCanidate(next);
+						debug.newCandidate(next);
 					}
 				}
 

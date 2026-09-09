@@ -73,7 +73,7 @@ public class PipeItemsRequestLogistics extends CoreRoutedPipe implements IReques
 
 	@Override
 	public boolean handleClick(Player entityplayer, @Nullable SecuritySettings settings) {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (settings == null || settings.openRequest) {
 				openGui(entityplayer);
 			} else {
@@ -86,7 +86,7 @@ public class PipeItemsRequestLogistics extends CoreRoutedPipe implements IReques
 	@Override
 	public void enabledUpdateEntity() {
 		super.enabledUpdateEntity();
-		if (getWorld().getGameTime() % 1200 == 0) {
+		if (getLevel().getGameTime() % 1200 == 0) {
 			history.addLast(SimpleServiceLocator.logisticsManager.getAvailableItems(getRouter().getIRoutersByCost()));
 			if (history.size() > 20) {
 				history.removeFirst();

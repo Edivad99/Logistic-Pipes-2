@@ -2,7 +2,7 @@ package logisticspipes.interfaces;
 
 import net.minecraft.world.item.ItemStack;
 
-public interface IItemAdvancedExistance {
+public interface IItemAdvancedExistence {
 
 	boolean canExistInNormalInventory(ItemStack stack);
 

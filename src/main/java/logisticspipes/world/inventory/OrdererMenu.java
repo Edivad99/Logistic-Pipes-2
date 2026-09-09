@@ -30,7 +30,7 @@ public class OrdererMenu extends DummyMenu {
 
     /** The pipe as the client will address it. */
     public static RemotePipeTarget targetOf(CoreRoutedPipe pipe) {
-        return new RemotePipeTarget(pipe.getWorld().dimension().identifier(), pipe.getPos());
+        return new RemotePipeTarget(pipe.getLevel().dimension().identifier(), pipe.getPos());
     }
 
     /**

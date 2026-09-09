@@ -8,7 +8,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.network.ModuleTarget;
 
 /**
@@ -29,8 +29,8 @@ public record ModuleWatchMessage(ModuleTarget target, boolean watching) implemen
             ModuleWatchMessage::new);
 
     public static void handle(ModuleWatchMessage message, IPayloadContext context) {
-        final IModuleWatchReciver module =
-            message.target.resolve(context.player(), IModuleWatchReciver.class);
+        final IModuleWatchReceiver module =
+            message.target.resolve(context.player(), IModuleWatchReceiver.class);
         if (module == null) {
             return;
         }

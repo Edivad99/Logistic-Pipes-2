@@ -53,7 +53,7 @@ public class PipeTransportLayer extends TransportLayer {
 			possibleDirection.add(adjacent.getDirection());
 		}
 		if (possibleDirection.size() != 0) {
-			return possibleDirection.get(routedPipe.getWorld().getRandom().nextInt(possibleDirection.size()));
+			return possibleDirection.get(routedPipe.getLevel().getRandom().nextInt(possibleDirection.size()));
 		}
 
 		// 2nd priority, deliver to non-routed exit
@@ -69,7 +69,7 @@ public class PipeTransportLayer extends TransportLayer {
 			// last resort, drop item
 			return null;
 		} else {
-			return possibleDirection.get(routedPipe.getWorld().getRandom().nextInt(possibleDirection.size()));
+			return possibleDirection.get(routedPipe.getLevel().getRandom().nextInt(possibleDirection.size()));
 		}
 	}
 

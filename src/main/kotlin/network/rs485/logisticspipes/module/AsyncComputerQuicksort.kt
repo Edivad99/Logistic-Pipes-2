@@ -38,9 +38,9 @@
 package network.rs485.logisticspipes.module
 
 import logisticspipes.interfaces.IClientInformationProvider
-import logisticspipes.interfaces.IModuleWatchReciver
+import logisticspipes.interfaces.IModuleWatchReceiver
 import logisticspipes.interfaces.IPipeServiceProvider
-import logisticspipes.interfaces.IWorldProvider
+import logisticspipes.interfaces.ILevelProvider
 import logisticspipes.utils.PlayerCollectionList
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
@@ -50,7 +50,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class AsyncComputerQuicksort : AsyncModule<Pair<Int, ItemStack>?, QuicksortAsyncResult?>(),
-    IClientInformationProvider, IModuleWatchReciver {
+    IClientInformationProvider, IModuleWatchReceiver {
 
     companion object {
         @JvmStatic
@@ -84,7 +84,7 @@ class AsyncComputerQuicksort : AsyncModule<Pair<Int, ItemStack>?, QuicksortAsync
 
     override fun getLPName(): String = name
 
-    override fun registerHandler(world: IWorldProvider?, service: IPipeServiceProvider?) {
+    override fun registerHandler(world: ILevelProvider?, service: IPipeServiceProvider?) {
         super.registerHandler(world, service)
         quicksort.registerHandler(world, service)
     }

@@ -36,7 +36,7 @@ import logisticspipes.interfaces.IInventoryUtil;
 import logisticspipes.interfaces.ILegacyActiveModule;
 import logisticspipes.interfaces.IModuleInventoryReceive;
 import logisticspipes.interfaces.IModuleMenuProvider;
-import logisticspipes.interfaces.IModuleWatchReciver;
+import logisticspipes.interfaces.IModuleWatchReceiver;
 import logisticspipes.interfaces.IPipeServiceProvider;
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IFilter;
@@ -81,7 +81,7 @@ import network.rs485.logisticspipes.property.Property;
 
 @CCType(name = "Provider Module")
 public class ModuleProvider extends LogisticsModule implements SneakyDirection, ILegacyActiveModule,
-		IClientInformationProvider, IHUDModuleHandler, IModuleWatchReciver, IModuleInventoryReceive,
+		IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver, IModuleInventoryReceive,
 		IModuleMenuProvider {
 
 	public final ArrayList<ItemIdentifierStack> displayList = new ArrayList<>();

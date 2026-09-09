@@ -51,7 +51,7 @@ import logisticspipes.interfaces.IHeadUpDisplayRenderer;
 import logisticspipes.interfaces.IHeadUpDisplayRendererProvider;
 import logisticspipes.interfaces.IInventoryUtil;
 import logisticspipes.interfaces.ILegacyActiveModule;
-import logisticspipes.interfaces.ISendQueueContentRecieiver;
+import logisticspipes.interfaces.ISendQueueContentReceiver;
 import logisticspipes.interfaces.ISendRoutedItem;
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
@@ -115,7 +115,7 @@ import network.rs485.logisticspipes.property.SlottedModule;
 @CCType(name = "LogisticsChassiePipe")
 public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 		implements ICraftItems, IBufferItems, ISimpleInventoryEventHandler, ISendRoutedItem, IProvideItems,
-		IHeadUpDisplayRendererProvider, ISendQueueContentRecieiver, IChassisPipe, PropertyHolder {
+		IHeadUpDisplayRendererProvider, ISendQueueContentReceiver, IChassisPipe, PropertyHolder {
 
 	private final ChassisModule module;
 	private final ItemIdentifierInventory moduleInventory;
@@ -222,7 +222,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 			newDirection = newNeighbor.getValue1().getDirection();
 			pointedAdjacentProperty.setValue(new SingleAdjacent(this, newDirection, newNeighbor.getValue2()));
 		}
-		TargetLookup.sendToChunkWatchers(getWorld(), getPos(),
+		TargetLookup.sendToChunkWatchers(getLevel(), getPos(),
 			new ChassisOrientationMessage(getPos(), Optional.ofNullable(newDirection)));
 		refreshRender(true);
 	}
@@ -254,7 +254,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 				if (item == null) return;
 				moduleStack = new ItemStack(item);
 			}
-			ItemModuleInformationManager.saveInformation(getWorld(), moduleStack, module, provider);
+			ItemModuleInformationManager.saveInformation(getLevel(), moduleStack, module, provider);
 			moduleInventory.setItem(slottedModule.getSlot(), moduleStack);
 		});
 	}
@@ -317,14 +317,14 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 		// updateModuleInventory still needs a registry provider for the module payloads, and the
 		// ValueOutput no longer carries one; the pipe's own world is the same access it uses on the
 		// other call paths.
-		updateModuleInventory(getWorld().registryAccess());
+		updateModuleInventory(getLevel().registryAccess());
 		moduleInventory.serialize(output, "chassi");
 	}
 
 	@Override
 	public void onAllowedRemoval() {
 		moduleInventory.removeListener(this);
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			for (int i = 0; i < getChassisSize(); i++) {
 				LogisticsModule x = getSubModule(i);
 				if (x instanceof ILegacyActiveModule) {
@@ -332,8 +332,8 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 					y.onBlockRemoval();
 				}
 			}
-			updateModuleInventory(getWorld().registryAccess());
-			moduleInventory.dropContents(getWorld(), getPos());
+			updateModuleInventory(getLevel().registryAccess());
+			moduleInventory.dropContents(getLevel(), getPos());
 
 			for (int i = 0; i < getChassisSize(); i++) {
 				getModuleUpgradeManager(i).dropUpgrades();
@@ -343,7 +343,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public void itemArrived(ItemIdentifierStack item, IAdditionalTargetInformation info) {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (info instanceof ChassiTargetInformation) {
 				ChassiTargetInformation target = (ChassiTargetInformation) info;
 				LogisticsModule module = getSubModule(target.moduleSlot);
@@ -360,7 +360,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info) {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (info instanceof ChassiTargetInformation) {
 				ChassiTargetInformation target = (ChassiTargetInformation) info;
 				LogisticsModule module = getSubModule(target.moduleSlot);
@@ -377,7 +377,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public int addToBuffer(ItemIdentifierStack item, IAdditionalTargetInformation info) {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (info instanceof ChassiTargetInformation) {
 				ChassiTargetInformation target = (ChassiTargetInformation) info;
 				LogisticsModule module = getSubModule(target.moduleSlot);
@@ -395,7 +395,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public void InventoryChanged(Container inventory) {
-		final Level level = getWorld();
+		final Level level = getLevel();
 		boolean reInitGui = false;
 		for (int i = 0; i < inventory.getContainerSize(); i++) {
 			ItemStack stack = inventory.getItem(i);
@@ -443,7 +443,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	public void ignoreDisableUpdateEntity() {
 		if (!init) {
 			init = true;
-			if (getWorld().isClientSide()) {
+			if (getLevel().isClientSide()) {
 				ClientPacketDistributor.sendToServer(new RequestChassisOrientationMessage(getPos()));
 			}
 		}
@@ -566,7 +566,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public @Nullable Level getLevelForHUD() {
-		return getWorld();
+		return getLevel();
 	}
 
 	@Override
@@ -613,7 +613,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 
 	@Override
 	public int sendQueueChanged(boolean force) {
-		if (!getWorld().isClientSide()) {
+		if (!getLevel().isClientSide()) {
 			if (LPConfigs.COMMON.MULTI_THREAD_NUMBER.getAsInt() > 0 && !force) {
 				HudUpdateTick.add(getRouter());
 			} else {

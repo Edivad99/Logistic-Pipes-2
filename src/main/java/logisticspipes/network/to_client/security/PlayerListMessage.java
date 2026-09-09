@@ -11,7 +11,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import logisticspipes.LPConstants;
-import logisticspipes.interfaces.PlayerListReciver;
+import logisticspipes.interfaces.PlayerListReceiver;
 
 /**
  * The names of everyone online, in reply to the screen that asked for them.
@@ -37,7 +37,7 @@ public record PlayerListMessage(List<String> playerNames) implements CustomPacke
     private static final class Client {
 
         static void handle(PlayerListMessage message, IPayloadContext context) {
-            if (Minecraft.getInstance().screen instanceof PlayerListReciver receiver) {
+            if (Minecraft.getInstance().screen instanceof PlayerListReceiver receiver) {
                 receiver.receivePlayerList(message.playerNames);
             }
         }
