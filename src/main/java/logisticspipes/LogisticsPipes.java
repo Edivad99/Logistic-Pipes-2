@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -25,6 +26,7 @@ import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
+import logisticspipes.api.event.RegisterProgressProvidersEvent;
 import logisticspipes.client.ClientManager;
 import logisticspipes.commands.Confirmations;
 import logisticspipes.commands.LogisticsPipesCommand;
@@ -160,12 +162,18 @@ public class LogisticsPipes {
         SimpleServiceLocator.setSecurityStationManager(manager);
         SimpleServiceLocator.setLogisticsManager(new LogisticsManager());
         SimpleServiceLocator.setInventoryUtilFactory(new InventoryUtilFactory());
+
+        event.enqueueWork(() -> {
+            RegisterProgressProvidersEvent progressProviders = new RegisterProgressProvidersEvent();
+            progressProviders.register(new FurnaceProgressProvider());
+            ModLoader.postEvent(progressProviders);
+            SimpleServiceLocator.setMachineProgressProvider(
+                new MachineProgressProvider(progressProviders.registered()));
+        });
         SimpleServiceLocator.setSpecialConnectionHandler(new SpecialPipeConnection());
         SimpleServiceLocator.setSpecialConnectionHandler(new SpecialTileConnection());
         SimpleServiceLocator.setSpecialTankHandler(new SpecialTankHandler());
-        MachineProgressProvider machineProgress = new MachineProgressProvider();
-        machineProgress.registerProgressProvider(new FurnaceProgressProvider());
-        SimpleServiceLocator.setMachineProgressProvider(machineProgress);
+
         SimpleServiceLocator.setRoutedItemHelper(new RoutedItemHelper());
         SimpleServiceLocator.setChannelManagerProvider(new ChannelManagerProvider());
 
