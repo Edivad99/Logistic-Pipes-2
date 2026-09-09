@@ -1,5 +1,6 @@
 package logisticspipes.pipes.upgrades;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +12,6 @@ import lombok.Getter;
 
 import logisticspipes.interfaces.ISlotUpgradeManager;
 import logisticspipes.pipes.PipeLogisticsChassis;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
 import logisticspipes.utils.item.SimpleStackInventory;
 import logisticspipes.world.item.ItemUpgrade;
@@ -113,8 +113,8 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 	}
 
 	@Override
-	public DoubleCoordinates getPipePosition() {
-		return pipe.getLPPosition();
+	public BlockPos getPipePosition() {
+		return pipe.getPos();
 	}
 
 	@Override

@@ -1,13 +1,13 @@
 package logisticspipes.asm.te;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-import logisticspipes.util.DoubleCoordinates;
 
 public interface ITileEntityChangeListener {
 
-	void pipeRemoved(DoubleCoordinates pos);
+	void pipeRemoved(BlockPos pos);
 
-	void pipeAdded(DoubleCoordinates pos, Direction side);
+	void pipeAdded(BlockPos pos, Direction side);
 
 }

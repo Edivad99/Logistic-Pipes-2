@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -23,7 +24,6 @@ import logisticspipes.network.to_server.pipe.PipeOrderWatchMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.order.IOrderInfoProvider;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.ItemDisplay;
 import logisticspipes.utils.gui.LPGuiGraphics;
@@ -366,9 +366,9 @@ public class PipeControllerScreen extends LogisticsBaseTabGuiScreen<PipeControll
                 stringPos += 6;
                 guiGraphics.text(font, s, 3, stringPos, 0xFF303030, false);
                 stringPos += 4;
-                DoubleCoordinates pos = order.getTargetPosition();
+                BlockPos pos = order.getTargetPosition();
                 if (pos != null) {
-                    s = pos.toIntBasedString();
+                    s = "(" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ")";
                     guiGraphics.text(font, s, 40, stringPos, 0xFF303030, false);
                 }
                 stringPos += 10;

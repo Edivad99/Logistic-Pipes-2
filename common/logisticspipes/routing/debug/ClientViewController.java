@@ -19,7 +19,6 @@ import logisticspipes.particle.Particles;
 import logisticspipes.particle.PipeFXRenderHandler;
 import logisticspipes.renderer.LogisticsHUDRenderer;
 import logisticspipes.routing.PipeRoutingConnectionType;
-import logisticspipes.util.DoubleCoordinates;
 
 public class ClientViewController implements IDebugHUDProvider {
 
@@ -27,14 +26,14 @@ public class ClientViewController implements IDebugHUDProvider {
 
 	private ClientViewController() {}
 
-	private @Nullable DoubleCoordinates mainPipe = null;
+	private @Nullable BlockPos mainPipe = null;
 	private int tick = 0;
-	private final List<DoubleCoordinates> canidates = new ArrayList<>();
+	private final List<BlockPos> canidates = new ArrayList<>();
 	/** The candidate list as the debug screen shows it, rebuilt on every step. */
 	private final List<Component> candidateLines = new ArrayList<>();
 
 	private List<IHeadUpDisplayRendererProvider> listHUD = new ArrayList<>();
-	private HashMap<DoubleCoordinates, DebugInformation> HUDPositions = new HashMap<>();
+	private HashMap<BlockPos, DebugInformation> HUDPositions = new HashMap<>();
 
 	public static class DebugInformation {
 
@@ -54,7 +53,7 @@ public class ClientViewController implements IDebugHUDProvider {
 		return ClientViewController.instance;
 	}
 
-	private DebugInformation getDebugInformation(DoubleCoordinates pos) {
+	private DebugInformation getDebugInformation(BlockPos pos) {
 		DebugInformation info = HUDPositions.get(pos);
 		if (info == null) {
 			info = new DebugInformation();
@@ -68,10 +67,10 @@ public class ClientViewController implements IDebugHUDProvider {
 			return;
 		}
 		if (mainPipe != null) {
-			PipeFXRenderHandler.spawnGenericParticle(Particles.WHITE_SPARKLE, mainPipe.getXInt(), mainPipe.getYInt(), mainPipe.getZInt(), 1);
+			PipeFXRenderHandler.spawnGenericParticle(Particles.WHITE_SPARKLE, mainPipe.getX(), mainPipe.getY(), mainPipe.getZ(), 1);
 		}
-		for (DoubleCoordinates pos : canidates) {
-			PipeFXRenderHandler.spawnGenericParticle(Particles.ORANGE_SPARKLE, pos.getXInt(), pos.getYInt(), pos.getZInt(), 1);
+		for (BlockPos pos : canidates) {
+			PipeFXRenderHandler.spawnGenericParticle(Particles.ORANGE_SPARKLE, pos.getX(), pos.getY(), pos.getZ(), 1);
 		}
 	}
 
@@ -83,14 +82,12 @@ public class ClientViewController implements IDebugHUDProvider {
 	}
 
 	public void setSource(RouteDebugInfo route) {
-		mainPipe = new DoubleCoordinates(route.destination().getX(), route.destination().getY(),
-				route.destination().getZ());
+		mainPipe = route.destination();
 		getDebugInformation(mainPipe).nextFlags = route.flags();
 	}
 
 	public void addCandidate(RouteDebugInfo route) {
-		DoubleCoordinates pos = new DoubleCoordinates(route.destination().getX(), route.destination().getY(),
-				route.destination().getZ());
+		BlockPos pos = route.destination();
 		canidates.add(pos);
 		getDebugInformation(pos).isNew = true;
 		getDebugInformation(pos).newIndex = route.index();
@@ -113,11 +110,11 @@ public class ClientViewController implements IDebugHUDProvider {
 	}
 
 	public void setClosedSet(BlockPos pos, Set<PipeRoutingConnectionType> closed) {
-		getDebugInformation(new DoubleCoordinates(pos.getX(), pos.getY(), pos.getZ())).closedSet = closed;
+		getDebugInformation(pos).closedSet = closed;
 	}
 
 	public void setFilters(BlockPos pos, Map<PipeRoutingConnectionType, List<List<BlockPos>>> filters) {
-		getDebugInformation(new DoubleCoordinates(pos.getX(), pos.getY(), pos.getZ())).filters = filters;
+		getDebugInformation(pos).filters = filters;
 	}
 
 	public void updateList(List<RouteDebugInfo> routes) {
@@ -129,8 +126,7 @@ public class ClientViewController implements IDebugHUDProvider {
 					.withStyle(route.newlyAddedCandidate() ? ChatFormatting.AQUA : ChatFormatting.WHITE));
 			candidateLines.add(Component.literal("    " + route.networkDescription())
 					.withStyle(ChatFormatting.GRAY));
-			DoubleCoordinates pos = new DoubleCoordinates(route.destination().getX(),
-					route.destination().getY(), route.destination().getZ());
+			BlockPos pos = route.destination();
 			getDebugInformation(pos).routes.add(route);
 			getDebugInformation(pos).positions.add(i);
 		}

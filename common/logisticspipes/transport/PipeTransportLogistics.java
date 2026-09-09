@@ -66,8 +66,6 @@ import logisticspipes.routing.pathfinder.IPipeInformationProvider;
 import logisticspipes.ticks.LPTickHandler;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemClient;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.util.ItemStackLoader;
 import logisticspipes.utils.CacheHolder.CacheTypes;
 import logisticspipes.utils.InventoryHelper;
@@ -324,8 +322,8 @@ public class PipeTransportLogistics {
 		Iterator<Direction> iter = dirs.iterator();
 		while (iter.hasNext()) {
 			Direction dir = iter.next();
-			DoubleCoordinates pos = CoordinateUtils.add(getPipe().getLPPosition(), dir);
-			BlockEntity tile = pos.getTileEntity(getWorld());
+			BlockPos pos = getPipe().getPos().relative(dir);
+			BlockEntity tile = getWorld().getBlockEntity(pos);
 			if (!SimpleServiceLocator.pipeInformationManager.isItemPipe(tile)) {
 				iter.remove();
 			} else if (!canPipeConnect(tile, dir)) {

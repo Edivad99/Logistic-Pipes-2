@@ -2,11 +2,12 @@ package logisticspipes.routing.debug;
 
 import java.util.List;
 
-import logisticspipes.util.DoubleCoordinates;
+import net.minecraft.core.BlockPos;
+
 
 public class ExitRouteDebug {
 
-	public List<DoubleCoordinates> filterPosition = null;
+	public List<BlockPos> filterPosition = null;
 	public String toStringNetwork = null;
 	public boolean isNewlyAddedCanidate = true;
 	public boolean isTraced = true;

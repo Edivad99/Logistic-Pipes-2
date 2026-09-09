@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.world.level.block.Block;
@@ -27,8 +28,6 @@ import logisticspipes.client.model.mesh.MeshRenderer;
 import logisticspipes.client.model.pipe.PipeModelStore;
 import logisticspipes.client.model.solid.SolidBlockModelParts;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.world.level.block.LogisticsSolidBlock;
 import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
 
@@ -146,11 +145,11 @@ public class LogisticsSolidBlockRenderer<T extends BlockEntity> implements Block
 
         // LP1 hid the cover plates on sides where an adjacent LP pipe connects into this
         // block, so the pipe visually enters the machine.
-        DoubleCoordinates pos = new DoubleCoordinates(tile);
+        BlockPos pos = tile.getBlockPos();
         for (SolidBlockModelParts.CoverSide side : SolidBlockModelParts.CoverSide.values()) {
             Direction facing = side.facing(state.rotation);
-            DoubleCoordinates newPos = CoordinateUtils.sum(pos, facing);
-            BlockEntity sideTile = newPos.getTileEntity(tile.getLevel());
+            BlockPos newPos = pos.relative(facing);
+            BlockEntity sideTile = tile.getLevel().getBlockEntity(newPos);
             if (sideTile instanceof LogisticsTileGenericPipe tilePipe
                 && tilePipe.renderState != null
                 && tilePipe.renderState.pipeConnectionMatrix.isConnected(facing.getOpposite())) {

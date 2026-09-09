@@ -30,8 +30,6 @@ import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.routing.IRouter;
 import logisticspipes.routing.ItemRoutingInformation;
 import logisticspipes.routing.order.IDistanceTracker;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.DirectionUtil;
 import logisticspipes.utils.FluidIdentifierStack;
 import logisticspipes.utils.SlidingWindowBitSet;

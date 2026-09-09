@@ -62,7 +62,6 @@ import logisticspipes.interfaces.IRotationProvider;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.ticks.QueuedTasks;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.world.item.ItemLogisticsPipe;
 import logisticspipes.world.level.block.LPBlocks;
 import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
@@ -75,8 +74,8 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 
 	public static boolean ignoreSideRayTrace = false;
 	public static Map<Item, Function<Item, ? extends CoreUnroutedPipe>> pipes = new HashMap<>();
-	public static Map<DoubleCoordinates, CoreUnroutedPipe> pipeRemoved = new HashMap<>();
-	public static Map<DoubleCoordinates, BlockPos> pipeSubMultiRemoved = new HashMap<>();
+	public static Map<BlockPos, CoreUnroutedPipe> pipeRemoved = new HashMap<>();
+	public static Map<BlockPos, BlockPos> pipeSubMultiRemoved = new HashMap<>();
 	private static long lastRemovedDate = -1;
 
     public static final IntegerProperty rotationProperty = IntegerProperty.create("rotation", 0, 3);
@@ -187,20 +186,20 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 			}
 			final BlockPos mainPos = pipe.getPos();
 			List<CoreMultiBlockPipe.SubBlock> list = ((CoreMultiBlockPipe) pipe).getRotatedSubBlocks();
-			for (DoubleCoordinates pos : pipe.getContainer().subMultiBlock) {
-				BlockEntity tile = pos.getTileEntity(level);
+			for (BlockPos pos : pipe.getContainer().subMultiBlock) {
+				BlockEntity tile = level.getBlockEntity(pos);
 				if (tile instanceof LogisticsTileGenericSubMultiBlock) {
 					CoreMultiBlockPipe.SubBlock equ = list.stream()
-							.min(Comparator.comparingDouble(block -> block.at(mainPos).distSqr(pos.getBlockPos())))
+							.min(Comparator.comparingDouble(block -> block.at(mainPos).distSqr(pos)))
 							.orElse(null);
 					if (equ != null) {
 						((LogisticsTileGenericSubMultiBlock) tile).removeSubType(equ.type());
 					}
-					if (((LogisticsTileGenericSubMultiBlock) tile).removeMainPipe(new DoubleCoordinates(pipe))) {
+					if (((LogisticsTileGenericSubMultiBlock) tile).removeMainPipe(pipe.getPos())) {
 						LogisticsBlockGenericSubMultiBlock.redirectedToMainPipe = true;
-						pos.setBlockToAir(level);
+						level.removeBlock(pos, false);
 						LogisticsBlockGenericSubMultiBlock.redirectedToMainPipe = false;
-						LogisticsBlockGenericPipe.pipeSubMultiRemoved.put(new DoubleCoordinates(pos), pipe.getContainer().getBlockPos());
+						LogisticsBlockGenericPipe.pipeSubMultiRemoved.put(pos, pipe.getContainer().getBlockPos());
 					} else {
 						TargetLookup.sendToChunkWatchers(tile, ((LogisticsTileGenericSubMultiBlock) tile).getDescriptionMessage());
 					}
@@ -209,7 +208,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 		}
 
 		BlockPos pos = pipe.getContainer().getBlockPos();
-		LogisticsBlockGenericPipe.pipeRemoved.put(new DoubleCoordinates(pos), pipe);
+		LogisticsBlockGenericPipe.pipeRemoved.put(pos, pipe);
 		level.removeBlockEntity(pos);
 	}
 
@@ -275,10 +274,10 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 					}
 					CoreMultiBlockPipe mPipe = (CoreMultiBlockPipe) pipe;
 					orientation.setOnPipe(mPipe);
-					DoubleCoordinates placeAt = new DoubleCoordinates(blockPos);
+					BlockPos placeAt = blockPos;
 					LogisticsBlockGenericSubMultiBlock.currentCreatedMultiBlock = placeAt;
 					for (CoreMultiBlockPipe.SubBlock sub : ((CoreMultiBlockPipe) pipe).getRotatedSubBlocks()) {
-						final BlockPos subPos = sub.at(placeAt.getBlockPos());
+						final BlockPos subPos = sub.at(placeAt);
 						BlockEntity subTile = level.getBlockEntity(subPos);
 						BlockState oldSubBlockState = level.getBlockState(subPos);
 						if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
@@ -363,7 +362,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 			CoreUnroutedPipe pipe = LogisticsBlockGenericPipe.getPipe(world, pos);
 
 			if (pipe == null) {
-				pipe = LogisticsBlockGenericPipe.pipeRemoved.get(new DoubleCoordinates(pos));
+				pipe = LogisticsBlockGenericPipe.pipeRemoved.get(pos);
 			}
 
 			if (pipe != null) {
@@ -709,7 +708,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 		CoreUnroutedPipe pipe = LogisticsBlockGenericPipe.getPipe(level, pos);
 
 		if (pipe == null) {
-			pipe = LogisticsBlockGenericPipe.pipeRemoved.get(new DoubleCoordinates(pos));
+			pipe = LogisticsBlockGenericPipe.pipeRemoved.get(pos);
 		}
 
 		if (pipe == null) return;
@@ -824,7 +823,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 	// public boolean addDestroyEffects(BlockState state, Level world, BlockPos pos, ParticleEngine effectRenderer) { ... }
 
 private void checkForRenderChanges(BlockGetter worldIn, BlockPos blockPos) {
-		BlockEntity tile = new DoubleCoordinates(blockPos).getTileEntity(worldIn);
+		BlockEntity tile = worldIn.getBlockEntity(blockPos);
 		if (!(tile instanceof LogisticsTileGenericPipe)) return;
 		((LogisticsTileGenericPipe) tile).renderState.checkForRenderUpdate(worldIn, blockPos);
 	}

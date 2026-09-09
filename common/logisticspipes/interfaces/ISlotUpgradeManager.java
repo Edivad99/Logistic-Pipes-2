@@ -1,10 +1,10 @@
 package logisticspipes.interfaces;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 
 import logisticspipes.pipes.upgrades.IPipeUpgrade;
-import logisticspipes.util.DoubleCoordinates;
 
 public interface ISlotUpgradeManager {
 
@@ -30,7 +30,7 @@ public interface ISlotUpgradeManager {
 
 	IPipeUpgrade getUpgrade(int slot);
 
-	DoubleCoordinates getPipePosition();
+	BlockPos getPipePosition();
 
 	int getActionSpeedUpgrade();
 

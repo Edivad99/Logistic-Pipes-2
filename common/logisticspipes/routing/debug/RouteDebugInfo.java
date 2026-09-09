@@ -51,9 +51,9 @@ public record RouteDebugInfo(
     public static RouteDebugInfo of(ExitRoute route) {
         final List<BlockPos> filters = route.debug.filterPosition == null
                 ? List.of()
-                : route.debug.filterPosition.stream().map(pos -> pos.getBlockPos()).toList();
+                : List.copyOf(route.debug.filterPosition);
         return new RouteDebugInfo(
-                route.destination.getLPPosition().getBlockPos(),
+                route.destination.getPos(),
                 route.destination.toString(),
                 route.debug.toStringNetwork == null ? "" : route.debug.toStringNetwork,
                 route.debug.index,

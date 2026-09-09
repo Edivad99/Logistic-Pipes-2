@@ -21,7 +21,6 @@ import logisticspipes.interfaces.ISubSystemPowerProvider;
 import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.modules.LogisticsModule;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.tuples.Pair;
 
@@ -61,7 +60,7 @@ public interface IRouter {
 
 	int getSimpleID();
 
-	DoubleCoordinates getLPPosition();
+	BlockPos getPos();
 
 	/* Automated Disconnection */
 	boolean isSideDisconnected(Direction dir);

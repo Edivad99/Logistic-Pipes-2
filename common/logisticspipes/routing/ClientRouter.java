@@ -20,7 +20,6 @@ import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.modules.LogisticsModule;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.tuples.Pair;
 
@@ -118,8 +117,8 @@ public class ClientRouter implements IRouter {
 	}
 
 	@Override
-	public DoubleCoordinates getLPPosition() {
-		return new DoubleCoordinates(this.pos);
+	public BlockPos getPos() {
+		return this.pos;
 	}
 
 	@Override

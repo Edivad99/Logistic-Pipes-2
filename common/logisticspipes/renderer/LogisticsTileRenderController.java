@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -19,7 +20,6 @@ import logisticspipes.network.to_client.pipe.PowerLaserMessage;
 import logisticspipes.pipefxhandlers.PipeFXLaserPowerBall;
 import logisticspipes.pipefxhandlers.PipeFXLaserPowerBeam;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.util.DoubleCoordinates;
 
 public class LogisticsTileRenderController {
 
@@ -64,7 +64,7 @@ public class LogisticsTileRenderController {
 
 		public LaserBeamDataClient(float length, int timeout, boolean reverse, Direction dir, int color) {
 			super(length, timeout, reverse);
-			entity = new PipeFXLaserPowerBeam((ClientLevel) pipe.getLevel(), new DoubleCoordinates((BlockEntity) pipe), length, dir, color, pipe).setReverse(reverse);
+			entity = new PipeFXLaserPowerBeam((ClientLevel) pipe.getLevel(), ((BlockEntity) pipe).getBlockPos(), length, dir, color, pipe).setReverse(reverse);
 			Minecraft.getInstance().particleEngine.add(entity);
 
 		}
@@ -119,7 +119,7 @@ public class LogisticsTileRenderController {
 
 		public LaserBallDataClient(float length, int timeout, int color) {
 			super(length, timeout);
-			entity = new PipeFXLaserPowerBall((ClientLevel) pipe.getLevel(), new DoubleCoordinates((BlockEntity) pipe), color, pipe);
+			entity = new PipeFXLaserPowerBall((ClientLevel) pipe.getLevel(), ((BlockEntity) pipe).getBlockPos(), color, pipe);
 			Minecraft.getInstance().particleEngine.add(entity);
 		}
 

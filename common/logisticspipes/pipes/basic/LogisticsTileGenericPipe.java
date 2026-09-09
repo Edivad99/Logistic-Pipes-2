@@ -63,7 +63,6 @@ import logisticspipes.routing.pathfinder.changedetection.TEControl;
 import logisticspipes.ticks.ClientTaskQueue;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeFluidTransportLogistics;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.StackTraceUtil;
 import logisticspipes.utils.StackTraceUtil.Info;
 import logisticspipes.utils.TileBuffer;
@@ -98,7 +97,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements ILPPipeTile
 	public final PipeRenderState renderState;
 	public final CoreState coreState = new CoreState();
 	public Object OPENPERIPHERAL_IGNORE; //Tell OpenPeripheral to ignore this class
-	public Set<DoubleCoordinates> subMultiBlock = new HashSet<>();
+	public Set<BlockPos> subMultiBlock = new HashSet<>();
 	public boolean[] turtleConnect = new boolean[7];
 	@ModDependentField(modId = LPConstants.computerCraftModID)
 	public HashMap<Object, Direction> connections; // IComputerAccess — CC not ported
@@ -911,7 +910,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements ILPPipeTile
 
 	@Override
 	public double getDistanceTo(int destinationint, Direction ignore, ItemIdentifier ident, boolean isActive, double traveled, double max,
-			List<DoubleCoordinates> visited) {
+			List<BlockPos> visited) {
 		if (pipe == null || traveled > max) {
 			return Integer.MAX_VALUE;
 		}
@@ -950,7 +949,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements ILPPipeTile
 
 	@Override
 	public Stream<BlockEntity> getPartsOfPipe() {
-		return this.subMultiBlock.stream().map(pos -> pos.getTileEntity(level));
+		return this.subMultiBlock.stream().map(level::getBlockEntity);
 	}
 
 	@Nullable

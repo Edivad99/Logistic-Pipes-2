@@ -2,6 +2,7 @@ package logisticspipes.pipes;
 
 import java.util.Objects;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -28,7 +29,6 @@ import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.request.resources.IResource;
 import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierInventory;
 import logisticspipes.utils.item.ItemIdentifierStack;
@@ -149,8 +149,8 @@ public class PipeItemsFirewall extends CoreRoutedPipe implements IPipeMenuProvid
 				}
 
 				@Override
-				public DoubleCoordinates getLPPosition() {
-					return PipeItemsFirewall.this.getLPPosition();
+				public BlockPos getPos() {
+					return PipeItemsFirewall.this.getPos();
 				}
 
 				@Override

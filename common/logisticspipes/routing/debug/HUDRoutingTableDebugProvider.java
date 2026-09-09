@@ -7,14 +7,13 @@ import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IHeadUpDisplayRenderer;
 import logisticspipes.interfaces.IHeadUpDisplayRendererProvider;
-import logisticspipes.util.DoubleCoordinates;
 
 public class HUDRoutingTableDebugProvider implements IHeadUpDisplayRendererProvider {
 
 	private final IHeadUpDisplayRenderer hud;
-	private final DoubleCoordinates pos;
+	private final BlockPos pos;
 
-	HUDRoutingTableDebugProvider(IHeadUpDisplayRenderer hud, DoubleCoordinates pos) {
+	HUDRoutingTableDebugProvider(IHeadUpDisplayRenderer hud, BlockPos pos) {
 		this.hud = hud;
 		this.pos = pos;
 	}
@@ -26,7 +25,7 @@ public class HUDRoutingTableDebugProvider implements IHeadUpDisplayRendererProvi
 
     @Override
     public BlockPos getPos() {
-        return pos.getBlockPos();
+        return pos;
     }
 
 	@Override

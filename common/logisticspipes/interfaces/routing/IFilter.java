@@ -1,7 +1,8 @@
 package logisticspipes.interfaces.routing;
 
+import net.minecraft.core.BlockPos;
+
 import logisticspipes.request.resources.IResource;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 
 public interface IFilter {
@@ -20,5 +21,5 @@ public interface IFilter {
 
 	boolean blockPower();
 
-	DoubleCoordinates getLPPosition();
+	BlockPos getPos();
 }

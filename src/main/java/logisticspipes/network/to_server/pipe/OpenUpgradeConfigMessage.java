@@ -48,7 +48,7 @@ public record OpenUpgradeConfigMessage(int slot) implements CustomPacketPayload 
         if (context.player() instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new UpgradeConfigPopupMessage(
                     configurable.getConfigPopup(),
-                    slot.getManager().getPipePosition().getBlockPos(),
+                    slot.getManager().getPipePosition(),
                     message.slot));
         }
     }

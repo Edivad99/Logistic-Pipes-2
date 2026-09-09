@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
@@ -19,7 +20,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import logisticspipes.debug.DebugGuiController;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.FluidIdentifier;
 import network.rs485.grow.ServerTickDispatcher;
 
@@ -78,7 +78,7 @@ public class LPTickHandler {
 		@Setter(value = AccessLevel.PRIVATE)
 		private long worldTick = 0;
 		@Getter
-		private Set<DoubleCoordinates> updateQueued = new HashSet<>();
+		private Set<BlockPos> updateQueued = new HashSet<>();
 
 		@Getter
 		@Setter

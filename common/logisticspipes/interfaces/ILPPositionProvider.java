@@ -1,8 +1,8 @@
 package logisticspipes.interfaces;
 
-import logisticspipes.util.DoubleCoordinates;
+import net.minecraft.core.BlockPos;
 
 public interface ILPPositionProvider {
 
-	DoubleCoordinates getLPPosition();
+	BlockPos getPos();
 }

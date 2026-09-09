@@ -1,10 +1,8 @@
 package logisticspipes.pipes.tubes;
 
-import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
-import logisticspipes.utils.PositionRotation;
-import net.minecraft.core.BlockPos;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -25,15 +23,15 @@ import logisticspipes.client.model.tube.TubeModels;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.interfaces.ITubeRenderOrientation;
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemClient;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.IPositionRotateble;
+import logisticspipes.utils.PositionRotation;
 
 public class HSTubeSpeedup extends CoreMultiBlockPipe {
 
@@ -103,20 +101,20 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 
 	@Override
 	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
-		DoubleCoordinates pos = getLPPosition();
+		BlockPos pos = getPos();
 		PositionRotation rotation = new PositionRotation();
 		orientation.rotatePositions(rotation);
 		Vec3 posMin = rotation.apply(new Vec3(LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS));
 		Vec3 posMax = rotation.apply(new Vec3(LPConstants.PIPE_MAX_POS, LPConstants.PIPE_MAX_POS, -3));
 		if (orientation == SpeedupDirection.EAST) {
-			pos.add(new DoubleCoordinates(1, 0, 0));
+			pos = pos.offset(1, 0, 0);
 		} else if (orientation == SpeedupDirection.SOUTH) {
-			pos.add(new DoubleCoordinates(1, 0, 1));
+			pos = pos.offset(1, 0, 1);
 		} else if (orientation == SpeedupDirection.WEST) {
-			pos.add(new DoubleCoordinates(0, 0, 1));
+			pos = pos.offset(0, 0, 1);
 		}
-		AABB box = new AABB(posMin.x + pos.getXCoord(), posMin.y + pos.getYCoord(), posMin.z + pos.getZCoord(),
-				posMax.x + pos.getXCoord(), posMax.y + pos.getYCoord(), posMax.z + pos.getZCoord());
+		AABB box = new AABB(posMin.x + pos.getX(), posMin.y + pos.getY(), posMin.z + pos.getZ(),
+				posMax.x + pos.getX(), posMax.y + pos.getY(), posMax.z + pos.getZ());
 		if (box != null && (axisalignedbb == null || axisalignedbb.intersects(box))) {
 			arraylist.add(box);
 		}

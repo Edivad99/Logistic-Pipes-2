@@ -7,9 +7,9 @@
 
 package logisticspipes.world.item;
 
-import logisticspipes.utils.PositionRotation;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +36,7 @@ import logisticspipes.pipes.basic.CoreMultiBlockPipe;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.pipes.basic.LogisticsBlockGenericPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
-import logisticspipes.util.DoubleCoordinates;
+import logisticspipes.utils.PositionRotation;
 import logisticspipes.world.level.block.LPBlocks;
 
 /**

@@ -13,7 +13,6 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import logisticspipes.network.to_server.pipe.SetSneakyUpgradeSideMessage;
 import logisticspipes.pipes.upgrades.SneakyUpgradeConfig;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.LPGuiGraphics;
 import logisticspipes.utils.gui.SmallGuiButton;
@@ -25,12 +24,12 @@ import network.rs485.logisticspipes.util.TextUtil;
 public class SneakyConfigurationPopup extends SubGuiScreen {
 
     private static final String PREFIX = "gui.pipecontroller.popup.";
-    private final List<DoubleCoordinates> config;
+    private final List<BlockPos> config;
     private final UpgradeSlot pos;
     private SideConfigDisplay configDisplay;
     private Rectangle bounds;
 
-    public SneakyConfigurationPopup(List<DoubleCoordinates> config, UpgradeSlot pos) {
+    public SneakyConfigurationPopup(List<BlockPos> config, UpgradeSlot pos) {
         super(250, 250, 0, 0);
         this.config = config;
         this.pos = pos;
@@ -54,7 +53,7 @@ public class SneakyConfigurationPopup extends SubGuiScreen {
         Direction configured = SneakyUpgradeConfig.getSide(pos.getItem());
         if (configured != null) {
             config.forEach(coords -> configDisplay.highlight(
-                new BlockPos(coords.getXInt(), coords.getYInt(), coords.getZInt()), configured));
+                coords, configured));
         }
 
         SmallGuiButton cancel = new SmallGuiButton(0, right - 106, bottom - 26, 100, 20, "Cancel");

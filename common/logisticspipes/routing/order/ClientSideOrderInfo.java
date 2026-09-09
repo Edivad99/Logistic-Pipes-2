@@ -3,10 +3,11 @@ package logisticspipes.routing.order;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.core.BlockPos;
+
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
 
@@ -33,7 +34,7 @@ public class ClientSideOrderInfo implements IOrderInfoProvider {
 	@Getter
 	private final List<Float> progresses;
 	@Getter
-	private final @Nullable DoubleCoordinates targetPosition;
+	private final @Nullable BlockPos targetPosition;
 	@Getter
 	private final @Nullable ItemIdentifier targetType;
 

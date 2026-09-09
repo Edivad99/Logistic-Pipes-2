@@ -182,7 +182,7 @@ public abstract class LogisticsOrderManager<T extends LogisticsOrder, I> impleme
 	private PipeOrdersMessage contentMessage() {
 		final List<IOrderInfoProvider> content = new ArrayList<>();
 		orders.forEach(content::add);
-		return new PipeOrdersMessage(pos.getLPPosition().getBlockPos(), content);
+		return new PipeOrdersMessage(pos.getPos(), content);
 	}
 
 	public void startWatching(Player player) {

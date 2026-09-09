@@ -20,7 +20,6 @@ import logisticspipes.network.TargetLookup;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.proxy.SimpleServiceLocator;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.gui.ISubGuiController;
 import logisticspipes.utils.gui.SubGuiScreen;
 import logisticspipes.utils.gui.UpgradeSlot;
@@ -89,17 +88,17 @@ public record UpgradeConfigPopupMessage(Kind kind, BlockPos pipePos, int slotInd
      * The neighbours a sneaky upgrade can be pointed at: the inventories first, and if there are
      * none, every neighbour, so the popup is never empty.
      */
-    private static List<DoubleCoordinates> extractableSides(LogisticsTileGenericPipe container) {
-        final List<DoubleCoordinates> inventories = new WorldCoordinatesWrapper(container).connectedTileEntities()
+    private static List<BlockPos> extractableSides(LogisticsTileGenericPipe container) {
+        final List<BlockPos> inventories = new WorldCoordinatesWrapper(container).connectedTileEntities()
                 .stream()
                 .filter(neighbor -> SimpleServiceLocator.pipeInformationManager.isNotAPipe(neighbor.getTileEntity()))
-                .map(neighbor -> new DoubleCoordinates(neighbor.getTileEntity()))
+                .map(neighbor -> neighbor.getTileEntity().getBlockPos())
                 .collect(Collectors.toList());
         if (!inventories.isEmpty()) {
             return inventories;
         }
         return new WorldCoordinatesWrapper(container).connectedTileEntities().stream()
-                .map(neighbor -> new DoubleCoordinates(neighbor.getTileEntity()))
+                .map(neighbor -> neighbor.getTileEntity().getBlockPos())
                 .collect(Collectors.toList());
     }
 }

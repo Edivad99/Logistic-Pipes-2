@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,8 +42,6 @@ import logisticspipes.routing.IPaintPath;
 import logisticspipes.routing.LaserData;
 import logisticspipes.routing.PipeRoutingConnectionType;
 import logisticspipes.routing.pathfinder.IRouteProvider.RouteInfo;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.OneList;
 import logisticspipes.utils.tuples.Pair;
 import logisticspipes.utils.tuples.Quartet;
@@ -72,10 +71,10 @@ public class PathFinder {
 			return new HashMap<>();
 		}
 		PathFinder newSearch = new PathFinder(maxVisited, maxLength, pathPainter);
-		DoubleCoordinates p = new DoubleCoordinates(startProvider);
+		BlockPos p = startProvider.getPos();
 		newSearch.setVisited.add(p);
-		CoordinateUtils.add(p, startOrientation);
-		BlockEntity entity = p.getTileEntity(startProvider.getLevel());
+		p = p.relative(startOrientation);
+		BlockEntity entity = startProvider.getLevel().getBlockEntity(p);
 		IPipeInformationProvider provider = SimpleServiceLocator.pipeInformationManager.getInformationProviderFor(entity);
 		if (provider == null) {
 			return new HashMap<>();
@@ -108,8 +107,16 @@ public class PathFinder {
 
 	private final int maxVisited;
 	private final int maxLength;
-	private final HashSet<DoubleCoordinates> setVisited;
-	private final HashMap<DoubleCoordinates, Double> distances;
+	private final HashSet<BlockPos> setVisited;
+	/**
+	 * How much of the length budget each step has eaten. A pipe reached through a special
+	 * connection gets its own entry alongside the pipe's own, which is what the old key did by
+	 * offsetting the position to the block centre -- a distinct key by accident rather than by
+	 * intent, and easy to flatten by mistake when both became plain positions.
+	 */
+	private final HashMap<DistanceKey, Double> distances;
+
+	private record DistanceKey(BlockPos pos, boolean viaSpecialConnection) {}
 	private final IPaintPath pathPainter;
 	private double pipesVisited;
 
@@ -176,19 +183,19 @@ public class PathFinder {
 		}
 
 		//Visited is checked after, so we can reach the same target twice to allow to keep the shortest path
-		setVisited.add(new DoubleCoordinates(startPipe));
-		distances.put(new DoubleCoordinates(startPipe), startPipe.getDistance() * startPipe.getDistanceWeight());
+		setVisited.add(startPipe.getPos());
+		distances.put(new DistanceKey(startPipe.getPos(), false), startPipe.getDistance() * startPipe.getDistanceWeight());
 
 		// first check specialPipeConnections (tesseracts, teleports, other connectors)
 		List<ConnectionInformation> pipez = SimpleServiceLocator.specialpipeconnection.getConnectedPipes(startPipe, connectionFlags, side);
 		for (ConnectionInformation specialConnection : pipez) {
-			if (setVisited.contains(new DoubleCoordinates(specialConnection.getConnectedPipe()))) {
+			if (setVisited.contains(specialConnection.getConnectedPipe().getPos())) {
 				//Don't go where we have been before
 				continue;
 			}
-			distances.put(new DoubleCoordinates(startPipe).center(), specialConnection.getDistance());
+			distances.put(new DistanceKey(startPipe.getPos(), true), specialConnection.getDistance());
 			HashMap<CoreRoutedPipe, ExitRoute> result = getConnectedRoutingPipes(specialConnection.getConnectedPipe(), specialConnection.getConnectionFlags(), specialConnection.getInsertOrientation());
-			distances.remove(new DoubleCoordinates(startPipe).center());
+			distances.remove(new DistanceKey(startPipe.getPos(), true));
 			for (Entry<CoreRoutedPipe, ExitRoute> pipe : result.entrySet()) {
 				pipe.getValue().exitOrientation = specialConnection.getExitOrientation();
 				ExitRoute foundPipe = foundPipes.get(pipe.getKey());
@@ -288,7 +295,7 @@ public class PathFinder {
 					currentPipe.getPartsOfPipe().forEach(this::listTileEntity);
 				}
 
-				if (setVisited.contains(new DoubleCoordinates(currentPipe))) {
+				if (setVisited.contains(currentPipe.getPos())) {
 					//Don't go where we have been before
 					continue;
 				}
@@ -330,16 +337,16 @@ public class PathFinder {
 					List<RouteInfo> list = ((IRouteProvider) currentPipe).getConnectedPipes(direction.getOpposite());
 					if (list != null) {
 						result = new HashMap<>();
-						DoubleCoordinates pos = new DoubleCoordinates(currentPipe);
+						BlockPos pos = currentPipe.getPos();
 						for (RouteInfo info : list) {
 							if (info.getPipe() == startPipe) continue;
-							if (setVisited.contains(new DoubleCoordinates(info.getPipe()))) {
+							if (setVisited.contains(info.getPipe().getPos())) {
 								//Don't go where we have been before
 								continue;
 							}
-							distances.put(pos, (currentPipe.getDistance() * currentPipe.getDistanceWeight()) + info.getLength());
+							distances.put(new DistanceKey(pos, false), (currentPipe.getDistance() * currentPipe.getDistanceWeight()) + info.getLength());
 							result.putAll(getConnectedRoutingPipes(info.getPipe(), nextConnectionFlags, direction));
-							distances.remove(pos);
+							distances.remove(new DistanceKey(pos, false));
 						}
 					}
 				}
@@ -367,8 +374,8 @@ public class PathFinder {
 				}
 			}
 		}
-		setVisited.remove(new DoubleCoordinates(startPipe));
-		distances.remove(new DoubleCoordinates(startPipe));
+		setVisited.remove(startPipe.getPos());
+		distances.remove(new DistanceKey(startPipe.getPos(), false));
 		if (startPipe.isRoutingPipe()) { // ie, has the recursion returned to the pipe it started from?
 			for (ExitRoute e : foundPipes.values()) {
 				e.root = (startPipe.getRoutingPipe()).getRouter();
@@ -393,9 +400,9 @@ public class PathFinder {
 		}
 	}
 
-	public static int messureDistanceToNextRoutedPipe(DoubleCoordinates lpPosition, Direction exitOrientation, Level level) {
+	public static int messureDistanceToNextRoutedPipe(BlockPos lpPosition, Direction exitOrientation, Level level) {
 		int dis = 1;
-		BlockEntity tile = lpPosition.getTileEntity(level);
+		BlockEntity tile = level.getBlockEntity(lpPosition);
 		if (tile instanceof LogisticsTileGenericPipe) {
 			tile = ((LogisticsTileGenericPipe) tile).getNextConnectedTile(exitOrientation);
 		}

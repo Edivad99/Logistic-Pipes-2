@@ -2,13 +2,13 @@ package logisticspipes.pipefxhandlers;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import logisticspipes.client.particle.GlowGeometryParticle;
-import logisticspipes.util.DoubleCoordinates;
 
 public class PipeFXLaserPowerBall extends GlowGeometryParticle {
 
@@ -16,8 +16,8 @@ public class PipeFXLaserPowerBall extends GlowGeometryParticle {
 	private final float g;
 	private final float b;
 
-	public PipeFXLaserPowerBall(ClientLevel level, DoubleCoordinates pos, int color, BlockEntity tile) {
-		super(level, pos.getXCoord() + 0.5D, pos.getYCoord() + 0.5D, pos.getZCoord() + 0.5D);
+	public PipeFXLaserPowerBall(ClientLevel level, BlockPos pos, int color, BlockEntity tile) {
+		super(level, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
 		this.r = ((color >> 16) & 0xFF) / 255.0f;
 		this.g = ((color >> 8) & 0xFF) / 255.0f;
 		this.b = (color & 0xFF) / 255.0f;

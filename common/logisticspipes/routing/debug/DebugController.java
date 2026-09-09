@@ -133,7 +133,7 @@ public class DebugController implements IRoutingDebugAdapter {
 		final Map<PipeRoutingConnectionType, List<List<BlockPos>>> positions =
 				new EnumMap<>(PipeRoutingConnectionType.class);
 		filters.forEach((type, chains) -> positions.put(type, chains.stream()
-				.map(chain -> chain.stream().map(filter -> filter.getLPPosition().getBlockPos()).toList())
+				.map(chain -> chain.stream().map(filter -> filter.getPos()).toList())
 				.toList()));
 		return positions;
 	}
@@ -324,7 +324,7 @@ public class DebugController implements IRoutingDebugAdapter {
 			if (set != null) {
 				IRouter router = SimpleServiceLocator.routerManager.getRouter(i);
 				if (router != null) {
-					sendToPlayer(new RoutingDebugClosedSetMessage(router.getLPPosition().getBlockPos(), set));
+					sendToPlayer(new RoutingDebugClosedSetMessage(router.getPos(), set));
 				}
 			}
 		}
@@ -333,7 +333,7 @@ public class DebugController implements IRoutingDebugAdapter {
 			if (filters != null) {
 				IRouter router = SimpleServiceLocator.routerManager.getRouter(i);
 				if (router != null) {
-					sendToPlayer(new RoutingDebugFiltersMessage(router.getLPPosition().getBlockPos(),
+					sendToPlayer(new RoutingDebugFiltersMessage(router.getPos(),
 						filterPositions(filters)));
 				}
 			}
@@ -409,7 +409,7 @@ public class DebugController implements IRoutingDebugAdapter {
 		ExitRoute route = cachedRoutes.get(integer).get();
 		if (route != null) {
 			route.debug.isTraced = false;
-			LogisticsPipes.LOG.debug("Did Untrack: {}", route.destination.getLPPosition());
+			LogisticsPipes.LOG.debug("Did Untrack: {}", route.destination.getPos());
 		}
 	}
 }

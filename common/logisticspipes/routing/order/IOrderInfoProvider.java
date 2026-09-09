@@ -3,13 +3,13 @@ package logisticspipes.routing.order;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
 
@@ -61,16 +61,16 @@ public interface IOrderInfoProvider {
 	 * because the old format wrote them behind one shared boolean, and reading either without the
 	 * other says nothing.
 	 */
-	record Target(DoubleCoordinates position, ItemIdentifier type) {
+	record Target(BlockPos position, ItemIdentifier type) {
 
 		public static final StreamCodec<RegistryFriendlyByteBuf, Target> STREAM_CODEC =
 				StreamCodec.composite(
-						DoubleCoordinates.STREAM_CODEC, Target::position,
+						BlockPos.STREAM_CODEC, Target::position,
 						ItemIdentifier.STREAM_CODEC, Target::type,
 						Target::new);
 
 		public static Optional<Target> of(IOrderInfoProvider order) {
-			final DoubleCoordinates position = order.getTargetPosition();
+			final BlockPos position = order.getTargetPosition();
 			return position == null ? Optional.empty() : Optional.of(new Target(position, order.getTargetType()));
 		}
 	}
@@ -95,7 +95,7 @@ public interface IOrderInfoProvider {
 
 	ItemIdentifier getTargetType();
 
-	DoubleCoordinates getTargetPosition();
+	BlockPos getTargetPosition();
 
 
 	enum ResourceType {

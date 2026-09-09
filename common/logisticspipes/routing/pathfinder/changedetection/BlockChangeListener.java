@@ -12,8 +12,6 @@ import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import logisticspipes.asm.te.ILPTEInformation;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.ticks.QueuedTasks;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 
 /**
  * Listens for block-place and block-break events so LP pipes can refresh their
@@ -63,14 +61,11 @@ public class BlockChangeListener {
      * pipe, tell it to refresh the side that faces {@code changedPos}.
      */
     private static void notifyAdjacentPipes(Level level, BlockPos changedPos) {
-        DoubleCoordinates changed = new DoubleCoordinates(
-                changedPos.getX(), changedPos.getY(), changedPos.getZ());
-
         for (Direction dir : Direction.values()) {
-            DoubleCoordinates adjacent = CoordinateUtils.sum(changed, dir);
-            if (!adjacent.blockExists(level)) continue;
+            BlockPos adjacent = changedPos.relative(dir);
+            if (level.isEmptyBlock(adjacent)) continue;
 
-            BlockEntity adjacentTE = adjacent.getTileEntity(level);
+            BlockEntity adjacentTE = level.getBlockEntity(adjacent);
             if (adjacentTE == null) continue;
 
             // Guard: only LP-managed TEs carry ILPTEInformation

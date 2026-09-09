@@ -13,7 +13,6 @@ import org.jspecify.annotations.Nullable;
 import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.transport.LPTravelingItem;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 import network.rs485.logisticspipes.connection.ConnectionType;
 
@@ -59,7 +58,7 @@ public interface IPipeInformationProvider {
 
 	boolean isPowerPipe();
 
-	double getDistanceTo(int destinationint, Direction ignore, ItemIdentifier ident, boolean isActive, double travled, double max, List<DoubleCoordinates> visited);
+	double getDistanceTo(int destinationint, Direction ignore, ItemIdentifier ident, boolean isActive, double travled, double max, List<BlockPos> visited);
 
 	boolean acceptItem(LPTravelingItem item, BlockEntity from);
 

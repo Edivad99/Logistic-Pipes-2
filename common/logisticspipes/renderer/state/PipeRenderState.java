@@ -5,7 +5,7 @@ import java.util.Arrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.level.BlockGetter; // was BlockGetter
+import net.minecraft.world.level.BlockGetter; // was BlockGette;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,8 +15,6 @@ import com.google.common.cache.CacheBuilder;
 import io.netty.buffer.ByteBuf;
 
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 
 public class PipeRenderState {
 
@@ -54,9 +52,9 @@ public class PipeRenderState {
 	public void checkForRenderUpdate(BlockGetter worldIn, BlockPos blockPos) {
 		boolean[] solidSides = new boolean[6];
 		for (Direction dir : Direction.values()) {
-			DoubleCoordinates pos = CoordinateUtils.add(new DoubleCoordinates(blockPos), dir);
-			BlockState blockSide = pos.getBlockState(worldIn);
-			if (blockSide.isFaceSturdy(worldIn, pos.getBlockPos(), dir.getOpposite()) && !pipeConnectionMatrix.isConnected(dir)) {
+			BlockPos pos = blockPos.relative(dir);
+			BlockState blockSide = worldIn.getBlockState(pos);
+			if (blockSide.isFaceSturdy(worldIn, pos, dir.getOpposite()) && !pipeConnectionMatrix.isConnected(dir)) {
 				solidSides[dir.ordinal()] = true;
 			}
 		}
@@ -66,8 +64,8 @@ public class PipeRenderState {
 			clearRenderCaches();
 			changed = true;
 		}
-		DoubleCoordinates pos = new DoubleCoordinates(blockPos);
-		BlockEntity tile = pos.getTileEntity(worldIn);
+		BlockPos pos = blockPos;
+		BlockEntity tile = worldIn.getBlockEntity(pos);
 		if (tile instanceof LogisticsTileGenericPipe) {
 			// MCMultiPart not available on 1.20.1 — hasParts is always false (former dummy behavior).
 			boolean hasParts = false;

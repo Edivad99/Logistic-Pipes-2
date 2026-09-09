@@ -1,7 +1,5 @@
 package logisticspipes.pipes.tubes;
 
-import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
-import logisticspipes.utils.PositionRotation;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -25,11 +23,12 @@ import logisticspipes.client.model.tube.TubeModels;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.interfaces.ITubeRenderOrientation;
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.IPositionRotateble;
+import logisticspipes.utils.PositionRotation;
 
 public class HSTubeCurve extends CoreMultiBlockPipe {
 

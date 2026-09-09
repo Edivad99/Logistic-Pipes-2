@@ -53,11 +53,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import kotlin.Unit;
 import lombok.Getter;
 import lombok.Setter;
 import org.jspecify.annotations.Nullable;
 
+import kotlin.Unit;
 import logisticspipes.LPConfigs;
 import logisticspipes.LPConstants;
 import logisticspipes.LogisticsPipes;
@@ -118,7 +118,6 @@ import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
 import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 import logisticspipes.transport.PipeTransportLogistics;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.util.PipeConfigTools;
 import logisticspipes.utils.CacheHolder;
 import logisticspipes.utils.DirectionUtil;
@@ -1720,7 +1719,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public double getDistanceTo(int destinationint, Direction ignore, ItemIdentifier ident, boolean isActive, double traveled, double max,
-			List<DoubleCoordinates> visited) {
+			List<BlockPos> visited) {
 		if (!stillNeedReplace) {
 			if (getRouterId() == destinationint) {
 				return 0;

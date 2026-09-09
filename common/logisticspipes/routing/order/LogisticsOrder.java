@@ -3,13 +3,14 @@ package logisticspipes.routing.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.routing.IRouter;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 
 @Accessors(chain = true)
@@ -101,10 +102,10 @@ public abstract class LogisticsOrder implements IOrderInfoProvider {
 	}
 
 	@Override
-	public DoubleCoordinates getTargetPosition() {
+	public BlockPos getTargetPosition() {
 		if (getRouter() == null) {
 			return null;
 		}
-		return getRouter().getLPPosition();
+		return getRouter().getPos();
 	}
 }

@@ -25,7 +25,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.world.level.block.LPBlocks;
 import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 
@@ -119,7 +118,7 @@ public class LogisticsBlockGenericSubMultiBlock extends Block implements EntityB
 	// getIcon_DEAD — stub removed; IBlockAccess and TextureAtlasSprite-based getIcon removed in 1.20.1
 	*/
 
-	public static DoubleCoordinates currentCreatedMultiBlock;
+	public static BlockPos currentCreatedMultiBlock;
 
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,

@@ -68,7 +68,6 @@ import logisticspipes.request.resources.ItemResource;
 import logisticspipes.routing.pathfinder.PathFinder;
 import logisticspipes.ticks.LPTickHandler;
 import logisticspipes.ticks.RoutingTableUpdateThread;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.CacheHolder;
 import logisticspipes.utils.OneList;
 import logisticspipes.utils.StackTraceUtil;
@@ -108,8 +107,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	protected final ReentrantReadWriteLock routingTableUpdateLock = new ReentrantReadWriteLock();
 	protected final Lock routingTableUpdateWriteLock = routingTableUpdateLock.writeLock();
 	protected final int simpleID;
-	@Getter
-	private final BlockPos pos;
+    private final BlockPos pos;
 	// these are maps, not hashMaps because they are unmodifiable Collections to avoid concurrentModification exceptions.
 	public Map<CoreRoutedPipe, ExitRoute> adjacent = new HashMap<>();
 	public Map<ServerRouter, ExitRoute> adjacentRouter = new HashMap<>();
@@ -132,12 +130,12 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	private @Nullable WeakReference<CoreRoutedPipe> myPipeCache = null;
 	private final LinkedList<Pair<Integer, IRouterQueuedTask>> queue = new LinkedList<>();
 	int connectionNeedsChecking = 0;
-	private final List<DoubleCoordinates> causedBy = new LinkedList<>();
+	private final List<BlockPos> causedBy = new LinkedList<>();
 	private boolean isDestroyed = false;
 	private final ITileEntityChangeListener localChangeListener = new ITileEntityChangeListener() {
 
 		@Override
-		public void pipeRemoved(DoubleCoordinates pos) {
+		public void pipeRemoved(BlockPos pos) {
 			if (connectionNeedsChecking == 0) {
 				connectionNeedsChecking = 1;
 			}
@@ -147,7 +145,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		}
 
 		@Override
-		public void pipeAdded(DoubleCoordinates pos, Direction side) {
+		public void pipeAdded(BlockPos pos, Direction side) {
 			if (connectionNeedsChecking == 0) {
 				connectionNeedsChecking = 1;
 			}
@@ -299,8 +297,8 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	}
 
 	@Override
-	public DoubleCoordinates getLPPosition() {
-		return new DoubleCoordinates(this.pos);
+	public BlockPos getPos() {
+		return this.pos;
 	}
 
 	@Override
@@ -548,7 +546,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 					routedexits.add(pipe.getValue().exitOrientation);
 				}
 				if (!subpowerexits.containsKey(pipe.getValue().exitOrientation) && pipe.getValue().connectionDetails.contains(PipeRoutingConnectionType.canPowerSubSystemFrom)) {
-					subpowerexits.put(pipe.getValue().exitOrientation, PathFinder.messureDistanceToNextRoutedPipe(getLPPosition(), pipe.getValue().exitOrientation, pipe.getKey().getWorld()));
+					subpowerexits.put(pipe.getValue().exitOrientation, PathFinder.messureDistanceToNextRoutedPipe(getPos(), pipe.getValue().exitOrientation, pipe.getKey().getWorld()));
 				}
 			}
 			this.adjacent = Collections.unmodifiableMap(adjacent);

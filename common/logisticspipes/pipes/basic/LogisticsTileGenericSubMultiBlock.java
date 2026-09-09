@@ -22,6 +22,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import com.mojang.serialization.Codec;
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LogisticsPipes;
 import logisticspipes.network.UpdateTagPayload;
@@ -29,13 +30,12 @@ import logisticspipes.network.to_client.block.MultiBlockPositionMessage;
 import logisticspipes.routing.pathfinder.IPipeInformationProvider;
 import logisticspipes.routing.pathfinder.ISubMultiBlockPipeInformationProvider;
 import logisticspipes.ticks.ClientTaskQueue;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.TileBuffer;
 import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 
 public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements ISubMultiBlockPipeInformationProvider {
 
-	private Set<DoubleCoordinates> mainPipePos = new HashSet<>();
+	private Set<BlockPos> mainPipePos = new HashSet<>();
 	private List<LogisticsTileGenericPipe> mainPipe;
 	private List<CoreMultiBlockPipe.SubBlockTypeForShare> subTypes = new ArrayList<>();
 	private TileBuffer[] tileBuffer;
@@ -44,7 +44,7 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 		super(LPBlockEntityTypes.SUB_PIPE.get(), blockPos, blockState);
 	}
 
-	public LogisticsTileGenericSubMultiBlock(BlockPos blockPos, BlockState blockState, DoubleCoordinates pos) {
+	public LogisticsTileGenericSubMultiBlock(BlockPos blockPos, BlockState blockState, BlockPos pos) {
 		super(LPBlockEntityTypes.SUB_PIPE.get(), blockPos, blockState);
 		if (pos != null) {
 			mainPipePos.add(pos);
@@ -78,8 +78,8 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 	public List<LogisticsTileGenericPipe> getMainPipe() {
 		if (mainPipe == null) {
 			mainPipe = new ArrayList<>();
-			for (DoubleCoordinates pos : mainPipePos) {
-				BlockEntity tile = pos.getTileEntity(getLevel());
+			for (BlockPos pos : mainPipePos) {
+				BlockEntity tile = getLevel().getBlockEntity(pos);
 				if (tile instanceof LogisticsTileGenericPipe) {
 					mainPipe.add((LogisticsTileGenericPipe) tile);
 				}
@@ -114,8 +114,8 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 			return Collections.emptyList();
 		}
 		List<LogisticsTileGenericPipe> result = new ArrayList<>(mainPipePos.size());
-		for (DoubleCoordinates pos : mainPipePos) {
-			BlockEntity tile = pos.getTileEntity(getLevel());
+		for (BlockPos pos : mainPipePos) {
+			BlockEntity tile = getLevel().getBlockEntity(pos);
 			if (tile instanceof LogisticsTileGenericPipe) {
 				result.add((LogisticsTileGenericPipe) tile);
 			}
@@ -130,20 +130,42 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 	public static void serverTick(Level level, BlockPos pos, BlockState state,
         LogisticsTileGenericSubMultiBlock blockEntity) {
 		for (LogisticsTileGenericPipe pipe : blockEntity.getMainPipe()) {
-			pipe.subMultiBlock.add(new DoubleCoordinates(blockEntity));
+			pipe.subMultiBlock.add(blockEntity.getBlockPos());
 		}
+	}
+
+	/**
+	 * Reads a position stored as three doubles, the shape this used to be written in. The
+	 * values are whole numbers -- they have always been block positions -- but the keys and their
+	 * type stay as they were, so worlds saved before this became a {@link BlockPos} still load.
+	 */
+	private static @Nullable BlockPos readPos(String prefix, ValueInput input) {
+		double x = input.getDoubleOr(prefix + "xPos", Double.NaN);
+		double y = input.getDoubleOr(prefix + "yPos", Double.NaN);
+		double z = input.getDoubleOr(prefix + "zPos", Double.NaN);
+		if (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
+			return null;
+		}
+		return BlockPos.containing(x, y, z);
+	}
+
+	/** Writes a position back in the shape {@link #readPos} expects. */
+	private static void writePos(String prefix, ValueOutput output, BlockPos pos) {
+		output.putDouble(prefix + "xPos", pos.getX());
+		output.putDouble(prefix + "yPos", pos.getY());
+		output.putDouble(prefix + "zPos", pos.getZ());
 	}
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-		DoubleCoordinates single = DoubleCoordinates.deserialize("MainPipePos_", input);
+		BlockPos single = readPos("MainPipePos_", input);
 		if (single != null) {
 			mainPipePos.clear();
 			mainPipePos.add(single);
 		}
 		for (ValueInput entry : input.childrenListOrEmpty("MainPipePosList")) {
-			DoubleCoordinates pos = DoubleCoordinates.deserialize("MainPipePos_", entry);
+			BlockPos pos = readPos("MainPipePos_", entry);
 			if (pos != null) {
 				mainPipePos.add(pos);
 			}
@@ -161,8 +183,8 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
 		ValueOutput.ValueOutputList posList = output.childrenList("MainPipePosList");
-		for (DoubleCoordinates pos : mainPipePos) {
-			pos.serialize("MainPipePos_", posList.addChild());
+		for (BlockPos pos : mainPipePos) {
+			writePos("MainPipePos_", posList.addChild(), pos);
 		}
 		ValueOutput.TypedOutputList<String> typeList = output.list("SubTypeList", Codec.STRING);
 		for (CoreMultiBlockPipe.SubBlockTypeForShare type : subTypes) {
@@ -204,12 +226,12 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 	public MultiBlockPositionMessage getDescriptionMessage() {
 		return new MultiBlockPositionMessage(
 				getBlockPos(),
-				mainPipePos.stream().map(DoubleCoordinates::getBlockPos).collect(Collectors.toSet()),
+				Set.copyOf(mainPipePos),
 				subTypes);
 	}
 
 	public void setPosition(Set<BlockPos> mainPipes, List<CoreMultiBlockPipe.SubBlockTypeForShare> subTypes) {
-		mainPipePos = mainPipes.stream().map(DoubleCoordinates::new).collect(Collectors.toSet());
+		mainPipePos = new HashSet<>(mainPipes);
 		this.subTypes = subTypes;
 		mainPipe = null;
 	}
@@ -278,14 +300,14 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 		subTypes.add(type);
 	}
 
-	public void addMultiBlockMainPos(DoubleCoordinates placeAt) {
+	public void addMultiBlockMainPos(BlockPos placeAt) {
 		if (mainPipePos.add(placeAt)) {
 			mainPipe = null;
 		}
 	}
 
-	public boolean removeMainPipe(DoubleCoordinates doubleCoordinates) {
-		mainPipePos.remove(doubleCoordinates);
+	public boolean removeMainPipe(BlockPos mainPos) {
+		mainPipePos.remove(mainPos);
 		return mainPipePos.isEmpty();
 	}
 

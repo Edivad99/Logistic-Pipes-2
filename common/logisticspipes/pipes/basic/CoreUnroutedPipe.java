@@ -33,8 +33,6 @@ import logisticspipes.routing.pathfinder.IPipeInformationProvider;
 import logisticspipes.textures.Textures;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeTransportLogistics;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.item.ItemIdentifier;
 
 public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
@@ -231,10 +229,6 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 		}
 	}
 
-	public DoubleCoordinates getLPPosition() {
-		return new DoubleCoordinates(this);
-	}
-
 	public IPipeUpgradeManager getUpgradeManager() {
 		return new IPipeUpgradeManager() {
 
@@ -300,7 +294,7 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 		};
 	}
 
-	public double getDistanceTo(int destinationint, Direction ignore, ItemIdentifier ident, boolean isActive, double travled, double max, List<DoubleCoordinates> visited) {
+	public double getDistanceTo(int destinationint, Direction ignore, ItemIdentifier ident, boolean isActive, double travled, double max, List<BlockPos> visited) {
 		double lowest = Integer.MAX_VALUE;
 		for (Direction dir : Direction.values()) {
 			if (ignore == dir) {
@@ -308,7 +302,7 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 			}
 			IPipeInformationProvider information = SimpleServiceLocator.pipeInformationManager.getInformationProviderFor(container.getNextConnectedTile(dir));
 			if (information != null) {
-				DoubleCoordinates pos = new DoubleCoordinates(information);
+				BlockPos pos = information.getPos();
 				if (visited.contains(pos)) {
 					continue;
 				}

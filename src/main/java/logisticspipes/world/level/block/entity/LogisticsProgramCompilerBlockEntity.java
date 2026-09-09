@@ -35,8 +35,6 @@ import logisticspipes.network.to_client.block.CompilerStatusMessage;
 import logisticspipes.pipes.PipeItemsBasicLogistics;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.item.SimpleStackInventory;
 import logisticspipes.world.inventory.ProgramCompilerMenu;
@@ -122,8 +120,8 @@ public class LogisticsProgramCompilerBlockEntity extends LogisticsSolidBlockEnti
             if (dir == Direction.UP) {
                 continue;
             }
-            DoubleCoordinates pos = CoordinateUtils.add(new DoubleCoordinates(this), dir);
-            BlockEntity tile = pos.getTileEntity(this.level);
+            BlockPos pos = getBlockPos().relative(dir);
+            BlockEntity tile = this.level.getBlockEntity(pos);
             if (!(tile instanceof LogisticsTileGenericPipe tPipe)) {
                 continue;
             }

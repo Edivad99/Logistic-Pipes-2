@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.UUID;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -23,7 +24,6 @@ import logisticspipes.pipes.upgrades.power.BCPowerSupplierUpgrade;
 import logisticspipes.pipes.upgrades.power.IC2PowerSupplierUpgrade;
 import logisticspipes.pipes.upgrades.power.RFPowerSupplierUpgrade;
 import logisticspipes.proxy.SimpleServiceLocator;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.ISimpleInventoryEventHandler;
 import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.item.ItemIdentifier;
@@ -498,8 +498,8 @@ public class UpgradeManager
 	}
 
 	@Override
-	public DoubleCoordinates getPipePosition() {
-		return pipe.getLPPosition();
+	public BlockPos getPipePosition() {
+		return pipe.getPos();
 	}
 
 	@Override

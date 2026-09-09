@@ -12,7 +12,6 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import logisticspipes.interfaces.IRotationProvider;
 import logisticspipes.network.to_server.block.RequestBlockRotationMessage;
-import logisticspipes.util.DoubleCoordinates;
 
 public class LogisticsSolidBlockEntity extends BlockEntity implements IRotationProvider {
 
@@ -84,8 +83,8 @@ public class LogisticsSolidBlockEntity extends BlockEntity implements IRotationP
     public void notifyOfBlockChange() {
     }
 
-    public DoubleCoordinates getLPPosition() {
-        return new DoubleCoordinates(this);
+    public BlockPos getPos() {
+        return getBlockPos();
     }
 
     public Level getLevelForHUD() {

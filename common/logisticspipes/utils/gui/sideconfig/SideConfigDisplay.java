@@ -47,8 +47,6 @@ import logisticspipes.client.renderer.LPRenderTypes;
 import logisticspipes.client.renderer.pip.SideConfigSceneState;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.textures.Textures;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.Color;
 
 public abstract class SideConfigDisplay {
@@ -105,10 +103,10 @@ public abstract class SideConfigDisplay {
 	/** Both matrices and the viewport are set together by {@link #updateCamera}, or not at all. */
 	private boolean cameraValid;
 
-	public DoubleCoordinates originBC;
+	public BlockPos originBC;
 
-	private List<DoubleCoordinates> configurables = new ArrayList<>();
-	private List<DoubleCoordinates> neighbours = new ArrayList<>();
+	private List<BlockPos> configurables = new ArrayList<>();
+	private List<BlockPos> neighbours = new ArrayList<>();
 
 	private @Nullable SelectedFace selection;
 
@@ -118,33 +116,33 @@ public abstract class SideConfigDisplay {
 	public boolean renderNeighbours = true;
 
 	public SideConfigDisplay(CoreRoutedPipe configurables) {
-		this(Collections.singletonList(configurables.getLPPosition()));
+		this(Collections.singletonList(configurables.getPos()));
 	}
 
-	public SideConfigDisplay(List<DoubleCoordinates> configurables) {
+	public SideConfigDisplay(List<BlockPos> configurables) {
 		this.configurables.addAll(configurables);
 
 		Vector3d c;
 		Vector3d size;
 		if (configurables.size() == 1) {
-			DoubleCoordinates bc = this.configurables.get(0);
-			c = new Vector3d(bc.getXDouble() + 0.5, bc.getYDouble() + 0.5, bc.getZDouble() + 0.5);
+			BlockPos bc = this.configurables.get(0);
+			c = new Vector3d(bc.getX() + 0.5, bc.getY() + 0.5, bc.getZ() + 0.5);
 			size = new Vector3d(1, 1, 1);
 		} else {
 			Vector3d min = new Vector3d(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 			Vector3d max = new Vector3d(-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE);
-			for (DoubleCoordinates bc : configurables) {
-				min.set(Math.min(bc.getXDouble(), min.x), Math.min(bc.getYDouble(), min.y), Math
-						.min(bc.getZDouble(), min.z));
-				max.set(Math.max(bc.getXDouble(), max.x), Math.max(bc.getYDouble(), max.y), Math
-						.max(bc.getZDouble(), max.z));
+			for (BlockPos bc : configurables) {
+				min.set(Math.min(bc.getX(), min.x), Math.min(bc.getY(), min.y), Math
+						.min(bc.getZ(), min.z));
+				max.set(Math.max(bc.getX(), max.x), Math.max(bc.getY(), max.y), Math
+						.max(bc.getZ(), max.z));
 			}
 			size = new Vector3d(max).sub(min).mul(0.5);
 			c = new Vector3d(min.x + size.x, min.y + size.y, min.z + size.z);
 			size.mul(2);
 		}
 
-		originBC = new DoubleCoordinates((int) c.x, (int) c.y, (int) c.z);
+		originBC = BlockPos.containing(c.x, c.y, c.z);
 		origin.set(c);
 
 		pitch = Math.clamp(-mc.player.getXRot(), -MAX_PITCH, MAX_PITCH);
@@ -152,9 +150,9 @@ public abstract class SideConfigDisplay {
 
 		distance = Math.max(Math.max(size.x, size.y), size.z) + 4;
 
-		for (DoubleCoordinates bc : configurables) {
+		for (BlockPos bc : configurables) {
 			for (Direction dir : Direction.values()) {
-				DoubleCoordinates loc = CoordinateUtils.add(new DoubleCoordinates(bc), dir);
+				BlockPos loc = bc.relative(dir);
 				if (!configurables.contains(loc)) {
 					neighbours.add(loc);
 				}
@@ -207,8 +205,8 @@ public abstract class SideConfigDisplay {
 		selection = null;
 		double minDist = Double.POSITIVE_INFINITY;
 
-		for (DoubleCoordinates coord : configurables) {
-			BlockPos pos = new BlockPos(coord.getXInt(), coord.getYInt(), coord.getZInt());
+		for (BlockPos coord : configurables) {
+			BlockPos pos = new BlockPos(coord.getX(), coord.getY(), coord.getZ());
 			BlockState state = level.getBlockState(pos);
 			VoxelShape shape = state.getShape(level, pos);
 			if (shape.isEmpty()) continue;
@@ -405,20 +403,20 @@ public abstract class SideConfigDisplay {
 		BlockModelResolver blockModels = Minecraft.getInstance().getBlockModelResolver();
 		ImmediateSubmitCollector collector = new ImmediateSubmitCollector(bufferSource);
 
-		for (DoubleCoordinates coord : configurables) {
+		for (BlockPos coord : configurables) {
 			renderBlockAt(coord, blockModels, collector, poseStack, false);
 		}
 		if (renderNeighbours) {
-			for (DoubleCoordinates coord : neighbours) {
+			for (BlockPos coord : neighbours) {
 				renderBlockAt(coord, blockModels, collector, poseStack, true);
 			}
 		}
 		bufferSource.endBatch();
 	}
 
-	private void renderBlockAt(DoubleCoordinates coord, BlockModelResolver blockModels,
+	private void renderBlockAt(BlockPos coord, BlockModelResolver blockModels,
 			ImmediateSubmitCollector collector, PoseStack poseStack, boolean transparent) {
-		BlockPos pos = new BlockPos(coord.getXInt(), coord.getYInt(), coord.getZInt());
+		BlockPos pos = new BlockPos(coord.getX(), coord.getY(), coord.getZ());
 		BlockState state = level.getBlockState(pos);
 		if (state.isAir()) return;
 		poseStack.pushPose();

@@ -1,8 +1,7 @@
 package logisticspipes.ticks;
 
-import logisticspipes.utils.PositionRotation;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
@@ -52,7 +51,7 @@ import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.renderer.GuiOverlay;
 import logisticspipes.renderer.LogisticsHUDRenderer;
 import logisticspipes.routing.debug.ClientViewController;
-import logisticspipes.util.DoubleCoordinates;
+import logisticspipes.utils.PositionRotation;
 import logisticspipes.world.item.ItemLogisticsPipe;
 
 public class RenderTickHandler {

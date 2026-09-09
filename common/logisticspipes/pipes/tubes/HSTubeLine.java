@@ -1,10 +1,8 @@
 package logisticspipes.pipes.tubes;
 
-import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
-import logisticspipes.utils.PositionRotation;
-import net.minecraft.core.BlockPos;
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -22,9 +20,10 @@ import logisticspipes.client.model.tube.TubeModels;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.interfaces.ITubeRenderOrientation;
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.IPositionRotateble;
+import logisticspipes.utils.PositionRotation;
 
 public class HSTubeLine extends CoreMultiBlockPipe {
 
@@ -74,9 +73,9 @@ public class HSTubeLine extends CoreMultiBlockPipe {
 
 	@Override
 	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
-		DoubleCoordinates pos = getLPPosition();
+		BlockPos pos = getPos();
 		AABB box = TubeCollision.completeBox(TubeModels.Kind.LINE, orientation)
-				.move(pos.getXCoord(), pos.getYCoord(), pos.getZCoord());
+				.move(pos.getX(), pos.getY(), pos.getZ());
 		if (box != null && (axisalignedbb == null || axisalignedbb.intersects(box))) {
 			arraylist.add(box);
 		}

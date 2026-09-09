@@ -3,6 +3,7 @@ package logisticspipes.routing.pathfinder.changedetection;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,8 +15,6 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.ticks.LPTickHandler;
 import logisticspipes.ticks.QueuedTasks;
-import logisticspipes.util.CoordinateUtils;
-import logisticspipes.util.DoubleCoordinates;
 import network.rs485.logisticspipes.connection.ConnectionType;
 
 public class TEControl {
@@ -39,8 +38,8 @@ public class TEControl {
             return;
         }
 
-        final DoubleCoordinates pos = new DoubleCoordinates(be);
-        if (pos.getXInt() == 0 && pos.getYInt() <= 0 && pos.getZInt() == 0) {
+        final BlockPos pos = be.getBlockPos();
+        if (pos.getX() == 0 && pos.getY() <= 0 && pos.getZ() == 0) {
             return;
         }
 
@@ -60,11 +59,11 @@ public class TEControl {
                     return null;
                 }
                 for (Direction dir : Direction.values()) {
-                    DoubleCoordinates newPos = CoordinateUtils.sum(pos, dir);
-                    if (level.isLoaded(newPos.getBlockPos()) && !newPos.blockExists(level)) {
+                    BlockPos newPos = pos.relative(dir);
+                    if (level.isLoaded(newPos) && level.isEmptyBlock(newPos)) {
                         continue;
                     }
-                    BlockEntity nextTile = newPos.getTileEntity(level);
+                    BlockEntity nextTile = level.getBlockEntity(newPos);
                     if (nextTile instanceof ILPTEInformation nextInformation
                         && nextInformation.getLPTileEntityObject() != null) {
                         if (SimpleServiceLocator.pipeInformationManager.isItemPipe(nextTile)) {
@@ -111,13 +110,13 @@ public class TEControl {
         }
         if (ilpteInformation.getLPTileEntityObject() != null) {
             QueuedTasks.queueTask(() -> {
-                DoubleCoordinates pos = new DoubleCoordinates(be);
+                BlockPos pos = be.getBlockPos();
                 for (Direction dir : Direction.values()) {
-                    DoubleCoordinates newPos = CoordinateUtils.sum(pos, dir);
-                    if (level.isLoaded(newPos.getBlockPos()) && !newPos.blockExists(level)) {
+                    BlockPos newPos = pos.relative(dir);
+                    if (level.isLoaded(newPos) && level.isEmptyBlock(newPos)) {
                         continue;
                     }
-                    BlockEntity nextTile = newPos.getTileEntity(level);
+                    BlockEntity nextTile = level.getBlockEntity(newPos);
                     if (nextTile instanceof ILPTEInformation nextInformation
                         && nextInformation.getLPTileEntityObject() != null) {
                         if (SimpleServiceLocator.pipeInformationManager.isItemPipe(nextTile)) {
