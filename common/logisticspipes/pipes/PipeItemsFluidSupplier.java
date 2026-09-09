@@ -24,7 +24,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IPipeMenuProvider;
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ITankUtil;
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IRequestItems;
 import logisticspipes.interfaces.routing.IRequireReliableTransport;
@@ -130,8 +130,9 @@ public class PipeItemsFluidSupplier extends CoreRoutedPipe implements IRequestIt
 		if (liquidId == null) {
 			return;
 		}
-		while (idStack.getStackSize() > 0 && util.fill(liquidId, false) == liquidId.getAmount() && this.useEnergy(5)) {
-			util.fill(liquidId, true);
+		FluidStack liquidStack = liquidId.makeFluidStack();
+		while (idStack.getStackSize() > 0 && util.fill(liquidStack, false) == liquidId.getAmount() && this.useEnergy(5)) {
+			util.fill(liquidStack, true);
 			idStack.lowerStackSize(1);
 			ItemStackTemplate remainder = idStack.getItem().makeNormalStack(1).getCraftingRemainder();
 			if (remainder != null) {

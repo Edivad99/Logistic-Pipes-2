@@ -14,7 +14,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import logisticspipes.interfaces.ISpecialTankAccessHandler;
 import logisticspipes.interfaces.ISpecialTankUtil;
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ITankUtil;
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.interfaces.routing.IProvideFluids;
@@ -95,14 +95,18 @@ public class PipeFluidProvider extends FluidRoutedPipe implements IProvideFluids
 								// the right one for a tank holding a single fluid but arbitrary for a storage
 								// network holding several, so an order for anything but that one fluid would
 								// drain the wrong fluid and get thrown away by the check below.
-								FluidIdentifierStack drained = pair.getValue2().drain(order.getFluid().makeFluidIdentifierStack(amount), false);
+								FluidIdentifierStack drained = FluidIdentifierStack.getFromStack(
+										pair.getValue2().drain(order.getFluid().makeFluidStack(amount), false));
 								if (drained != null && drained.getAmount() > 0 && order.getFluid().equals(drained.getFluid())) {
-									drained = pair.getValue2().drain(order.getFluid().makeFluidIdentifierStack(amount), true);
+									drained = FluidIdentifierStack.getFromStack(
+											pair.getValue2().drain(order.getFluid().makeFluidStack(amount), true));
 									while (drained.getAmount() < amountToSend.get()) {
 										int missing = amountToSend.get() - drained.getAmount();
-										FluidIdentifierStack addition = pair.getValue2().drain(order.getFluid().makeFluidIdentifierStack(missing), false);
+										FluidIdentifierStack addition = FluidIdentifierStack.getFromStack(
+												pair.getValue2().drain(order.getFluid().makeFluidStack(missing), false));
 										if (addition != null && addition.getAmount() > 0 && order.getFluid().equals(addition.getFluid())) {
-											addition = pair.getValue2().drain(order.getFluid().makeFluidIdentifierStack(missing), true);
+											addition = FluidIdentifierStack.getFromStack(
+													pair.getValue2().drain(order.getFluid().makeFluidStack(missing), true));
 											drained.raiseAmount(addition.getAmount());
 										} else {
 											break;
@@ -153,8 +157,8 @@ public class PipeFluidProvider extends FluidRoutedPipe implements IProvideFluids
 					pair.getValue2().tanks().map(tank -> FluidIdentifierStack.getFromStack(tank)).forEach(liquid -> {
 						if (liquid != null && liquid.getFluid() != null) {
 							FluidIdentifier ident = liquid.getFluid();
-							if (pair.getValue2().canDrain(ident)) {
-								if (pair.getValue2().drain(ident.makeFluidIdentifierStack(1), false) != null) {
+							if (pair.getValue2().canDrain(ident.asResource())) {
+								if (pair.getValue2().drain(ident.makeFluidStack(1), false) != null) {
 									if (map.containsKey(ident)) {
 										long addition = ((long) map.get(ident)) + liquid.getAmount();
 										map.put(ident, addition > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) addition);
@@ -213,8 +217,8 @@ public class PipeFluidProvider extends FluidRoutedPipe implements IProvideFluids
 					pair.getValue2().tanks().map(tank -> FluidIdentifierStack.getFromStack(tank)).forEach(liquid -> {
 						if (liquid != null && liquid.getFluid() != null) {
 							if (fluid.equals(liquid.getFluid())) {
-								if (pair.getValue2().canDrain(liquid.getFluid())) {
-									if (pair.getValue2().drain(liquid.getFluid().makeFluidIdentifierStack(1), false) != null) {
+								if (pair.getValue2().canDrain(liquid.getFluid().asResource())) {
+									if (pair.getValue2().drain(liquid.getFluid().makeFluidStack(1), false) != null) {
 										long addition = ((long) containedAmount.get()) + liquid.getAmount();
 										containedAmount.set(addition > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) addition);
 									}
@@ -268,7 +272,7 @@ public class PipeFluidProvider extends FluidRoutedPipe implements IProvideFluids
 				if (pair.getValue2().containsTanks()) {
 					pair.getValue2().tanks().map(tank -> FluidIdentifierStack.getFromStack(tank)).forEach(liquid -> {
 						if (liquid != null && liquid.getFluid() != null) {
-							if (pair.getValue2().canDrain(liquid.getFluid())) {
+							if (pair.getValue2().canDrain(liquid.getFluid().asResource())) {
 								if (pair.getValue2().drain(1, false) != null) {
 									FluidIdentifier ident = liquid.getFluid();
 									itemIdentifiers.add(ident.getItemIdentifier());

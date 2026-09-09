@@ -3,10 +3,11 @@ package logisticspipes.utils;
 import java.util.stream.Stream;
 
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ITankUtil;
 
 /**
  * An {@link ITankUtil} over a storage network, which holds fluids without any notion of a tank.
@@ -60,18 +61,17 @@ public abstract class NetworkTankUtil implements ITankUtil {
     }
 
     @Override
-    public int fill(FluidIdentifierStack stack, boolean doFill) {
-        return insert(stack.makeFluidStack(), !doFill);
+    public int fill(FluidStack stack, boolean doFill) {
+        return insert(stack, !doFill);
     }
 
     @Override
-    public @Nullable FluidIdentifierStack drain(FluidIdentifierStack stack, boolean doDrain) {
-        FluidStack wanted = stack.makeFluidStack();
+    public @Nullable FluidStack drain(FluidStack wanted, boolean doDrain) {
         int drained = extract(wanted, !doDrain);
         if (drained <= 0) {
             return null;
         }
-        return stack.getFluid().makeFluidIdentifierStack(drained);
+        return wanted.copyWithAmount(drained);
     }
 
     /**
@@ -79,7 +79,7 @@ public abstract class NetworkTankUtil implements ITankUtil {
      * reports is used -- which is arbitrary but matches what draining an unspecified tank means.
      */
     @Override
-    public @Nullable FluidIdentifierStack drain(int amount, boolean doDrain) {
+    public @Nullable FluidStack drain(int amount, boolean doDrain) {
         if (amount <= 0) {
             return null;
         }
@@ -87,14 +87,12 @@ public abstract class NetworkTankUtil implements ITankUtil {
         if (first.isEmpty()) {
             return null;
         }
-        FluidStack wanted = first.copy();
-        wanted.setAmount(amount);
+        FluidStack wanted = first.copyWithAmount(amount);
         int drained = extract(wanted, !doDrain);
         if (drained <= 0) {
             return null;
         }
-        FluidIdentifier ident = FluidIdentifier.get(first);
-        return ident == null ? null : ident.makeFluidIdentifierStack(drained);
+        return wanted.copyWithAmount(drained);
     }
 
     @Override
@@ -103,12 +101,12 @@ public abstract class NetworkTankUtil implements ITankUtil {
     }
 
     @Override
-    public boolean canDrain(FluidIdentifier fluid) {
-        return storedAmount(fluid.makeFluidStack(1)) > 0;
+    public boolean canDrain(FluidResource fluid) {
+        return storedAmount(fluid.toStack(1)) > 0;
     }
 
     @Override
-    public int getFreeSpaceInsideTank(FluidIdentifier type) {
-        return insert(type.makeFluidStack(NetworkTankUtil.UNLIMITED), true);
+    public int getFreeSpaceInsideTank(FluidResource type) {
+        return insert(type.toStack(NetworkTankUtil.UNLIMITED), true);
     }
 }

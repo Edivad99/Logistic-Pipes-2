@@ -38,7 +38,7 @@
 package network.rs485.logisticspipes.connection
 
 import logisticspipes.interfaces.IInventoryUtil
-import logisticspipes.interfaces.ITankUtil
+import logisticspipes.api.ITankUtil
 import logisticspipes.pipes.PipeFluidUtil
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe
 import logisticspipes.proxy.SimpleServiceLocator

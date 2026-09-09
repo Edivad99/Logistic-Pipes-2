@@ -13,7 +13,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ITankUtil;
 import logisticspipes.interfaces.routing.IRequireReliableFluidTransport;
 import logisticspipes.logisticspipes.IRoutedItem;
 import logisticspipes.logisticspipes.IRoutedItem.TransportMode;
@@ -153,7 +153,7 @@ public abstract class FluidRoutedPipe extends CoreRoutedPipe {
 				if (internalTank.getFluid().isEmpty()) {
 					continue;
 				}
-				int filled = pair.getValue2().fill(FluidIdentifierStack.getFromStack(internalTank.getFluid()), true);
+				int filled = pair.getValue2().fill(internalTank.getFluid(), true);
 				if (filled == 0) {
 					continue;
 				}
@@ -232,7 +232,7 @@ public abstract class FluidRoutedPipe extends CoreRoutedPipe {
 			if (isConnectableTank(tile, arrivingItem.output, false)) {
 				//Try to put liquid into all adjacent tanks.
 				for (Pair<NeighborTileEntity<BlockEntity>, ITankUtil> util : PipeFluidUtil.getAdjacentTanks(this, false)) {
-					filled = util.getValue2().fill(liquid, true);
+					filled = util.getValue2().fill(liquid.makeFluidStack(), true);
 					liquid.lowerAmount(filled);
 					if (liquid.getAmount() != 0) {
 						continue;

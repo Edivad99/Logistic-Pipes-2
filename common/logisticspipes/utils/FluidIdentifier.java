@@ -200,6 +200,11 @@ public class FluidIdentifier implements Comparable<FluidIdentifier>, ILPCCTypeHo
 		return new FluidStack(fluid.builtInRegistryHolder(), amount, components);
 	}
 
+	/** This fluid as the amount-less resource the transfer API speaks in. */
+	public FluidResource asResource() {
+		return FluidResource.of(makeFluidStack(1));
+	}
+
 	public FluidIdentifierStack makeFluidIdentifierStack(int amount) {
 		return new FluidIdentifierStack(this, amount);
 	}

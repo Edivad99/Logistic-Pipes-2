@@ -50,7 +50,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ITankUtil;
 import logisticspipes.interfaces.routing.IFluidSink;
 import logisticspipes.pipes.PipeFluidUtil;
 import logisticspipes.transport.PipeFluidTransportLogistics;
@@ -112,7 +112,7 @@ public abstract class FluidSinkPipe extends FluidRoutedPipe implements IFluidSin
                 Direction dir = pair.component1().getDirection();
                 ResourceHandler<FluidResource> tank =
                         ((PipeFluidTransportLogistics) transport).getFluidResourceHandler(dir);
-                freeSpace += pair.component2().getFreeSpaceInsideTank(stack.getFluid());
+                freeSpace += pair.component2().getFreeSpaceInsideTank(stack.getFluid().asResource());
                 freeSpace += stack.getFluid().getFreeSpaceInsideTank(tank);
                 if (freeSpace >= stack.getAmount()) {
                     return new FluidSinkReply(getPriority(), stack.getAmount());

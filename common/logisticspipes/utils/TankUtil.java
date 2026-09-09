@@ -11,7 +11,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ITankUtil;
 
 /**
  * LP's view of a neighbouring fluid inventory.
@@ -38,8 +38,7 @@ public class TankUtil implements ITankUtil {
 	}
 
 	@Override
-	public int fill(FluidIdentifierStack stack, boolean doFill) {
-		FluidStack toFill = stack.makeFluidStack();
+	public int fill(FluidStack toFill, boolean doFill) {
 		if (toFill.isEmpty()) {
 			return 0;
 		}
@@ -53,8 +52,7 @@ public class TankUtil implements ITankUtil {
 	}
 
 	@Override
-	public @Nullable FluidIdentifierStack drain(FluidIdentifierStack stack, boolean doDrain) {
-		FluidStack wanted = stack.makeFluidStack();
+	public @Nullable FluidStack drain(FluidStack wanted, boolean doDrain) {
 		if (wanted.isEmpty()) {
 			return null;
 		}
@@ -63,12 +61,12 @@ public class TankUtil implements ITankUtil {
 			if (doDrain) {
 				transaction.commit();
 			}
-			return drained == 0 ? null : FluidIdentifierStack.getFromStack(wanted.copyWithAmount(drained));
+			return drained == 0 ? null : wanted.copyWithAmount(drained);
 		}
 	}
 
 	@Override
-	public @Nullable FluidIdentifierStack drain(int amount, boolean doDrain) {
+	public @Nullable FluidStack drain(int amount, boolean doDrain) {
 		// No fluid named, so drain the first thing there is -- what the old amount-only overload of
 		// IFluidHandler#drain did. The new API is always resource-addressed.
 		FluidResource first = IntStream.range(0, fluidhandler.size())
@@ -84,7 +82,7 @@ public class TankUtil implements ITankUtil {
 			if (doDrain) {
 				transaction.commit();
 			}
-			return drained == 0 ? null : FluidIdentifierStack.getFromStack(first.toStack(drained));
+			return drained == 0 ? null : first.toStack(drained);
 		}
 	}
 
@@ -96,22 +94,21 @@ public class TankUtil implements ITankUtil {
 	}
 
 	@Override
-	public boolean canDrain(FluidIdentifier fluid) {
+	public boolean canDrain(FluidResource fluid) {
 		// The transaction is the simulation: extract one unit and drop it.
 		try (Transaction transaction = Transaction.openRoot()) {
-			return fluidhandler.extract(FluidResource.of(fluid.makeFluidStack(1)), 1, transaction) > 0;
+			return fluidhandler.extract(fluid, 1, transaction) > 0;
 		}
 	}
 
 	@Override
-	public int getFreeSpaceInsideTank(FluidIdentifier type) {
+	public int getFreeSpaceInsideTank(FluidResource type) {
 		int free = 0;
-		FluidResource wanted = FluidResource.of(type.makeFluidStack(1));
 		for (int i = 0; i < fluidhandler.size(); i++) {
 			FluidResource content = fluidhandler.getResource(i);
 			if (content.isEmpty()) {
-				free += fluidhandler.getCapacityAsInt(i, wanted);
-			} else if (FluidIdentifier.get(content.toStack(1)) == type) {
+				free += fluidhandler.getCapacityAsInt(i, type);
+			} else if (content.equals(type)) {
 				free += fluidhandler.getCapacityAsInt(i, content) - fluidhandler.getAmountAsInt(i);
 			}
 		}

@@ -7,7 +7,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ITankUtil;
 import logisticspipes.textures.Textures;
 import logisticspipes.textures.Textures.TextureType;
 import logisticspipes.transport.PipeFluidTransportLogistics;
@@ -43,11 +43,11 @@ public class PipeFluidExtractor extends PipeFluidInsertion {
 				liquidToExtract[sideID] += Math.min(PipeFluidExtractor.flowRate, amountMissing);
 			}
 		}
-		FluidIdentifierStack extracted = container.drain(Math.min(liquidToExtract[sideID], PipeFluidExtractor.flowRate), false);
+		FluidStack extracted = container.drain(Math.min(liquidToExtract[sideID], PipeFluidExtractor.flowRate), false);
 
 		int inserted = 0;
 		if (extracted != null) {
-			inserted = ((PipeFluidTransportLogistics) transport).fill(side, extracted.makeFluidStack(), true);
+			inserted = ((PipeFluidTransportLogistics) transport).fill(side, extracted, true);
 			container.drain(inserted, true);
 		}
 		liquidToExtract[sideID] -= inserted;

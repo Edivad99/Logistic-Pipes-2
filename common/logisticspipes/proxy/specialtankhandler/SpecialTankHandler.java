@@ -10,9 +10,9 @@ import com.google.common.collect.Lists;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.interfaces.ISpecialTankHandler;
-import logisticspipes.interfaces.ISpecialTankUtilProvider;
-import logisticspipes.interfaces.ITankUtil;
+import logisticspipes.api.ISpecialTankHandler;
+import logisticspipes.api.ISpecialTankUtilProvider;
+import logisticspipes.api.ITankUtil;
 
 public class SpecialTankHandler {
 

@@ -17,10 +17,11 @@ public class FluidIdentifierStack implements Comparable<FluidIdentifierStack> {
 		setAmount(milliBuckets);
 	}
 
+	/** @return null when there is nothing there -- an empty stack, or no stack at all. */
     @Nullable
-	public static FluidIdentifierStack getFromStack(FluidStack stack) {
+	public static FluidIdentifierStack getFromStack(@Nullable FluidStack stack) {
 		FluidIdentifier fluid = FluidIdentifier.get(stack);
-		if (fluid == null) return null;
+		if (fluid == null || stack == null) return null;
 		return new FluidIdentifierStack(fluid, stack.getAmount());
 	}
 
