@@ -1,5 +1,8 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
+import logisticspipes.utils.PositionRotation;
+import net.minecraft.core.BlockPos;
 import java.util.List;
 
 import net.minecraft.core.Direction;
@@ -21,9 +24,7 @@ import logisticspipes.interfaces.ITubeRenderOrientation;
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
 import logisticspipes.utils.IPositionRotateble;
-import logisticspipes.utils.LPPositionSet;
 
 public class HSTubeLine extends CoreMultiBlockPipe {
 
@@ -48,15 +49,15 @@ public class HSTubeLine extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getSubBlocks() {
-		return new LPPositionSet<>(DoubleCoordinatesType.class);
+	public List<SubBlock> getSubBlocks() {
+		return List.of();
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getRotatedSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> set = getSubBlocks();
-		orientation.rotatePositions(set);
-		return set;
+	public List<SubBlock> getRotatedSubBlocks() {
+		PositionRotation rotation = new PositionRotation();
+		orientation.rotatePositions(rotation);
+		return getSubBlocks().stream().map(block -> block.rotated(rotation)).toList();
 	}
 
 	@Override
@@ -154,19 +155,19 @@ public class HSTubeLine extends CoreMultiBlockPipe {
 	}
 
 	public enum TubeLineOrientation implements ITubeOrientation {
-		NORTH(TubeLineRenderOrientation.NORTH_SOUTH, new DoubleCoordinates(0, 0, 0), Direction.NORTH),
-		SOUTH(TubeLineRenderOrientation.NORTH_SOUTH, new DoubleCoordinates(0, 0, 0), Direction.SOUTH),
-		EAST(TubeLineRenderOrientation.EAST_WEST, new DoubleCoordinates(0, 0, 0), Direction.EAST),
-		WEST(TubeLineRenderOrientation.EAST_WEST, new DoubleCoordinates(0, 0, 0), Direction.WEST);
+		NORTH(TubeLineRenderOrientation.NORTH_SOUTH, new BlockPos(0, 0, 0), Direction.NORTH),
+		SOUTH(TubeLineRenderOrientation.NORTH_SOUTH, new BlockPos(0, 0, 0), Direction.SOUTH),
+		EAST(TubeLineRenderOrientation.EAST_WEST, new BlockPos(0, 0, 0), Direction.EAST),
+		WEST(TubeLineRenderOrientation.EAST_WEST, new BlockPos(0, 0, 0), Direction.WEST);
 
 		@Getter
 		TubeLineRenderOrientation renderOrientation;
 		@Getter
-		DoubleCoordinates offset;
+		BlockPos offset;
 		@Getter
 		Direction dir;
 
-		TubeLineOrientation(TubeLineRenderOrientation render, DoubleCoordinates off, Direction dir) {
+		TubeLineOrientation(TubeLineRenderOrientation render, BlockPos off, Direction dir) {
 			renderOrientation = render;
 			offset = off;
 			this.dir = dir;

@@ -1,5 +1,6 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.utils.PositionRotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +30,7 @@ import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
 import logisticspipes.utils.IPositionRotateble;
-import logisticspipes.utils.LPPositionSet;
 
 public class HSTubeSCurve extends CoreMultiBlockPipe {
 
@@ -67,21 +66,20 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> list = new LPPositionSet<>(DoubleCoordinatesType.class);
-		list.add(new DoubleCoordinatesType<>(0, 0, -1, SubBlockTypeForShare.S_CURVE_B));
-		list.add(new DoubleCoordinatesType<>(0, 0, -2, SubBlockTypeForShare.S_CURVE_A));
-		list.add(new DoubleCoordinatesType<>(1, 0, -1, SubBlockTypeForShare.S_CURVE_A));
-		list.add(new DoubleCoordinatesType<>(1, 0, -2, SubBlockTypeForShare.S_CURVE_B));
-		list.add(new DoubleCoordinatesType<>(1, 0, -3, SubBlockTypeForShare.NON_SHARE));
-		return list;
+	public List<SubBlock> getSubBlocks() {
+		return List.of(
+				new SubBlock(new BlockPos(0, 0, -1), SubBlockTypeForShare.S_CURVE_B),
+				new SubBlock(new BlockPos(0, 0, -2), SubBlockTypeForShare.S_CURVE_A),
+				new SubBlock(new BlockPos(1, 0, -1), SubBlockTypeForShare.S_CURVE_A),
+				new SubBlock(new BlockPos(1, 0, -2), SubBlockTypeForShare.S_CURVE_B),
+				new SubBlock(new BlockPos(1, 0, -3), SubBlockTypeForShare.NON_SHARE));
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getRotatedSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> set = getSubBlocks();
-		orientation.rotatePositions(set);
-		return set;
+	public List<SubBlock> getRotatedSubBlocks() {
+		PositionRotation rotation = new PositionRotation();
+		orientation.rotatePositions(rotation);
+		return getSubBlocks().stream().map(block -> block.rotated(rotation)).toList();
 	}
 
 	@Override
@@ -228,7 +226,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	@Override
 	public BlockEntity getConnectedEndTile(Direction output) {
 		boolean useOwn;
-		if (orientation.getOffset().getLength() != 0) {
+		if (!BlockPos.ZERO.equals(orientation.getOffset())) {
 			if (orientation.dir.getOpposite() == output) {
 				useOwn = false;
 			} else if (orientation.dir == output) {
@@ -266,7 +264,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 
 	@Override
 	public @Nullable Vec3 getItemRenderPos(float fPos, LPTravelingItem travelItem) {
-		if ((orientation.getDir().getOpposite() == travelItem.input) == (orientation.getOffset().getLength() != 0)) {
+		if ((orientation.getDir().getOpposite() == travelItem.input) == (!BlockPos.ZERO.equals(orientation.getOffset()))) {
 			fPos = transport.getPipeLength() - fPos;
 		}
 
@@ -316,7 +314,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 
 	@Override
 	public double getItemRenderYaw(float fPos, LPTravelingItem travelItem) {
-		if ((orientation.getDir().getOpposite() == travelItem.input) == (orientation.getOffset().getLength() != 0)) {
+		if ((orientation.getDir().getOpposite() == travelItem.input) == (!BlockPos.ZERO.equals(orientation.getOffset()))) {
 			fPos = transport.getPipeLength() - fPos;
 		}
 		double b;
@@ -364,20 +362,20 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	public enum CurveSOrientation implements ITubeOrientation {
 		//@formatter:off
 		// Name: Placement from  _ TurnDirection
-		NORTH_EAST(TurnSDirection.NORTH_INV, new DoubleCoordinates(0, 0, 0), Direction.NORTH, Direction.EAST),
-		NORTH_WEST(TurnSDirection.NORTH, new DoubleCoordinates(0, 0, 0), Direction.NORTH, Direction.WEST),
-		EAST_SOUTH(TurnSDirection.EAST_INV, new DoubleCoordinates(0, 0, 0), Direction.EAST, Direction.SOUTH),
-		EAST_NORTH(TurnSDirection.EAST, new DoubleCoordinates(0, 0, 0), Direction.EAST, Direction.NORTH),
-		SOUTH_WEST(TurnSDirection.NORTH_INV, new DoubleCoordinates(-1, 0, 3), Direction.SOUTH, Direction.WEST),
-		SOUTH_EAST(TurnSDirection.NORTH, new DoubleCoordinates(1, 0, 3), Direction.SOUTH, Direction.EAST),
-		WEST_NORTH(TurnSDirection.EAST_INV, new DoubleCoordinates(-3, 0, -1), Direction.WEST, Direction.NORTH),
-		WEST_SOUTH(TurnSDirection.EAST, new DoubleCoordinates(-3, 0, 1), Direction.WEST, Direction.SOUTH);
+		NORTH_EAST(TurnSDirection.NORTH_INV, new BlockPos(0, 0, 0), Direction.NORTH, Direction.EAST),
+		NORTH_WEST(TurnSDirection.NORTH, new BlockPos(0, 0, 0), Direction.NORTH, Direction.WEST),
+		EAST_SOUTH(TurnSDirection.EAST_INV, new BlockPos(0, 0, 0), Direction.EAST, Direction.SOUTH),
+		EAST_NORTH(TurnSDirection.EAST, new BlockPos(0, 0, 0), Direction.EAST, Direction.NORTH),
+		SOUTH_WEST(TurnSDirection.NORTH_INV, new BlockPos(-1, 0, 3), Direction.SOUTH, Direction.WEST),
+		SOUTH_EAST(TurnSDirection.NORTH, new BlockPos(1, 0, 3), Direction.SOUTH, Direction.EAST),
+		WEST_NORTH(TurnSDirection.EAST_INV, new BlockPos(-3, 0, -1), Direction.WEST, Direction.NORTH),
+		WEST_SOUTH(TurnSDirection.EAST, new BlockPos(-3, 0, 1), Direction.WEST, Direction.SOUTH);
 		//@formatter:on
 
 		@Getter
 		TurnSDirection renderOrientation;
 		@Getter
-		DoubleCoordinates offset;
+		BlockPos offset;
 		@Getter
 		Direction dir;
 		@Getter

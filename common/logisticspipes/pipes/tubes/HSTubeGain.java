@@ -1,5 +1,6 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.utils.PositionRotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,7 @@ import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
 import logisticspipes.utils.IPositionRotateble;
-import logisticspipes.utils.LPPositionSet;
 
 public class HSTubeGain extends CoreMultiBlockPipe {
 
@@ -56,21 +55,20 @@ public class HSTubeGain extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> list = new LPPositionSet<>(DoubleCoordinatesType.class);
-		list.add(new DoubleCoordinatesType<>(0, 0, -1, SubBlockTypeForShare.GAIN_B));
-		list.add(new DoubleCoordinatesType<>(0, 0, -2, SubBlockTypeForShare.GAIN_A));
-		list.add(new DoubleCoordinatesType<>(0, 1, -1, SubBlockTypeForShare.GAIN_A));
-		list.add(new DoubleCoordinatesType<>(0, 1, -2, SubBlockTypeForShare.GAIN_B));
-		list.add(new DoubleCoordinatesType<>(0, 1, -3, SubBlockTypeForShare.NON_SHARE));
-		return list;
+	public List<SubBlock> getSubBlocks() {
+		return List.of(
+				new SubBlock(new BlockPos(0, 0, -1), SubBlockTypeForShare.GAIN_B),
+				new SubBlock(new BlockPos(0, 0, -2), SubBlockTypeForShare.GAIN_A),
+				new SubBlock(new BlockPos(0, 1, -1), SubBlockTypeForShare.GAIN_A),
+				new SubBlock(new BlockPos(0, 1, -2), SubBlockTypeForShare.GAIN_B),
+				new SubBlock(new BlockPos(0, 1, -3), SubBlockTypeForShare.NON_SHARE));
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getRotatedSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> set = getSubBlocks();
-		orientation.rotatePositions(set);
-		return set;
+	public List<SubBlock> getRotatedSubBlocks() {
+		PositionRotation rotation = new PositionRotation();
+		orientation.rotatePositions(rotation);
+		return getSubBlocks().stream().map(block -> block.rotated(rotation)).toList();
 	}
 
 	@Override
@@ -233,7 +231,7 @@ public class HSTubeGain extends CoreMultiBlockPipe {
 
 	@Override
 	public @Nullable Vec3 getItemRenderPos(float fPos, LPTravelingItem travelItem) {
-		if ((orientation.getDir().getOpposite() == travelItem.input) == (orientation.getOffset().getLength() != 0)) {
+		if ((orientation.getDir().getOpposite() == travelItem.input) == (!BlockPos.ZERO.equals(orientation.getOffset()))) {
 			fPos = transport.getPipeLength() - fPos;
 		}
 
@@ -285,7 +283,7 @@ public class HSTubeGain extends CoreMultiBlockPipe {
 
 	@Override
 	public double getItemRenderPitch(float fPos, LPTravelingItem travelItem) {
-		if ((orientation.getDir().getOpposite() == travelItem.input) == (orientation.getOffset().getLength() != 0)) {
+		if ((orientation.getDir().getOpposite() == travelItem.input) == (!BlockPos.ZERO.equals(orientation.getOffset()))) {
 			fPos = transport.getPipeLength() - fPos;
 		}
 		double b;
@@ -330,19 +328,19 @@ public class HSTubeGain extends CoreMultiBlockPipe {
 	}
 
 	public enum TubeGainOrientation implements ITubeOrientation {
-		NORTH(TubeGainRenderOrientation.NORTH, new DoubleCoordinates(0, 0, 0), Direction.NORTH),
-		SOUTH(TubeGainRenderOrientation.SOUTH, new DoubleCoordinates(0, 0, 0), Direction.SOUTH),
-		EAST(TubeGainRenderOrientation.EAST, new DoubleCoordinates(0, 0, 0), Direction.EAST),
-		WEST(TubeGainRenderOrientation.WEST, new DoubleCoordinates(0, 0, 0), Direction.WEST);
+		NORTH(TubeGainRenderOrientation.NORTH, new BlockPos(0, 0, 0), Direction.NORTH),
+		SOUTH(TubeGainRenderOrientation.SOUTH, new BlockPos(0, 0, 0), Direction.SOUTH),
+		EAST(TubeGainRenderOrientation.EAST, new BlockPos(0, 0, 0), Direction.EAST),
+		WEST(TubeGainRenderOrientation.WEST, new BlockPos(0, 0, 0), Direction.WEST);
 
 		@Getter
 		TubeGainRenderOrientation renderOrientation;
 		@Getter
-		DoubleCoordinates offset;
+		BlockPos offset;
 		@Getter
 		Direction dir;
 
-		TubeGainOrientation(TubeGainRenderOrientation render, DoubleCoordinates off, Direction dir) {
+		TubeGainOrientation(TubeGainRenderOrientation render, BlockPos off, Direction dir) {
 			renderOrientation = render;
 			offset = off;
 			this.dir = dir;

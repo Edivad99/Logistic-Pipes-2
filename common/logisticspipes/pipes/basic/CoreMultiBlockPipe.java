@@ -1,5 +1,7 @@
 package logisticspipes.pipes.basic;
 
+import logisticspipes.utils.PositionRotation;
+import net.minecraft.core.BlockPos;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +16,6 @@ import org.jspecify.annotations.Nullable;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
-import logisticspipes.util.DoubleCoordinatesType;
-import logisticspipes.utils.LPPositionSet;
 import logisticspipes.utils.tuples.Pair;
 
 public abstract class CoreMultiBlockPipe extends CoreUnroutedPipe {
@@ -77,13 +77,29 @@ public abstract class CoreMultiBlockPipe extends CoreUnroutedPipe {
 	}
 
 	/**
+	 * One block of a multiblock pipe: where it sits relative to the main block, and what it is
+	 * willing to share that spot with.
+	 */
+	public record SubBlock(BlockPos offset, SubBlockTypeForShare type) {
+
+		public SubBlock rotated(PositionRotation rotation) {
+			return new SubBlock(rotation.apply(offset), type);
+		}
+
+		/** Where this block goes when the pipe is placed at {@code origin}. */
+		public BlockPos at(BlockPos origin) {
+			return origin.offset(offset);
+		}
+	}
+
+	/**
 	 * North Orientated
 	 *
 	 * @return Relative Positions
 	 */
-	public abstract LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getSubBlocks();
+	public abstract List<SubBlock> getSubBlocks();
 
-	public abstract LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getRotatedSubBlocks();
+	public abstract List<SubBlock> getRotatedSubBlocks();
 
 	public abstract void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb);
 

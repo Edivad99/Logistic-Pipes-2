@@ -1,5 +1,6 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.utils.PositionRotation;
 import net.minecraft.core.BlockPos;
 import java.util.List;
@@ -32,9 +33,7 @@ import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
 import logisticspipes.utils.IPositionRotateble;
-import logisticspipes.utils.LPPositionSet;
 
 public class HSTubeSpeedup extends CoreMultiBlockPipe {
 
@@ -88,19 +87,18 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> set = new LPPositionSet<>(DoubleCoordinatesType.class);
-		set.add(new DoubleCoordinatesType<>(0, 0, -1, SubBlockTypeForShare.NON_SHARE));
-		set.add(new DoubleCoordinatesType<>(0, 0, -2, SubBlockTypeForShare.NON_SHARE));
-		set.add(new DoubleCoordinatesType<>(0, 0, -3, SubBlockTypeForShare.NON_SHARE));
-		return set;
+	public List<SubBlock> getSubBlocks() {
+		return List.of(
+				new SubBlock(new BlockPos(0, 0, -1), SubBlockTypeForShare.NON_SHARE),
+				new SubBlock(new BlockPos(0, 0, -2), SubBlockTypeForShare.NON_SHARE),
+				new SubBlock(new BlockPos(0, 0, -3), SubBlockTypeForShare.NON_SHARE));
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getRotatedSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> set = getSubBlocks();
-		orientation.rotatePositions(set);
-		return set;
+	public List<SubBlock> getRotatedSubBlocks() {
+		PositionRotation rotation = new PositionRotation();
+		orientation.rotatePositions(rotation);
+		return getSubBlocks().stream().map(block -> block.rotated(rotation)).toList();
 	}
 
 	@Override
@@ -285,8 +283,8 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 		}
 
 		@Override
-		public DoubleCoordinates getOffset() {
-			return new DoubleCoordinates(0, 0, 0);
+		public BlockPos getOffset() {
+			return BlockPos.ZERO;
 		}
 
 		@Override

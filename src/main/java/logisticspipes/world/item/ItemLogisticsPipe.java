@@ -7,6 +7,9 @@
 
 package logisticspipes.world.item;
 
+import logisticspipes.utils.PositionRotation;
+import java.util.List;
+import java.util.ArrayList;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,8 +37,6 @@ import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.pipes.basic.LogisticsBlockGenericPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
-import logisticspipes.utils.LPPositionSet;
 import logisticspipes.world.level.block.LPBlocks;
 
 /**
@@ -110,28 +111,26 @@ public class ItemLogisticsPipe extends LogisticsItem {
         } else {
             CoreMultiBlockPipe multiPipe = (CoreMultiBlockPipe) dummyPipe;
             boolean isFreeSpace = true;
-            DoubleCoordinates placeAt = new DoubleCoordinates(pos);
-            LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> globalPos = new LPPositionSet<>(
-                DoubleCoordinatesType.class);
-            globalPos.add(new DoubleCoordinatesType<>(placeAt, CoreMultiBlockPipe.SubBlockTypeForShare.NON_SHARE));
-            LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> positions = multiPipe.getSubBlocks();
             ITubeOrientation orientation = multiPipe.getTubeOrientation(player, pos.getX(), pos.getZ());
             if (orientation == null) {
                 return InteractionResult.FAIL;
             }
-            orientation.rotatePositions(positions);
-            positions.stream().map(iPos -> iPos.add(placeAt)).forEach(globalPos::add);
-            globalPos.addToAll(orientation.getOffset());
-            placeAt.add(orientation.getOffset());
+            BlockPos placeAt = pos.offset(orientation.getOffset());
+            final PositionRotation rotation = new PositionRotation();
+            orientation.rotatePositions(rotation);
+            List<CoreMultiBlockPipe.SubBlock> globalPos = new ArrayList<>();
+            globalPos.add(new CoreMultiBlockPipe.SubBlock(BlockPos.ZERO,
+                CoreMultiBlockPipe.SubBlockTypeForShare.NON_SHARE));
+            multiPipe.getSubBlocks().stream().map(sub -> sub.rotated(rotation)).forEach(globalPos::add);
 
-            for (DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare> iPos : globalPos) {
-                if (!player.mayUseItemAt(iPos.getBlockPos(), facing, itemstack) || !level.isEmptyBlock(
-                    iPos.getBlockPos())) {
-                    BlockEntity tile = level.getBlockEntity(iPos.getBlockPos());
+            for (CoreMultiBlockPipe.SubBlock iPos : globalPos) {
+                final BlockPos target = iPos.at(placeAt);
+                if (!player.mayUseItemAt(target, facing, itemstack) || !level.isEmptyBlock(target)) {
+                    BlockEntity tile = level.getBlockEntity(target);
                     boolean canPlace = false;
                     if (tile instanceof LogisticsTileGenericSubMultiBlock) {
                         if (CoreMultiBlockPipe.canShare(((LogisticsTileGenericSubMultiBlock) tile).getSubTypes(),
-                            iPos.getType())) {
+                            iPos.type())) {
                             canPlace = true;
                         }
                     }
@@ -150,21 +149,21 @@ public class ItemLogisticsPipe extends LogisticsItem {
                     return InteractionResult.SUCCESS;
                 }
 
-                if (LogisticsBlockGenericPipe.placePipe(pipe, level, placeAt.getBlockPos(), block, orientation)) {
-                    BlockState state = level.getBlockState(placeAt.getBlockPos());
+                if (LogisticsBlockGenericPipe.placePipe(pipe, level, placeAt, block, orientation)) {
+                    BlockState state = level.getBlockState(placeAt);
                     if (state.getBlock() == block) {
                         //setTileEntityNBT(world, player, pos, stack);
                         block.setPlacedBy(level, pos, state, player, itemstack);
 
                         if (player instanceof ServerPlayer) {
-                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, placeAt.getBlockPos(),
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, placeAt,
                                 itemstack);
                         }
 
-                        BlockState newBlockState = level.getBlockState(placeAt.getBlockPos());
+                        BlockState newBlockState = level.getBlockState(placeAt);
                         SoundType soundtype = newBlockState.getBlock()
-                            .getSoundType(newBlockState, level, placeAt.getBlockPos(), player);
-                        level.playSound(player, placeAt.getBlockPos(), soundtype.getPlaceSound(), SoundSource.BLOCKS,
+                            .getSoundType(newBlockState, level, placeAt, player);
+                        level.playSound(player, placeAt, soundtype.getPlaceSound(), SoundSource.BLOCKS,
                             (soundtype.getVolume() + 1.0F) / 2.0F,
                             soundtype.getPitch() * 0.8F);
 

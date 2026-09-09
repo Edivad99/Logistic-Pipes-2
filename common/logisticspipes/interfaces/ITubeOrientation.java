@@ -1,7 +1,7 @@
 package logisticspipes.interfaces;
 
+import net.minecraft.core.BlockPos;
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
-import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.IPositionRotateble;
 
 public interface ITubeOrientation {
@@ -10,7 +10,7 @@ public interface ITubeOrientation {
 
 	void rotatePositions(IPositionRotateble set);
 
-	DoubleCoordinates getOffset();
+	BlockPos getOffset();
 
 	void setOnPipe(CoreMultiBlockPipe pipe);
 }

@@ -1,5 +1,6 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.pipes.basic.CoreMultiBlockPipe.SubBlock;
 import logisticspipes.utils.PositionRotation;
 import java.util.List;
 
@@ -28,9 +29,7 @@ import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeMultiBlockTransportLogistics;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
 import logisticspipes.utils.IPositionRotateble;
-import logisticspipes.utils.LPPositionSet;
 
 public class HSTubeCurve extends CoreMultiBlockPipe {
 
@@ -65,22 +64,21 @@ public class HSTubeCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> list = new LPPositionSet<>(DoubleCoordinatesType.class);
-		list.add(new DoubleCoordinatesType<>(-1, 0, 0, SubBlockTypeForShare.CURVE_INNER_A));
-		list.add(new DoubleCoordinatesType<>(0, 0, 1, SubBlockTypeForShare.CURVE_OUT_A));
-		list.add(new DoubleCoordinatesType<>(-1, 0, 1, SubBlockTypeForShare.NON_SHARE));
-		list.add(new DoubleCoordinatesType<>(-2, 0, 1, SubBlockTypeForShare.CURVE_INNER_B));
-		list.add(new DoubleCoordinatesType<>(-1, 0, 2, SubBlockTypeForShare.CURVE_OUT_B));
-		list.add(new DoubleCoordinatesType<>(-2, 0, 2, SubBlockTypeForShare.NON_SHARE));
-		return list;
+	public List<SubBlock> getSubBlocks() {
+		return List.of(
+				new SubBlock(new BlockPos(-1, 0, 0), SubBlockTypeForShare.CURVE_INNER_A),
+				new SubBlock(new BlockPos(0, 0, 1), SubBlockTypeForShare.CURVE_OUT_A),
+				new SubBlock(new BlockPos(-1, 0, 1), SubBlockTypeForShare.NON_SHARE),
+				new SubBlock(new BlockPos(-2, 0, 1), SubBlockTypeForShare.CURVE_INNER_B),
+				new SubBlock(new BlockPos(-1, 0, 2), SubBlockTypeForShare.CURVE_OUT_B),
+				new SubBlock(new BlockPos(-2, 0, 2), SubBlockTypeForShare.NON_SHARE));
 	}
 
 	@Override
-	public LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> getRotatedSubBlocks() {
-		LPPositionSet<DoubleCoordinatesType<SubBlockTypeForShare>> set = getSubBlocks();
-		orientation.rotatePositions(set);
-		return set;
+	public List<SubBlock> getRotatedSubBlocks() {
+		PositionRotation rotation = new PositionRotation();
+		orientation.rotatePositions(rotation);
+		return getSubBlocks().stream().map(block -> block.rotated(rotation)).toList();
 	}
 
 	@Override
@@ -323,19 +321,19 @@ public class HSTubeCurve extends CoreMultiBlockPipe {
 	public enum CurveOrientation implements ITubeOrientation {
 		//@formatter:off
 		// Name: Placement from  _ TurnDirection
-		NORTH_NORTH_EAST(TurnDirection.NORTH_EAST, new DoubleCoordinates(2, 0, 2), Direction.NORTH, Direction.EAST),
-		NORTH_WEST_NORTH(TurnDirection.WEST_NORTH, new DoubleCoordinates(0, 0, 0), Direction.NORTH, Direction.WEST),
-		WEST_WEST_NORTH(TurnDirection.WEST_NORTH, new DoubleCoordinates(2, 0, -2), Direction.WEST, Direction.NORTH),
-		WEST_SOUTH_WEST(TurnDirection.SOUTH_WEST, new DoubleCoordinates(0, 0, 0), Direction.WEST, Direction.SOUTH),
-		SOUTH_SOUTH_WEST(TurnDirection.SOUTH_WEST, new DoubleCoordinates(-2, 0, -2), Direction.SOUTH, Direction.WEST),
-		SOUTH_EAST_SOUTH(TurnDirection.EAST_SOUTH, new DoubleCoordinates(0, 0, 0), Direction.SOUTH, Direction.EAST),
-		EAST_EAST_SOUTH(TurnDirection.EAST_SOUTH, new DoubleCoordinates(-2, 0, 2), Direction.EAST, Direction.SOUTH),
-		EAST_NORTH_EAST(TurnDirection.NORTH_EAST, new DoubleCoordinates(0, 0, 0), Direction.EAST, Direction.NORTH);
+		NORTH_NORTH_EAST(TurnDirection.NORTH_EAST, new BlockPos(2, 0, 2), Direction.NORTH, Direction.EAST),
+		NORTH_WEST_NORTH(TurnDirection.WEST_NORTH, new BlockPos(0, 0, 0), Direction.NORTH, Direction.WEST),
+		WEST_WEST_NORTH(TurnDirection.WEST_NORTH, new BlockPos(2, 0, -2), Direction.WEST, Direction.NORTH),
+		WEST_SOUTH_WEST(TurnDirection.SOUTH_WEST, new BlockPos(0, 0, 0), Direction.WEST, Direction.SOUTH),
+		SOUTH_SOUTH_WEST(TurnDirection.SOUTH_WEST, new BlockPos(-2, 0, -2), Direction.SOUTH, Direction.WEST),
+		SOUTH_EAST_SOUTH(TurnDirection.EAST_SOUTH, new BlockPos(0, 0, 0), Direction.SOUTH, Direction.EAST),
+		EAST_EAST_SOUTH(TurnDirection.EAST_SOUTH, new BlockPos(-2, 0, 2), Direction.EAST, Direction.SOUTH),
+		EAST_NORTH_EAST(TurnDirection.NORTH_EAST, new BlockPos(0, 0, 0), Direction.EAST, Direction.NORTH);
 		//@formatter:on
 		@Getter
 		TurnDirection renderOrientation;
 		@Getter
-		DoubleCoordinates offset;
+		BlockPos offset;
 		@Getter
 		Direction from;
 		@Getter

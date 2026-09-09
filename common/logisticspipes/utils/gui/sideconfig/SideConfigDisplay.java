@@ -2,7 +2,6 @@ package logisticspipes.utils.gui.sideconfig;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +50,6 @@ import logisticspipes.textures.Textures;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.utils.Color;
-import logisticspipes.utils.LPPositionSet;
 
 public abstract class SideConfigDisplay {
 
@@ -121,10 +119,6 @@ public abstract class SideConfigDisplay {
 
 	public SideConfigDisplay(CoreRoutedPipe configurables) {
 		this(Collections.singletonList(configurables.getLPPosition()));
-	}
-
-	public SideConfigDisplay(LPPositionSet<DoubleCoordinates> configurables) {
-		this(Arrays.asList(configurables.toArray(new DoubleCoordinates[0])));
 	}
 
 	public SideConfigDisplay(List<DoubleCoordinates> configurables) {

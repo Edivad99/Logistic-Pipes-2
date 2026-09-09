@@ -1,5 +1,8 @@
 package logisticspipes.ticks;
 
+import logisticspipes.utils.PositionRotation;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
@@ -50,8 +53,6 @@ import logisticspipes.renderer.GuiOverlay;
 import logisticspipes.renderer.LogisticsHUDRenderer;
 import logisticspipes.routing.debug.ClientViewController;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
-import logisticspipes.utils.LPPositionSet;
 import logisticspipes.world.item.ItemLogisticsPipe;
 
 public class RenderTickHandler {
@@ -177,24 +178,25 @@ public class RenderTickHandler {
 		ITubeOrientation orientation = null;
 
 		if (pipe instanceof CoreMultiBlockPipe multiPipe) {
-            DoubleCoordinates placeAt = new DoubleCoordinates(pos);
-			LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> globalPos = new LPPositionSet<>(DoubleCoordinatesType.class);
-			globalPos.add(new DoubleCoordinatesType<>(placeAt, CoreMultiBlockPipe.SubBlockTypeForShare.NON_SHARE));
-			LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> positions = multiPipe.getSubBlocks();
 			orientation = multiPipe.getTubeOrientation(player, pos.getX(), pos.getZ());
 
 			if (orientation == null) return;
 
-			orientation.rotatePositions(positions);
-			positions.stream().map(p -> p.add(placeAt)).forEach(globalPos::add);
-			globalPos.addToAll(orientation.getOffset());
+			final BlockPos placeAt = pos.offset(orientation.getOffset());
+			final PositionRotation rotation = new PositionRotation();
+			orientation.rotatePositions(rotation);
+			List<CoreMultiBlockPipe.SubBlock> globalPos = new ArrayList<>();
+			globalPos.add(new CoreMultiBlockPipe.SubBlock(BlockPos.ZERO,
+					CoreMultiBlockPipe.SubBlockTypeForShare.NON_SHARE));
+			multiPipe.getSubBlocks().stream().map(sub -> sub.rotated(rotation)).forEach(globalPos::add);
 
-			for (DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare> posType : globalPos) {
-				if (!level.isEmptyBlock(posType.getBlockPos())) {
-					BlockEntity tile = level.getBlockEntity(posType.getBlockPos());
+			for (CoreMultiBlockPipe.SubBlock posType : globalPos) {
+				final BlockPos target = posType.at(placeAt);
+				if (!level.isEmptyBlock(target)) {
+					BlockEntity tile = level.getBlockEntity(target);
 					boolean canPlace = false;
 					if (tile instanceof LogisticsTileGenericSubMultiBlock) {
-						if (CoreMultiBlockPipe.canShare(((LogisticsTileGenericSubMultiBlock) tile).getSubTypes(), posType.getType())) {
+						if (CoreMultiBlockPipe.canShare(((LogisticsTileGenericSubMultiBlock) tile).getSubTypes(), posType.type())) {
 							canPlace = true;
 						}
 					}
@@ -217,9 +219,9 @@ public class RenderTickHandler {
 		// with the plain white pipe texture and alpha forced to 0x50.
 		poseStack.pushPose();
 		Vec3 cam = Minecraft.getInstance().gameRenderer.getMainCamera().position();
-		double gx = pos.getX() + (orientation != null ? orientation.getOffset().getXInt() : 0);
-		double gy = pos.getY() + (orientation != null ? orientation.getOffset().getYInt() : 0);
-		double gz = pos.getZ() + (orientation != null ? orientation.getOffset().getZInt() : 0);
+		double gx = pos.getX() + (orientation != null ? orientation.getOffset().getX() : 0);
+		double gy = pos.getY() + (orientation != null ? orientation.getOffset().getY() : 0);
+		double gz = pos.getZ() + (orientation != null ? orientation.getOffset().getZ() : 0);
 		poseStack.translate(gx - cam.x + 0.001, gy - cam.y + 0.001, gz - cam.z + 0.001);
 
 		VertexConsumer ghostBuffer = bufferSource.getBuffer(GHOST_PIPE_RENDER_TYPE.apply(GHOST_PIPE_TEXTURE));

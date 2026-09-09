@@ -52,8 +52,6 @@ import logisticspipes.renderer.newpipe.LogisticsNewPipeItemBoxRenderer;
 import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
-import logisticspipes.utils.LPPositionSet;
 import logisticspipes.utils.item.ItemIdentifierStack;
 import logisticspipes.utils.item.ItemStackRenderer;
 import logisticspipes.utils.tuples.Pair;
@@ -558,15 +556,14 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
         if (!blockEntity.pipe.isMultiBlock()) {
             return new AABB(blockEntity.getBlockPos()); // 1.20.1: AABB(BlockPos) creates the unit block cube
         } else {
-            LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> set = ((CoreMultiBlockPipe) blockEntity.pipe).getRotatedSubBlocks();
-            set.addToAll(blockEntity.pipe.getLPPosition());
-            set.add(new DoubleCoordinatesType<>(blockEntity.getBlockPos(),
-                CoreMultiBlockPipe.SubBlockTypeForShare.NON_SHARE));
-            set.add(
-                new DoubleCoordinatesType<>(blockEntity.getBlockPos().getX() + 1, blockEntity.getBlockPos().getY() + 1,
-                    blockEntity.getBlockPos().getZ() + 1, CoreMultiBlockPipe.SubBlockTypeForShare.NON_SHARE));
-            return new AABB(set.getMinXD() - 1, set.getMinYD() - 1, set.getMinZD() - 1, set.getMaxXD() + 1,
-                set.getMaxYD() + 1, set.getMaxZD() + 1);
+            // The main block and the far corner of its own cube are in as well, so a multiblock
+            // whose sub blocks all sit on one side still gets a box that contains the pipe itself.
+            final BlockPos origin = blockEntity.getBlockPos();
+            AABB box = new AABB(origin).move(0, 0, 0);
+            for (CoreMultiBlockPipe.SubBlock sub : ((CoreMultiBlockPipe) blockEntity.pipe).getRotatedSubBlocks()) {
+                box = box.minmax(new AABB(sub.at(origin)));
+            }
+            return box.inflate(1);
         }
     }
 }

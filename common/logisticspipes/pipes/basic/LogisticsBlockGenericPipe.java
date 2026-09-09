@@ -63,8 +63,6 @@ import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.ticks.QueuedTasks;
 import logisticspipes.util.DoubleCoordinates;
-import logisticspipes.util.DoubleCoordinatesType;
-import logisticspipes.utils.LPPositionSet;
 import logisticspipes.world.item.ItemLogisticsPipe;
 import logisticspipes.world.level.block.LPBlocks;
 import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
@@ -187,14 +185,16 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 			if (pipe.preventRemove()) {
 				throw new UnsupportedOperationException("A multi block can't be protected against removal.");
 			}
-			LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> list = ((CoreMultiBlockPipe) pipe).getRotatedSubBlocks();
-			list.forEach(pos -> pos.add(new DoubleCoordinates(pipe)));
+			final BlockPos mainPos = pipe.getPos();
+			List<CoreMultiBlockPipe.SubBlock> list = ((CoreMultiBlockPipe) pipe).getRotatedSubBlocks();
 			for (DoubleCoordinates pos : pipe.getContainer().subMultiBlock) {
 				BlockEntity tile = pos.getTileEntity(level);
 				if (tile instanceof LogisticsTileGenericSubMultiBlock) {
-					DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare> equ = list.findClosest(pos);
+					CoreMultiBlockPipe.SubBlock equ = list.stream()
+							.min(Comparator.comparingDouble(block -> block.at(mainPos).distSqr(pos.getBlockPos())))
+							.orElse(null);
 					if (equ != null) {
-						((LogisticsTileGenericSubMultiBlock) tile).removeSubType(equ.getType());
+						((LogisticsTileGenericSubMultiBlock) tile).removeSubType(equ.type());
 					}
 					if (((LogisticsTileGenericSubMultiBlock) tile).removeMainPipe(new DoubleCoordinates(pipe))) {
 						LogisticsBlockGenericSubMultiBlock.redirectedToMainPipe = true;
@@ -277,24 +277,22 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 					orientation.setOnPipe(mPipe);
 					DoubleCoordinates placeAt = new DoubleCoordinates(blockPos);
 					LogisticsBlockGenericSubMultiBlock.currentCreatedMultiBlock = placeAt;
-					LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> positions = ((CoreMultiBlockPipe) pipe).getSubBlocks();
-					orientation.rotatePositions(positions);
-					for (DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare> pos : positions) {
-						pos.add(placeAt);
-						BlockEntity subTile = level.getBlockEntity(pos.getBlockPos());
-						BlockState oldSubBlockState = level.getBlockState(pos.getBlockPos());
+					for (CoreMultiBlockPipe.SubBlock sub : ((CoreMultiBlockPipe) pipe).getRotatedSubBlocks()) {
+						final BlockPos subPos = sub.at(placeAt.getBlockPos());
+						BlockEntity subTile = level.getBlockEntity(subPos);
+						BlockState oldSubBlockState = level.getBlockState(subPos);
 						if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
 							((LogisticsTileGenericSubMultiBlock) subTile).addMultiBlockMainPos(placeAt);
-							((LogisticsTileGenericSubMultiBlock) subTile).addSubTypeTo(pos.getType());
+							((LogisticsTileGenericSubMultiBlock) subTile).addSubTypeTo(sub.type());
 							TargetLookup.sendToChunkWatchers(subTile, ((LogisticsTileGenericSubMultiBlock) subTile).getDescriptionMessage());
 						} else {
-							level.setBlock(pos.getBlockPos(), LPBlocks.SUB_MULTIBLOCK.get().defaultBlockState(), 3);
-							subTile = level.getBlockEntity(pos.getBlockPos());
+							level.setBlock(subPos, LPBlocks.SUB_MULTIBLOCK.get().defaultBlockState(), 3);
+							subTile = level.getBlockEntity(subPos);
 							if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
-								((LogisticsTileGenericSubMultiBlock) subTile).addSubTypeTo(pos.getType());
+								((LogisticsTileGenericSubMultiBlock) subTile).addSubTypeTo(sub.type());
 							}
 						}
-						level.markAndNotifyBlock(pos.getBlockPos(), level.getChunkAt(pos.getBlockPos()), oldSubBlockState, level.getBlockState(pos.getBlockPos()), 3, 512);
+						level.markAndNotifyBlock(subPos, level.getChunkAt(subPos), oldSubBlockState, level.getBlockState(subPos), 3, 512);
 					}
 					LogisticsBlockGenericSubMultiBlock.currentCreatedMultiBlock = null;
 				}
