@@ -20,25 +20,25 @@ import logisticspipes.utils.QuickSortChestMarkerStorage;
 public record QuickSortStateMessage(ModuleTarget target, int workingSlot) implements CustomPacketPayload {
 
     public static final Type<QuickSortStateMessage> TYPE =
-            new Type<>(LPConstants.rl("quick_sort_state"));
+        new Type<>(LPConstants.rl("quick_sort_state"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuickSortStateMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, QuickSortStateMessage::target,
-                    ByteBufCodecs.VAR_INT, QuickSortStateMessage::workingSlot,
-                    QuickSortStateMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, QuickSortStateMessage::target,
+            ByteBufCodecs.VAR_INT, QuickSortStateMessage::workingSlot,
+            QuickSortStateMessage::new);
+
+    public static void handle(QuickSortStateMessage message, IPayloadContext context) {
+        QuickSortChestMarkerStorage.getInstance().setSlots(
+            message.target.pos().getX(),
+            message.target.pos().getY(),
+            message.target.pos().getZ(),
+            message.target.positionInt(),
+            message.workingSlot);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(QuickSortStateMessage message, IPayloadContext context) {
-        QuickSortChestMarkerStorage.getInstance().setSlots(
-                message.target.pos().getX(),
-                message.target.pos().getY(),
-                message.target.pos().getZ(),
-                message.target.positionInt(),
-                message.workingSlot);
     }
 }

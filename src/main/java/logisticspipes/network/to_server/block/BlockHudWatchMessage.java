@@ -20,19 +20,14 @@ public record BlockHudWatchMessage(BlockPos pos, boolean watching) implements Cu
     public static final Type<BlockHudWatchMessage> TYPE = new Type<>(LPConstants.rl("block_hud_watch"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockHudWatchMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, BlockHudWatchMessage::pos,
-                    ByteBufCodecs.BOOL, BlockHudWatchMessage::watching,
-                    BlockHudWatchMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, BlockHudWatchMessage::pos,
+            ByteBufCodecs.BOOL, BlockHudWatchMessage::watching,
+            BlockHudWatchMessage::new);
 
     public static void handle(BlockHudWatchMessage message, IPayloadContext context) {
         final IBlockWatchingHandler be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, IBlockWatchingHandler.class);
+            context.player(), message.pos, IBlockWatchingHandler.class);
         if (be == null) {
             return;
         }
@@ -41,5 +36,10 @@ public record BlockHudWatchMessage(BlockPos pos, boolean watching) implements Cu
         } else {
             be.playerStopWatching(context.player());
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -23,25 +23,25 @@ import logisticspipes.pipes.PipeLogisticsChassis;
 public record OpenChassisModuleGuiMessage(BlockPos pos, int slot) implements CustomPacketPayload {
 
     public static final Type<OpenChassisModuleGuiMessage> TYPE =
-            new Type<>(LPConstants.rl("open_chassis_module_gui"));
+        new Type<>(LPConstants.rl("open_chassis_module_gui"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenChassisModuleGuiMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, OpenChassisModuleGuiMessage::pos,
-                    ByteBufCodecs.VAR_INT, OpenChassisModuleGuiMessage::slot,
-                    OpenChassisModuleGuiMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, OpenChassisModuleGuiMessage::pos,
+            ByteBufCodecs.VAR_INT, OpenChassisModuleGuiMessage::slot,
+            OpenChassisModuleGuiMessage::new);
 
     public static void handle(OpenChassisModuleGuiMessage message, IPayloadContext context) {
         final PipeLogisticsChassis chassis =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeLogisticsChassis.class);
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeLogisticsChassis.class);
         if (chassis == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         IModuleMenuProvider.open(player, chassis.getSubModule(message.slot));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -24,24 +24,24 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record SetInvSysConChannelMessage(BlockPos pos, UUID channel) implements CustomPacketPayload {
 
     public static final Type<SetInvSysConChannelMessage> TYPE =
-            new Type<>(LPConstants.rl("set_inv_sys_con_channel"));
+        new Type<>(LPConstants.rl("set_inv_sys_con_channel"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetInvSysConChannelMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetInvSysConChannelMessage::pos,
-                    UUIDUtil.STREAM_CODEC, SetInvSysConChannelMessage::channel,
-                    SetInvSysConChannelMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SetInvSysConChannelMessage::pos,
+            UUIDUtil.STREAM_CODEC, SetInvSysConChannelMessage::channel,
+            SetInvSysConChannelMessage::new);
+
+    public static void handle(SetInvSysConChannelMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe container =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (container != null && container.pipe instanceof PipeItemsInvSysConnector connector) {
+            connector.setChannelFromClient(message.channel);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SetInvSysConChannelMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (container != null && container.pipe instanceof PipeItemsInvSysConnector connector) {
-            connector.setChannelFromClient(message.channel);
-        }
     }
 }

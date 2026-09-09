@@ -26,25 +26,25 @@ import logisticspipes.utils.gui.ISubGuiController;
  * is allowed to see is not something the client can work out.
  */
 public record ChannelSelectPopupMessage(BlockPos pos, List<ChannelInformation> channels)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ChannelSelectPopupMessage> TYPE =
-            new Type<>(LPConstants.rl("channel_select_popup"));
+        new Type<>(LPConstants.rl("channel_select_popup"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ChannelSelectPopupMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ChannelSelectPopupMessage::pos,
-                    ChannelInformation.STREAM_CODEC.<RegistryFriendlyByteBuf>cast()
-                            .apply(ByteBufCodecs.list()), ChannelSelectPopupMessage::channels,
-                    ChannelSelectPopupMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ChannelSelectPopupMessage::pos,
+            ChannelInformation.STREAM_CODEC.<RegistryFriendlyByteBuf>cast()
+                .apply(ByteBufCodecs.list()), ChannelSelectPopupMessage::channels,
+            ChannelSelectPopupMessage::new);
+
+    public static void handle(ChannelSelectPopupMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(ChannelSelectPopupMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {
@@ -52,8 +52,8 @@ public record ChannelSelectPopupMessage(BlockPos pos, List<ChannelInformation> c
         static void handle(ChannelSelectPopupMessage message, IPayloadContext context) {
             if (Minecraft.getInstance().screen instanceof ISubGuiController controller) {
                 controller.setSubGui(new GuiSelectChannelPopup(message.channels, message.pos,
-                        selected -> ClientPacketDistributor.sendToServer(
-                                new SetInvSysConChannelMessage(message.pos, selected.getChannelIdentifier()))));
+                    selected -> ClientPacketDistributor.sendToServer(
+                        new SetInvSysConChannelMessage(message.pos, selected.getChannelIdentifier()))));
             }
         }
     }

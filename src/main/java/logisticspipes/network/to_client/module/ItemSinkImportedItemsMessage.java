@@ -27,21 +27,21 @@ import network.rs485.logisticspipes.gui.module.ItemSinkGui;
 public record ItemSinkImportedItemsMessage(List<ItemIdentifier> items) implements CustomPacketPayload {
 
     public static final Type<ItemSinkImportedItemsMessage> TYPE =
-            new Type<>(LPConstants.rl("item_sink_imported_items"));
+        new Type<>(LPConstants.rl("item_sink_imported_items"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemSinkImportedItemsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ItemIdentifier.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    ItemSinkImportedItemsMessage::items,
-                    ItemSinkImportedItemsMessage::new);
+        StreamCodec.composite(
+            ItemIdentifier.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            ItemSinkImportedItemsMessage::items,
+            ItemSinkImportedItemsMessage::new);
+
+    public static void handle(ItemSinkImportedItemsMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(ItemSinkImportedItemsMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

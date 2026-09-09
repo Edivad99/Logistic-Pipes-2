@@ -24,24 +24,24 @@ public record BlockRotationMessage(BlockPos pos, int rotation) implements Custom
     public static final Type<BlockRotationMessage> TYPE = new Type<>(LPConstants.rl("block_rotation"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockRotationMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, BlockRotationMessage::pos,
-                    ByteBufCodecs.VAR_INT, BlockRotationMessage::rotation,
-                    BlockRotationMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, BlockRotationMessage::pos,
+            ByteBufCodecs.VAR_INT, BlockRotationMessage::rotation,
+            BlockRotationMessage::new);
 
     public static void handle(BlockRotationMessage message, IPayloadContext context) {
         final IRotationProvider target =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, IRotationProvider.class);
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, IRotationProvider.class);
         if (target == null) {
             return;
         }
         target.setRotation(message.rotation);
         context.player().level().updateNeighborsAt(
-                message.pos, context.player().level().getBlockState(message.pos).getBlock());
+            message.pos, context.player().level().getBlockState(message.pos).getBlock());
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

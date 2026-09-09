@@ -20,28 +20,28 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  * What a pipe's order manager still has outstanding, for the players watching its HUD.
  */
 public record OrderManagerContentMessage(BlockPos pos, List<ItemIdentifierStack> orders)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<OrderManagerContentMessage> TYPE =
-            new Type<>(LPConstants.rl("order_manager_content"));
+        new Type<>(LPConstants.rl("order_manager_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OrderManagerContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, OrderManagerContentMessage::pos,
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    OrderManagerContentMessage::orders,
-                    OrderManagerContentMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, OrderManagerContentMessage::pos,
+            ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            OrderManagerContentMessage::orders,
+            OrderManagerContentMessage::new);
+
+    public static void handle(OrderManagerContentMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof IOrderManagerContentReceiver receiver) {
+            receiver.setOrderManagerContent(message.orders);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(OrderManagerContentMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof IOrderManagerContentReceiver receiver) {
-            receiver.setOrderManagerContent(message.orders);
-        }
     }
 }

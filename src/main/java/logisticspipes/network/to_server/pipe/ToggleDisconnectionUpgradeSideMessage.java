@@ -22,21 +22,16 @@ import logisticspipes.utils.gui.UpgradeSlot;
  * A side toggled in the disconnection upgrade's configuration popup.
  */
 public record ToggleDisconnectionUpgradeSideMessage(int slot, Optional<Direction> side)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ToggleDisconnectionUpgradeSideMessage> TYPE =
-            new Type<>(LPConstants.rl("toggle_disconnection_upgrade_side"));
+        new Type<>(LPConstants.rl("toggle_disconnection_upgrade_side"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ToggleDisconnectionUpgradeSideMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, ToggleDisconnectionUpgradeSideMessage::slot,
-                    ByteBufCodecs.optional(Direction.STREAM_CODEC), ToggleDisconnectionUpgradeSideMessage::side,
-                    ToggleDisconnectionUpgradeSideMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, ToggleDisconnectionUpgradeSideMessage::slot,
+            ByteBufCodecs.optional(Direction.STREAM_CODEC), ToggleDisconnectionUpgradeSideMessage::side,
+            ToggleDisconnectionUpgradeSideMessage::new);
 
     public static void handle(ToggleDisconnectionUpgradeSideMessage message, IPayloadContext context) {
         final UpgradeSlot slot = TargetLookup.slotIn(context.player(), message.slot, UpgradeSlot.class);
@@ -54,5 +49,10 @@ public record ToggleDisconnectionUpgradeSideMessage(int slot, Optional<Direction
             return CustomData.of(tag);
         });
         slot.set(stack);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

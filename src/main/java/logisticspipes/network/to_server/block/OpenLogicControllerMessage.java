@@ -24,27 +24,27 @@ import logisticspipes.world.inventory.LogicControllerMenu;
 public record OpenLogicControllerMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<OpenLogicControllerMessage> TYPE =
-            new Type<>(LPConstants.rl("open_logic_controller"));
+        new Type<>(LPConstants.rl("open_logic_controller"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenLogicControllerMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, OpenLogicControllerMessage::pos,
-                    OpenLogicControllerMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, OpenLogicControllerMessage::pos,
+            OpenLogicControllerMessage::new);
 
     public static void handle(OpenLogicControllerMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (container == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         player.openMenu(new SimpleMenuProvider(
-                        (containerId, inventory, viewer) -> new LogicControllerMenu(containerId, inventory, container),
-                        Component.empty()),
-                buffer -> buffer.writeBlockPos(message.pos));
+                (containerId, inventory, viewer) -> new LogicControllerMenu(containerId, inventory, container),
+                Component.empty()),
+            buffer -> buffer.writeBlockPos(message.pos));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -26,25 +26,25 @@ public record DropDiskMessage(BlockPos pos) implements CustomPacketPayload {
     public static final Type<DropDiskMessage> TYPE = new Type<>(LPConstants.rl("drop_disk"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DropDiskMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, DropDiskMessage::pos,
-                    DropDiskMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, DropDiskMessage::pos,
+            DropDiskMessage::new);
 
     public static void handle(DropDiskMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null || !(be.pipe instanceof PipeItemsRequestLogisticsMk2 requestPipe)
-                || !(context.player() instanceof ServerPlayer player)) {
+            || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         requestPipe.dropDisk();
         // What the pipe holds now, which is nothing. The old packet sent the disk it had just
         // dropped, leaving the screen showing a disk the pipe no longer had.
         PacketDistributor.sendToPlayer(player, new DiskContentMessage(message.pos, requestPipe.getDisk()));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

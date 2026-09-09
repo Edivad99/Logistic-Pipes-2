@@ -23,21 +23,21 @@ public record OpenChassisGuiMessage(BlockPos pos) implements CustomPacketPayload
     public static final Type<OpenChassisGuiMessage> TYPE = new Type<>(LPConstants.rl("open_chassis_gui"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenChassisGuiMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, OpenChassisGuiMessage::pos,
-                    OpenChassisGuiMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, OpenChassisGuiMessage::pos,
+            OpenChassisGuiMessage::new);
 
     public static void handle(OpenChassisGuiMessage message, IPayloadContext context) {
         final PipeLogisticsChassis chassis =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeLogisticsChassis.class);
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeLogisticsChassis.class);
         if (chassis == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         IModuleMenuProvider.open(player, chassis.getLogisticsModule());
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -1,4 +1,6 @@
-/** Messages about the network's named channels. Sent server to client. */
+/**
+ * Messages about the network's named channels. Sent server to client.
+ */
 @NullMarked
 package logisticspipes.network.to_client.channel;
 

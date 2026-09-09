@@ -30,9 +30,38 @@ import logisticspipes.world.item.LPItems;
  *             the item, not off the player
  */
 public record SetHudSettingMessage(int slot, HudSetting setting, boolean state)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
-    /** One switch on the HUD glasses, and the message shown when it is flipped. */
+    public static final Type<SetHudSettingMessage> TYPE = new Type<>(LPConstants.rl("set_hud_setting"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SetHudSettingMessage> STREAM_CODEC =
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SetHudSettingMessage::slot,
+            NeoForgeStreamCodecs.enumCodec(HudSetting.class),
+            SetHudSettingMessage::setting,
+            ByteBufCodecs.BOOL, SetHudSettingMessage::state,
+            SetHudSettingMessage::new);
+
+    public static void handle(SetHudSettingMessage message, IPayloadContext context) {
+        final Player player = context.player();
+        if (message.slot < 0 || message.slot >= player.getInventory().getContainerSize()) {
+            return;
+        }
+        final ItemStack glasses = player.getInventory().getItem(message.slot);
+        if (!glasses.is(LPItems.HUD_GLASSES.get())) {
+            return;
+        }
+        message.setting.apply(new HUDConfig(glasses), message.state, player);
+        player.inventoryMenu.broadcastChanges();
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    /**
+     * One switch on the HUD glasses, and the message shown when it is flipped.
+     */
     public enum HudSetting {
         CHASSIS(IHUDConfig::setChassisHUD, IHUDConfig::isChassisHUD, "chassie"),
         CRAFTING(IHUDConfig::setHUDCrafting, IHUDConfig::isHUDCrafting, "crafting"),
@@ -46,7 +75,7 @@ public record SetHudSettingMessage(int slot, HudSetting setting, boolean state)
         private final String translationKey;
 
         HudSetting(BiConsumer<IHUDConfig, Boolean> setter, Predicate<IHUDConfig> getter,
-                String translationKey) {
+            String translationKey) {
             this.setter = setter;
             this.getter = getter;
             this.translationKey = translationKey;
@@ -55,35 +84,7 @@ public record SetHudSettingMessage(int slot, HudSetting setting, boolean state)
         void apply(IHUDConfig config, boolean state, Player player) {
             setter.accept(config, state);
             player.sendSystemMessage(Component.translatable("lp.hud.config." + translationKey
-                    + (getter.test(config) ? ".enabled" : ".disabled")));
+                + (getter.test(config) ? ".enabled" : ".disabled")));
         }
-    }
-
-    public static final Type<SetHudSettingMessage> TYPE = new Type<>(LPConstants.rl("set_hud_setting"));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, SetHudSettingMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, SetHudSettingMessage::slot,
-                    NeoForgeStreamCodecs.<RegistryFriendlyByteBuf, HudSetting>enumCodec(HudSetting.class),
-                    SetHudSettingMessage::setting,
-                    ByteBufCodecs.BOOL, SetHudSettingMessage::state,
-                    SetHudSettingMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
-    public static void handle(SetHudSettingMessage message, IPayloadContext context) {
-        final Player player = context.player();
-        if (message.slot < 0 || message.slot >= player.getInventory().getContainerSize()) {
-            return;
-        }
-        final ItemStack glasses = player.getInventory().getItem(message.slot);
-        if (!glasses.is(LPItems.HUD_GLASSES.get())) {
-            return;
-        }
-        message.setting.apply(new HUDConfig(glasses), message.state, player);
-        player.inventoryMenu.broadcastChanges();
     }
 }

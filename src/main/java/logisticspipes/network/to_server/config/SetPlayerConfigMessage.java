@@ -17,24 +17,19 @@ import network.rs485.logisticspipes.config.ClientConfiguration;
  * The player changed their settings in the mod's own options screen.
  */
 public record SetPlayerConfigMessage(int renderPipeDistance, int renderPipeContentDistance)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SetPlayerConfigMessage> TYPE = new Type<>(LPConstants.rl("set_player_config"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetPlayerConfigMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, SetPlayerConfigMessage::renderPipeDistance,
-                    ByteBufCodecs.VAR_INT, SetPlayerConfigMessage::renderPipeContentDistance,
-                    SetPlayerConfigMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SetPlayerConfigMessage::renderPipeDistance,
+            ByteBufCodecs.VAR_INT, SetPlayerConfigMessage::renderPipeContentDistance,
+            SetPlayerConfigMessage::new);
 
     public static SetPlayerConfigMessage of(ClientConfiguration config) {
         return new SetPlayerConfigMessage(config.getRenderPipeDistance(),
-                config.getRenderPipeContentDistance());
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+            config.getRenderPipeContentDistance());
     }
 
     public static void handle(SetPlayerConfigMessage message, IPayloadContext context) {
@@ -42,6 +37,11 @@ public record SetPlayerConfigMessage(int renderPipeDistance, int renderPipeConte
         config.setRenderPipeDistance(message.renderPipeDistance);
         config.setRenderPipeContentDistance(message.renderPipeContentDistance);
         LogisticsPipes.getServerConfigManager()
-                .setClientConfiguration(PlayerIdentifier.get(context.player()), config);
+            .setClientConfiguration(PlayerIdentifier.get(context.player()), config);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

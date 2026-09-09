@@ -26,24 +26,24 @@ import logisticspipes.request.resources.IResource.ColorCode;
  * <p>The answer to the request GUI's "simulate" button.
  */
 public record RequestComponentsMessage(List<IResource> used, List<IResource> missing)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<RequestComponentsMessage> TYPE =
-            new Type<>(LPConstants.rl("request_components"));
+        new Type<>(LPConstants.rl("request_components"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestComponentsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    IResource.STREAM_CODEC.apply(ByteBufCodecs.list()), RequestComponentsMessage::used,
-                    IResource.STREAM_CODEC.apply(ByteBufCodecs.list()), RequestComponentsMessage::missing,
-                    RequestComponentsMessage::new);
+        StreamCodec.composite(
+            IResource.STREAM_CODEC.apply(ByteBufCodecs.list()), RequestComponentsMessage::used,
+            IResource.STREAM_CODEC.apply(ByteBufCodecs.list()), RequestComponentsMessage::missing,
+            RequestComponentsMessage::new);
+
+    public static void handle(RequestComponentsMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestComponentsMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {
@@ -58,11 +58,11 @@ public record RequestComponentsMessage(List<IResource> used, List<IResource> mis
             } else {
                 for (IResource resource : message.used) {
                     player.sendSystemMessage(Component.literal("Component: " + resource.getDisplayText(ColorCode.NONE))
-                            .withStyle(ChatFormatting.GREEN));
+                        .withStyle(ChatFormatting.GREEN));
                 }
                 for (IResource resource : message.missing) {
                     player.sendSystemMessage(Component.literal("Missing: " + resource.getDisplayText(ColorCode.NONE))
-                            .withStyle(ChatFormatting.RED));
+                        .withStyle(ChatFormatting.RED));
                 }
             }
         }

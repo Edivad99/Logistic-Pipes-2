@@ -26,31 +26,26 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  * {@code integer}, with the amount in one named {@code integer2}.
  */
 public record ItemAmountSignMessage(
-        BlockPos pos,
-        Direction side,
-        int amount,
-        Optional<ItemIdentifierStack> item
+    BlockPos pos,
+    Direction side,
+    int amount,
+    Optional<ItemIdentifierStack> item
 ) implements CustomPacketPayload {
 
     public static final Type<ItemAmountSignMessage> TYPE =
-            new Type<>(LPConstants.rl("item_amount_sign"));
+        new Type<>(LPConstants.rl("item_amount_sign"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemAmountSignMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ItemAmountSignMessage::pos,
-                    Direction.STREAM_CODEC, ItemAmountSignMessage::side,
-                    ByteBufCodecs.VAR_INT, ItemAmountSignMessage::amount,
-                    ByteBufCodecs.optional(ItemIdentifierStack.STREAM_CODEC), ItemAmountSignMessage::item,
-                    ItemAmountSignMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ItemAmountSignMessage::pos,
+            Direction.STREAM_CODEC, ItemAmountSignMessage::side,
+            ByteBufCodecs.VAR_INT, ItemAmountSignMessage::amount,
+            ByteBufCodecs.optional(ItemIdentifierStack.STREAM_CODEC), ItemAmountSignMessage::item,
+            ItemAmountSignMessage::new);
 
     public static void handle(ItemAmountSignMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (container == null || !container.isInitialized() || !(container.pipe instanceof CoreRoutedPipe pipe)) {
             return;
         }
@@ -59,5 +54,10 @@ public record ItemAmountSignMessage(
             amountSign.amount = message.amount;
             amountSign.itemTypeInv.setItem(0, message.item.orElse(null));
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

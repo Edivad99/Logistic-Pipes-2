@@ -25,34 +25,34 @@ import logisticspipes.pipes.basic.LogisticsTileGenericSubMultiBlock;
  * told which real pipes they answer for.
  */
 public record MultiBlockPositionMessage(
-        BlockPos pos,
-        Set<BlockPos> mainPipes,
-        List<SubBlockTypeForShare> subTypes
+    BlockPos pos,
+    Set<BlockPos> mainPipes,
+    List<SubBlockTypeForShare> subTypes
 ) implements CustomPacketPayload {
 
     public static final Type<MultiBlockPositionMessage> TYPE = new Type<>(LPConstants.rl("multi_block_position"));
 
     public static final StreamCodec<FriendlyByteBuf, MultiBlockPositionMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, MultiBlockPositionMessage::pos,
-                    ByteBufCodecs.collection(size -> new HashSet<>(), BlockPos.STREAM_CODEC),
-                    MultiBlockPositionMessage::mainPipes,
-                    NeoForgeStreamCodecs.<FriendlyByteBuf, SubBlockTypeForShare>enumCodec(SubBlockTypeForShare.class)
-                            .apply(ByteBufCodecs.list()),
-                    MultiBlockPositionMessage::subTypes,
-                    MultiBlockPositionMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, MultiBlockPositionMessage::pos,
+            ByteBufCodecs.collection(size -> new HashSet<>(), BlockPos.STREAM_CODEC),
+            MultiBlockPositionMessage::mainPipes,
+            NeoForgeStreamCodecs.enumCodec(SubBlockTypeForShare.class)
+                .apply(ByteBufCodecs.list()),
+            MultiBlockPositionMessage::subTypes,
+            MultiBlockPositionMessage::new);
+
+    public static void handle(MultiBlockPositionMessage message, IPayloadContext context) {
+        final LogisticsTileGenericSubMultiBlock be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsTileGenericSubMultiBlock.class);
+        if (be != null) {
+            message.applyTo(be);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(MultiBlockPositionMessage message, IPayloadContext context) {
-        final LogisticsTileGenericSubMultiBlock be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsTileGenericSubMultiBlock.class);
-        if (be != null) {
-            message.applyTo(be);
-        }
     }
 
     public void applyTo(LogisticsTileGenericSubMultiBlock be) {

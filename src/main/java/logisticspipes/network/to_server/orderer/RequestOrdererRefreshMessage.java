@@ -23,26 +23,26 @@ import logisticspipes.request.RequestHandler.DisplayOptions;
  * and mapped back through a {@code switch}, so an unrecognised value silently meant "Both".
  */
 public record RequestOrdererRefreshMessage(RemotePipeTarget target, DisplayOptions options)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<RequestOrdererRefreshMessage> TYPE =
-            new Type<>(LPConstants.rl("request_orderer_refresh"));
+        new Type<>(LPConstants.rl("request_orderer_refresh"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestOrdererRefreshMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    RemotePipeTarget.STREAM_CODEC, RequestOrdererRefreshMessage::target,
-                    NeoForgeStreamCodecs.enumCodec(DisplayOptions.class), RequestOrdererRefreshMessage::options,
-                    RequestOrdererRefreshMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            RemotePipeTarget.STREAM_CODEC, RequestOrdererRefreshMessage::target,
+            NeoForgeStreamCodecs.enumCodec(DisplayOptions.class), RequestOrdererRefreshMessage::options,
+            RequestOrdererRefreshMessage::new);
 
     public static void handle(RequestOrdererRefreshMessage message, IPayloadContext context) {
         final CoreRoutedPipe pipe = message.target.resolve();
         if (pipe != null) {
             RequestHandler.refresh(context.player(), pipe, message.options);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

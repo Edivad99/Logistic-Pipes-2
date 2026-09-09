@@ -24,23 +24,23 @@ import logisticspipes.routing.RoutingLaserBuilder;
 public record RequestRoutingLasersMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestRoutingLasersMessage> TYPE =
-            new Type<>(LPConstants.rl("request_routing_lasers"));
+        new Type<>(LPConstants.rl("request_routing_lasers"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestRoutingLasersMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestRoutingLasersMessage::pos,
-                    RequestRoutingLasersMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestRoutingLasersMessage::pos,
+            RequestRoutingLasersMessage::new);
+
+    public static void handle(RequestRoutingLasersMessage message, IPayloadContext context) {
+        final CoreRoutedPipe pipe =
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, CoreRoutedPipe.class);
+        if (pipe != null && context.player() instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new RoutingLasersMessage(RoutingLaserBuilder.buildFor(pipe)));
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestRoutingLasersMessage message, IPayloadContext context) {
-        final CoreRoutedPipe pipe =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, CoreRoutedPipe.class);
-        if (pipe != null && context.player() instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new RoutingLasersMessage(RoutingLaserBuilder.buildFor(pipe)));
-        }
     }
 }

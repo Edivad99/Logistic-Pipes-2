@@ -23,21 +23,21 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 public record InvSysConContentMessage(List<ItemIdentifierStack> expected) implements CustomPacketPayload {
 
     public static final Type<InvSysConContentMessage> TYPE =
-            new Type<>(LPConstants.rl("inv_sys_con_content"));
+        new Type<>(LPConstants.rl("inv_sys_con_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, InvSysConContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    InvSysConContentMessage::expected,
-                    InvSysConContentMessage::new);
+        StreamCodec.composite(
+            ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            InvSysConContentMessage::expected,
+            InvSysConContentMessage::new);
+
+    public static void handle(InvSysConContentMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(InvSysConContentMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

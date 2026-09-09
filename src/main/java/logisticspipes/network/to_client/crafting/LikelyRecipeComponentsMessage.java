@@ -24,21 +24,21 @@ import logisticspipes.utils.gui.ISubGuiController;
 public record LikelyRecipeComponentsMessage(List<Optional<Integer>> choices) implements CustomPacketPayload {
 
     public static final Type<LikelyRecipeComponentsMessage> TYPE =
-            new Type<>(LPConstants.rl("likely_recipe_components"));
+        new Type<>(LPConstants.rl("likely_recipe_components"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, LikelyRecipeComponentsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.optional(ByteBufCodecs.VAR_INT).apply(ByteBufCodecs.list()),
-                    LikelyRecipeComponentsMessage::choices,
-                    LikelyRecipeComponentsMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.optional(ByteBufCodecs.VAR_INT).apply(ByteBufCodecs.list()),
+            LikelyRecipeComponentsMessage::choices,
+            LikelyRecipeComponentsMessage::new);
+
+    public static void handle(LikelyRecipeComponentsMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(LikelyRecipeComponentsMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

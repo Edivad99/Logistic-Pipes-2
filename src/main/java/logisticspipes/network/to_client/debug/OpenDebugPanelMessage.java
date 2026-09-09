@@ -21,17 +21,17 @@ public record OpenDebugPanelMessage(String name, int connectionId) implements Cu
     public static final Type<OpenDebugPanelMessage> TYPE = new Type<>(LPConstants.rl("open_debug_panel"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenDebugPanelMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.STRING_UTF8, OpenDebugPanelMessage::name,
-                    ByteBufCodecs.VAR_INT, OpenDebugPanelMessage::connectionId,
-                    OpenDebugPanelMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, OpenDebugPanelMessage::name,
+            ByteBufCodecs.VAR_INT, OpenDebugPanelMessage::connectionId,
+            OpenDebugPanelMessage::new);
+
+    public static void handle(OpenDebugPanelMessage message, IPayloadContext context) {
+        DebugGuiController.instance().createNewDebugGui(message.name, message.connectionId);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(OpenDebugPanelMessage message, IPayloadContext context) {
-        DebugGuiController.instance().createNewDebugGui(message.name, message.connectionId);
     }
 }

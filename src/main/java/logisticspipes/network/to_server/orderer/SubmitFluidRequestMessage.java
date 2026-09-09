@@ -17,26 +17,26 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  * A fluid request typed into the fluid orderer GUI.
  */
 public record SubmitFluidRequestMessage(RemotePipeTarget target, ItemIdentifierStack stack)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SubmitFluidRequestMessage> TYPE =
-            new Type<>(LPConstants.rl("submit_fluid_request"));
+        new Type<>(LPConstants.rl("submit_fluid_request"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SubmitFluidRequestMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    RemotePipeTarget.STREAM_CODEC, SubmitFluidRequestMessage::target,
-                    ItemIdentifierStack.STREAM_CODEC, SubmitFluidRequestMessage::stack,
-                    SubmitFluidRequestMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            RemotePipeTarget.STREAM_CODEC, SubmitFluidRequestMessage::target,
+            ItemIdentifierStack.STREAM_CODEC, SubmitFluidRequestMessage::stack,
+            SubmitFluidRequestMessage::new);
 
     public static void handle(SubmitFluidRequestMessage message, IPayloadContext context) {
         final CoreRoutedPipe pipe = message.target.resolve();
         if (pipe instanceof IRequestFluid requestFluid) {
             RequestHandler.requestFluid(context.player(), message.stack, pipe, requestFluid);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

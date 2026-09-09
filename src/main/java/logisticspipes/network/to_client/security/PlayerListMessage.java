@@ -21,17 +21,17 @@ public record PlayerListMessage(List<String> playerNames) implements CustomPacke
     public static final Type<PlayerListMessage> TYPE = new Type<>(LPConstants.rl("player_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayerListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), PlayerListMessage::playerNames,
-                    PlayerListMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), PlayerListMessage::playerNames,
+            PlayerListMessage::new);
+
+    public static void handle(PlayerListMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(PlayerListMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

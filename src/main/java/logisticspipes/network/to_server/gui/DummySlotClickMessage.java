@@ -24,21 +24,21 @@ public record DummySlotClickMessage(int slotId, ItemStack stack, int button) imp
     public static final Type<DummySlotClickMessage> TYPE = new Type<>(LPConstants.rl("dummy_slot_click"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DummySlotClickMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, DummySlotClickMessage::slotId,
-                    ItemStack.OPTIONAL_STREAM_CODEC, DummySlotClickMessage::stack,
-                    ByteBufCodecs.VAR_INT, DummySlotClickMessage::button,
-                    DummySlotClickMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, DummySlotClickMessage::slotId,
+            ItemStack.OPTIONAL_STREAM_CODEC, DummySlotClickMessage::stack,
+            ByteBufCodecs.VAR_INT, DummySlotClickMessage::button,
+            DummySlotClickMessage::new);
 
     public static void handle(DummySlotClickMessage message, IPayloadContext context) {
         if (!(context.player().containerMenu instanceof DummyMenu menu)) {
             return;
         }
         menu.applyGhostSlotEdit(message.slotId, message.stack, message.button, context.player());
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

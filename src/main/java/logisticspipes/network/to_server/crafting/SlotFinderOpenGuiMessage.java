@@ -23,20 +23,20 @@ import logisticspipes.network.SlotFinder;
 public record SlotFinderOpenGuiMessage(ModuleTarget target, int slot) implements CustomPacketPayload {
 
     public static final Type<SlotFinderOpenGuiMessage> TYPE =
-            new Type<>(LPConstants.rl("slot_finder_open_gui"));
+        new Type<>(LPConstants.rl("slot_finder_open_gui"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SlotFinderOpenGuiMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SlotFinderOpenGuiMessage::target,
-                    ByteBufCodecs.VAR_INT, SlotFinderOpenGuiMessage::slot,
-                    SlotFinderOpenGuiMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SlotFinderOpenGuiMessage::target,
+            ByteBufCodecs.VAR_INT, SlotFinderOpenGuiMessage::slot,
+            SlotFinderOpenGuiMessage::new);
+
+    public static void handle(SlotFinderOpenGuiMessage message, IPayloadContext context) {
+        SlotFinder.openNeighbourInventory(context.player(), message.target, message.slot);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SlotFinderOpenGuiMessage message, IPayloadContext context) {
-        SlotFinder.openNeighbourInventory(context.player(), message.target, message.slot);
     }
 }

@@ -22,26 +22,21 @@ import logisticspipes.network.ModuleTarget;
  * to {@code deserialize} on the direction the client controls.
  */
 public record SetStringBasedItemSinkListMessage(ModuleTarget target, List<String> names)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SetStringBasedItemSinkListMessage> TYPE =
-            new Type<>(LPConstants.rl("set_string_based_item_sink_list"));
+        new Type<>(LPConstants.rl("set_string_based_item_sink_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetStringBasedItemSinkListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SetStringBasedItemSinkListMessage::target,
-                    ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
-                    SetStringBasedItemSinkListMessage::names,
-                    SetStringBasedItemSinkListMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SetStringBasedItemSinkListMessage::target,
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
+            SetStringBasedItemSinkListMessage::names,
+            SetStringBasedItemSinkListMessage::new);
 
     public static void handle(SetStringBasedItemSinkListMessage message, IPayloadContext context) {
         final IStringBasedModule module =
-                message.target.resolve(context.player(), IStringBasedModule.class);
+            message.target.resolve(context.player(), IStringBasedModule.class);
         if (module == null) {
             return;
         }
@@ -50,5 +45,10 @@ public record SetStringBasedItemSinkListMessage(ModuleTarget target, List<String
         if (message.target.slot().filter(ModulePositionType::isInWorld).isPresent()) {
             module.listChanged();
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

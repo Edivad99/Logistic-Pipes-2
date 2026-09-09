@@ -26,36 +26,36 @@ import logisticspipes.world.level.block.entity.LogisticsProgramCompilerBlockEnti
  * @param hadPower    whether the last tick found the power it needed; the screen greys out when not
  */
 public record CompilerStatusMessage(
-        BlockPos pos,
-        Optional<Identifier> currentTask,
-        double progress,
-        boolean hadPower,
-        ItemStack disk,
-        ItemStack programmer
+    BlockPos pos,
+    Optional<Identifier> currentTask,
+    double progress,
+    boolean hadPower,
+    ItemStack disk,
+    ItemStack programmer
 ) implements CustomPacketPayload {
 
     public static final Type<CompilerStatusMessage> TYPE = new Type<>(LPConstants.rl("compiler_status"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CompilerStatusMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, CompilerStatusMessage::pos,
-                    ByteBufCodecs.optional(Identifier.STREAM_CODEC), CompilerStatusMessage::currentTask,
-                    ByteBufCodecs.DOUBLE, CompilerStatusMessage::progress,
-                    ByteBufCodecs.BOOL, CompilerStatusMessage::hadPower,
-                    ItemStack.OPTIONAL_STREAM_CODEC, CompilerStatusMessage::disk,
-                    ItemStack.OPTIONAL_STREAM_CODEC, CompilerStatusMessage::programmer,
-                    CompilerStatusMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, CompilerStatusMessage::pos,
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), CompilerStatusMessage::currentTask,
+            ByteBufCodecs.DOUBLE, CompilerStatusMessage::progress,
+            ByteBufCodecs.BOOL, CompilerStatusMessage::hadPower,
+            ItemStack.OPTIONAL_STREAM_CODEC, CompilerStatusMessage::disk,
+            ItemStack.OPTIONAL_STREAM_CODEC, CompilerStatusMessage::programmer,
+            CompilerStatusMessage::new);
+
+    public static void handle(CompilerStatusMessage message, IPayloadContext context) {
+        final LogisticsProgramCompilerBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsProgramCompilerBlockEntity.class);
+        if (be != null) {
+            be.setStateOnClient(message);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(CompilerStatusMessage message, IPayloadContext context) {
-        final LogisticsProgramCompilerBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsProgramCompilerBlockEntity.class);
-        if (be != null) {
-            be.setStateOnClient(message);
-        }
     }
 }

@@ -31,27 +31,22 @@ import logisticspipes.utils.PlayerIdentifier;
  * @param security the security station that guards the channel, empty when it is not secured
  */
 public record SaveChannelMessage(Optional<UUID> channel, String name, AccessRights rights,
-        Optional<UUID> security) implements CustomPacketPayload {
+                                 Optional<UUID> security) implements CustomPacketPayload {
 
     public static final Type<SaveChannelMessage> TYPE = new Type<>(LPConstants.rl("save_channel"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveChannelMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), SaveChannelMessage::channel,
-                    ByteBufCodecs.STRING_UTF8, SaveChannelMessage::name,
-                    NeoForgeStreamCodecs.enumCodec(AccessRights.class),
-                    SaveChannelMessage::rights,
-                    ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), SaveChannelMessage::security,
-                    SaveChannelMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), SaveChannelMessage::channel,
+            ByteBufCodecs.STRING_UTF8, SaveChannelMessage::name,
+            NeoForgeStreamCodecs.enumCodec(AccessRights.class),
+            SaveChannelMessage::rights,
+            ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), SaveChannelMessage::security,
+            SaveChannelMessage::new);
 
     public static void handle(SaveChannelMessage message, IPayloadContext context) {
         final IChannelManager manager =
-                SimpleServiceLocator.channelManagerProvider.getChannelManager(context.player().level());
+            SimpleServiceLocator.channelManagerProvider.getChannelManager(context.player().level());
         final UUID security = message.security.orElse(null);
         if (message.channel.isEmpty()) {
             manager.createNewChannel(message.name, PlayerIdentifier.get(context.player()), message.rights, security);
@@ -59,13 +54,13 @@ public record SaveChannelMessage(Optional<UUID> channel, String name, AccessRigh
         }
         final UUID id = message.channel.get();
         manager.getChannels().stream()
-                .filter(channel -> channel.getChannelIdentifier().equals(id))
-                .findFirst()
-                .ifPresent(channel -> apply(manager, channel, message, security));
+            .filter(channel -> channel.getChannelIdentifier().equals(id))
+            .findFirst()
+            .ifPresent(channel -> apply(manager, channel, message, security));
     }
 
     private static void apply(IChannelManager manager, ChannelInformation channel, SaveChannelMessage message,
-            UUID security) {
+        UUID security) {
         final UUID id = channel.getChannelIdentifier();
         if (!channel.getName().equals(message.name)) {
             manager.updateChannelName(id, message.name);
@@ -73,8 +68,13 @@ public record SaveChannelMessage(Optional<UUID> channel, String name, AccessRigh
         // Compared with Objects.equals: the old condition mixed equals with a reference comparison
         // on the same pair of nullable ids, so it was true whenever both were null.
         if (!channel.getRights().equals(message.rights)
-                || !Objects.equals(channel.getResponsibleSecurityID(), security)) {
+            || !Objects.equals(channel.getResponsibleSecurityID(), security)) {
             manager.updateChannelRights(id, message.rights, security);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

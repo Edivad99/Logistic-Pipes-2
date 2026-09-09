@@ -17,14 +17,14 @@ public record RoutingDebugDoneMessage() implements CustomPacketPayload {
     public static final Type<RoutingDebugDoneMessage> TYPE = new Type<>(LPConstants.rl("routing_debug_done"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RoutingDebugDoneMessage> STREAM_CODEC =
-            StreamCodec.unit(new RoutingDebugDoneMessage());
+        StreamCodec.unit(new RoutingDebugDoneMessage());
+
+    public static void handle(RoutingDebugDoneMessage message, IPayloadContext context) {
+        ClientViewController.instance().done();
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RoutingDebugDoneMessage message, IPayloadContext context) {
-        ClientViewController.instance().done();
     }
 }

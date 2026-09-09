@@ -23,25 +23,25 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record RequestInvSysConContentMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestInvSysConContentMessage> TYPE =
-            new Type<>(LPConstants.rl("request_inv_sys_con_content"));
+        new Type<>(LPConstants.rl("request_inv_sys_con_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestInvSysConContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestInvSysConContentMessage::pos,
-                    RequestInvSysConContentMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestInvSysConContentMessage::pos,
+            RequestInvSysConContentMessage::new);
+
+    public static void handle(RequestInvSysConContentMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof PipeItemsInvSysConnector pipe
+            && context.player() instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player,
+                new InvSysConContentMessage(List.copyOf(pipe.getExpectedItems())));
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestInvSysConContentMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof PipeItemsInvSysConnector pipe
-                && context.player() instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player,
-                    new InvSysConContentMessage(List.copyOf(pipe.getExpectedItems())));
-        }
     }
 }

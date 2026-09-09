@@ -21,24 +21,24 @@ import logisticspipes.world.level.block.entity.LogisticsPowerProviderBlockEntity
 public record PowerProviderLevelMessage(BlockPos pos, double stored) implements CustomPacketPayload {
 
     public static final Type<PowerProviderLevelMessage> TYPE =
-            new Type<>(LPConstants.rl("power_provider_level"));
+        new Type<>(LPConstants.rl("power_provider_level"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PowerProviderLevelMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PowerProviderLevelMessage::pos,
-                    ByteBufCodecs.DOUBLE, PowerProviderLevelMessage::stored,
-                    PowerProviderLevelMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PowerProviderLevelMessage::pos,
+            ByteBufCodecs.DOUBLE, PowerProviderLevelMessage::stored,
+            PowerProviderLevelMessage::new);
+
+    public static void handle(PowerProviderLevelMessage message, IPayloadContext context) {
+        final LogisticsPowerProviderBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsPowerProviderBlockEntity.class);
+        if (be != null) {
+            be.handlePowerPacket(message.stored);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(PowerProviderLevelMessage message, IPayloadContext context) {
-        final LogisticsPowerProviderBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsPowerProviderBlockEntity.class);
-        if (be != null) {
-            be.handlePowerPacket(message.stored);
-        }
     }
 }

@@ -23,27 +23,27 @@ import logisticspipes.proxy.SimpleServiceLocator;
 public record RequestChannelSelectMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestChannelSelectMessage> TYPE =
-            new Type<>(LPConstants.rl("request_channel_select"));
+        new Type<>(LPConstants.rl("request_channel_select"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestChannelSelectMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestChannelSelectMessage::pos,
-                    RequestChannelSelectMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestChannelSelectMessage::pos,
+            RequestChannelSelectMessage::new);
 
     public static void handle(RequestChannelSelectMessage message, IPayloadContext context) {
         final PipeItemsInvSysConnector pipe =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeItemsInvSysConnector.class);
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeItemsInvSysConnector.class);
         if (pipe == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         final IChannelManager manager =
-                SimpleServiceLocator.channelManagerProvider.getChannelManager(player.level());
+            SimpleServiceLocator.channelManagerProvider.getChannelManager(player.level());
         PacketDistributor.sendToPlayer(player,
-                new ChannelSelectPopupMessage(message.pos, manager.getAllowedChannels(player)));
+            new ChannelSelectPopupMessage(message.pos, manager.getAllowedChannels(player)));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

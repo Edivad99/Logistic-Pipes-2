@@ -21,17 +21,17 @@ public record RoutingLasersMessage(List<LaserData> lasers) implements CustomPack
     public static final Type<RoutingLasersMessage> TYPE = new Type<>(LPConstants.rl("routing_lasers"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RoutingLasersMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    LaserData.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    RoutingLasersMessage::lasers,
-                    RoutingLasersMessage::new);
+        StreamCodec.composite(
+            LaserData.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            RoutingLasersMessage::lasers,
+            RoutingLasersMessage::new);
+
+    public static void handle(RoutingLasersMessage message, IPayloadContext context) {
+        LogisticsHUDRenderer.instance().setLasers(message.lasers);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RoutingLasersMessage message, IPayloadContext context) {
-        LogisticsHUDRenderer.instance().setLasers(message.lasers);
     }
 }

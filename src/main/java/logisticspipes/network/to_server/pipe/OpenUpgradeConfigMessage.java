@@ -24,17 +24,12 @@ import logisticspipes.utils.gui.UpgradeSlot;
 public record OpenUpgradeConfigMessage(int slot) implements CustomPacketPayload {
 
     public static final Type<OpenUpgradeConfigMessage> TYPE =
-            new Type<>(LPConstants.rl("open_upgrade_config"));
+        new Type<>(LPConstants.rl("open_upgrade_config"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenUpgradeConfigMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, OpenUpgradeConfigMessage::slot,
-                    OpenUpgradeConfigMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, OpenUpgradeConfigMessage::slot,
+            OpenUpgradeConfigMessage::new);
 
     public static void handle(OpenUpgradeConfigMessage message, IPayloadContext context) {
         final UpgradeSlot slot = TargetLookup.slotIn(context.player(), message.slot, UpgradeSlot.class);
@@ -47,9 +42,14 @@ public record OpenUpgradeConfigMessage(int slot) implements CustomPacketPayload 
         }
         if (context.player() instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new UpgradeConfigPopupMessage(
-                    configurable.getConfigPopup(),
-                    slot.getManager().getPipePosition(),
-                    message.slot));
+                configurable.getConfigPopup(),
+                slot.getManager().getPipePosition(),
+                message.slot));
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

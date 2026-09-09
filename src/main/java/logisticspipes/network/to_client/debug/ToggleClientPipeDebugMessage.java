@@ -21,27 +21,27 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record ToggleClientPipeDebugMessage() implements CustomPacketPayload {
 
     public static final Type<ToggleClientPipeDebugMessage> TYPE =
-            new Type<>(LPConstants.rl("toggle_client_pipe_debug"));
+        new Type<>(LPConstants.rl("toggle_client_pipe_debug"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ToggleClientPipeDebugMessage> STREAM_CODEC =
-            StreamCodec.unit(new ToggleClientPipeDebugMessage());
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.unit(new ToggleClientPipeDebugMessage());
 
     public static void handle(ToggleClientPipeDebugMessage message, IPayloadContext context) {
-        if (!(DebugTarget.lookedAt() instanceof DebugTarget.Block block)) {
+        if (!(DebugTarget.lookedAt() instanceof DebugTarget.Block(net.minecraft.core.BlockPos pos))) {
             return;
         }
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), block.pos(), LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), pos, LogisticsTileGenericPipe.class);
         if (be == null || be.pipe == null) {
             return;
         }
         be.pipe.debug.debugThisPipe = !be.pipe.debug.debugThisPipe;
         context.player().sendSystemMessage(Component.literal(
-                be.pipe.debug.debugThisPipe ? "Debug enabled on client" : "Debug disabled on client"));
+            be.pipe.debug.debugThisPipe ? "Debug enabled on client" : "Debug disabled on client"));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

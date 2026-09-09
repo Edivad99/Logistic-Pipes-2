@@ -21,27 +21,27 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
  * and taken apart by hand at either end.
  */
 public record SecurityStationCCIdsMessage(BlockPos pos, List<Integer> excludedIds)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SecurityStationCCIdsMessage> TYPE =
-            new Type<>(LPConstants.rl("security_station_cc_ids"));
+        new Type<>(LPConstants.rl("security_station_cc_ids"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SecurityStationCCIdsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SecurityStationCCIdsMessage::pos,
-                    ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), SecurityStationCCIdsMessage::excludedIds,
-                    SecurityStationCCIdsMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SecurityStationCCIdsMessage::pos,
+            ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), SecurityStationCCIdsMessage::excludedIds,
+            SecurityStationCCIdsMessage::new);
+
+    public static void handle(SecurityStationCCIdsMessage message, IPayloadContext context) {
+        final LogisticsSecurityBlockEntity station =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+        if (station != null) {
+            station.setExcludedCC(message.excludedIds);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SecurityStationCCIdsMessage message, IPayloadContext context) {
-        final LogisticsSecurityBlockEntity station =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
-        if (station != null) {
-            station.setExcludedCC(message.excludedIds);
-        }
     }
 }

@@ -23,24 +23,24 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record FluidSupplierAmountMessage(BlockPos pos, int amount) implements CustomPacketPayload {
 
     public static final Type<FluidSupplierAmountMessage> TYPE =
-            new Type<>(LPConstants.rl("fluid_supplier_amount"));
+        new Type<>(LPConstants.rl("fluid_supplier_amount"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidSupplierAmountMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, FluidSupplierAmountMessage::pos,
-                    ByteBufCodecs.VAR_INT, FluidSupplierAmountMessage::amount,
-                    FluidSupplierAmountMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, FluidSupplierAmountMessage::pos,
+            ByteBufCodecs.VAR_INT, FluidSupplierAmountMessage::amount,
+            FluidSupplierAmountMessage::new);
+
+    public static void handle(FluidSupplierAmountMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof PipeFluidSupplierMk2 pipe) {
+            pipe.setAmount(message.amount);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(FluidSupplierAmountMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof PipeFluidSupplierMk2 pipe) {
-            pipe.setAmount(message.amount);
-        }
     }
 }

@@ -21,31 +21,31 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.Secu
  * exactly one named player, not hand over arbitrary NBT.
  */
 public record SaveSecuritySettingsMessage(BlockPos pos, String playerName, SecurityPermissions permissions)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SaveSecuritySettingsMessage> TYPE =
-            new Type<>(LPConstants.rl("save_security_settings"));
+        new Type<>(LPConstants.rl("save_security_settings"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveSecuritySettingsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SaveSecuritySettingsMessage::pos,
-                    ByteBufCodecs.STRING_UTF8, SaveSecuritySettingsMessage::playerName,
-                    SecurityPermissions.STREAM_CODEC, SaveSecuritySettingsMessage::permissions,
-                    SaveSecuritySettingsMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SaveSecuritySettingsMessage::pos,
+            ByteBufCodecs.STRING_UTF8, SaveSecuritySettingsMessage::playerName,
+            SecurityPermissions.STREAM_CODEC, SaveSecuritySettingsMessage::permissions,
+            SaveSecuritySettingsMessage::new);
 
     public static void handle(SaveSecuritySettingsMessage message, IPayloadContext context) {
         if (message.playerName.isEmpty()) {
             return;
         }
         final LogisticsSecurityBlockEntity station =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (station != null) {
             station.saveSecuritySettings(message.playerName, message.permissions);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

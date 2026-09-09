@@ -23,19 +23,19 @@ public record OpenPipeLogMessage(int logId, String title) implements CustomPacke
     public static final Type<OpenPipeLogMessage> TYPE = new Type<>(LPConstants.rl("open_pipe_log"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenPipeLogMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, OpenPipeLogMessage::logId,
-                    ByteBufCodecs.STRING_UTF8, OpenPipeLogMessage::title,
-                    OpenPipeLogMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, OpenPipeLogMessage::logId,
+            ByteBufCodecs.STRING_UTF8, OpenPipeLogMessage::title,
+            OpenPipeLogMessage::new);
 
     public static void handle(OpenPipeLogMessage message, IPayloadContext context) {
         final PipeLogBuffer buffer = PipeLogBuffer.of(message.logId);
         buffer.setTitle(message.title);
         PipeLogScreen.open(buffer);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

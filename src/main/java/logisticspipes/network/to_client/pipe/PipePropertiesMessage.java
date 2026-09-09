@@ -30,17 +30,14 @@ public record PipePropertiesMessage(BlockPos pos, CompoundTag properties) implem
     public static final Type<PipePropertiesMessage> TYPE = new Type<>(LPConstants.rl("pipe_properties"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipePropertiesMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipePropertiesMessage::pos,
-                    ByteBufCodecs.COMPOUND_TAG, PipePropertiesMessage::properties,
-                    PipePropertiesMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipePropertiesMessage::pos,
+            ByteBufCodecs.COMPOUND_TAG, PipePropertiesMessage::properties,
+            PipePropertiesMessage::new);
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
-    /** Everything the holder has, for a full resync. */
+    /**
+     * Everything the holder has, for a full resync.
+     */
     public static PipePropertiesMessage of(BlockPos pos, PropertyHolder holder, HolderLookup.Provider registries) {
         final TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
         PropertyHolder.serialize(output, holder);
@@ -49,11 +46,16 @@ public record PipePropertiesMessage(BlockPos pos, CompoundTag properties) implem
 
     public static void handle(PipePropertiesMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null || !(be.pipe instanceof PropertyHolder)) {
             return;
         }
         be.pipe.deserialize(TagValueInput.create(ProblemReporter.DISCARDING,
-                context.player().level().registryAccess(), message.properties));
+            context.player().level().registryAccess(), message.properties));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

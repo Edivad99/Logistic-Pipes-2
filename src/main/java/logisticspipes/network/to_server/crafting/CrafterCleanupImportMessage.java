@@ -16,22 +16,22 @@ import logisticspipes.network.ModuleTarget;
 public record CrafterCleanupImportMessage(ModuleTarget target) implements CustomPacketPayload {
 
     public static final Type<CrafterCleanupImportMessage> TYPE =
-            new Type<>(LPConstants.rl("crafter_cleanup_import"));
+        new Type<>(LPConstants.rl("crafter_cleanup_import"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrafterCleanupImportMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, CrafterCleanupImportMessage::target,
-                    CrafterCleanupImportMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, CrafterCleanupImportMessage::target,
+            CrafterCleanupImportMessage::new);
 
     public static void handle(CrafterCleanupImportMessage message, IPayloadContext context) {
         final ModuleCrafter module = message.target.resolve(context.player(), ModuleCrafter.class);
         if (module != null) {
             module.importCleanup();
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

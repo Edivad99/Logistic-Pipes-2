@@ -18,22 +18,22 @@ import logisticspipes.network.ModuleTarget;
 public record OpenAttachedCrafterGuiMessage(ModuleTarget target) implements CustomPacketPayload {
 
     public static final Type<OpenAttachedCrafterGuiMessage> TYPE =
-            new Type<>(LPConstants.rl("open_attached_crafter_gui"));
+        new Type<>(LPConstants.rl("open_attached_crafter_gui"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenAttachedCrafterGuiMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, OpenAttachedCrafterGuiMessage::target,
-                    OpenAttachedCrafterGuiMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, OpenAttachedCrafterGuiMessage::target,
+            OpenAttachedCrafterGuiMessage::new);
 
     public static void handle(OpenAttachedCrafterGuiMessage message, IPayloadContext context) {
         final ModuleCrafter module = message.target.resolve(context.player(), ModuleCrafter.class);
         if (module != null) {
             module.openAttachedGui(context.player());
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

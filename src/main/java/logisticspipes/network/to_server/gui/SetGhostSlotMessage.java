@@ -24,15 +24,10 @@ public record SetGhostSlotMessage(int slotId, ItemStack stack) implements Custom
     public static final Type<SetGhostSlotMessage> TYPE = new Type<>(LPConstants.rl("set_ghost_slot"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetGhostSlotMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, SetGhostSlotMessage::slotId,
-                    ItemStack.OPTIONAL_STREAM_CODEC, SetGhostSlotMessage::stack,
-                    SetGhostSlotMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SetGhostSlotMessage::slotId,
+            ItemStack.OPTIONAL_STREAM_CODEC, SetGhostSlotMessage::stack,
+            SetGhostSlotMessage::new);
 
     public static void handle(SetGhostSlotMessage message, IPayloadContext context) {
         final AbstractContainerMenu menu = context.player().containerMenu;
@@ -43,5 +38,10 @@ public record SetGhostSlotMessage(int slotId, ItemStack stack) implements Custom
         if (slot instanceof DummySlot || slot instanceof FluidSlot) {
             slot.set(message.stack);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

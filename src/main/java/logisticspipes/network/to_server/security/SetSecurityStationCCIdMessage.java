@@ -19,26 +19,21 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
  * buttons of the same table, and the station answers both with the whole list.
  */
 public record SetSecurityStationCCIdMessage(BlockPos pos, int computerId, boolean excluded)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SetSecurityStationCCIdMessage> TYPE =
-            new Type<>(LPConstants.rl("set_security_station_cc_id"));
+        new Type<>(LPConstants.rl("set_security_station_cc_id"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetSecurityStationCCIdMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetSecurityStationCCIdMessage::pos,
-                    ByteBufCodecs.VAR_INT, SetSecurityStationCCIdMessage::computerId,
-                    ByteBufCodecs.BOOL, SetSecurityStationCCIdMessage::excluded,
-                    SetSecurityStationCCIdMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SetSecurityStationCCIdMessage::pos,
+            ByteBufCodecs.VAR_INT, SetSecurityStationCCIdMessage::computerId,
+            ByteBufCodecs.BOOL, SetSecurityStationCCIdMessage::excluded,
+            SetSecurityStationCCIdMessage::new);
 
     public static void handle(SetSecurityStationCCIdMessage message, IPayloadContext context) {
         final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+            context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (be == null) {
             return;
         }
@@ -48,5 +43,10 @@ public record SetSecurityStationCCIdMessage(BlockPos pos, int computerId, boolea
             be.removeCCFromList(message.computerId);
         }
         be.requestList(context.player());
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

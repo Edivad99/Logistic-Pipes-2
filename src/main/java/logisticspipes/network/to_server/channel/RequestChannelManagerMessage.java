@@ -22,27 +22,27 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 public record RequestChannelManagerMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestChannelManagerMessage> TYPE =
-            new Type<>(LPConstants.rl("request_channel_manager"));
+        new Type<>(LPConstants.rl("request_channel_manager"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestChannelManagerMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestChannelManagerMessage::pos,
-                    RequestChannelManagerMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestChannelManagerMessage::pos,
+            RequestChannelManagerMessage::new);
 
     public static void handle(RequestChannelManagerMessage message, IPayloadContext context) {
         final LogisticsSecurityBlockEntity station =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (station == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         final IChannelManager manager =
-                SimpleServiceLocator.channelManagerProvider.getChannelManager(player.level());
+            SimpleServiceLocator.channelManagerProvider.getChannelManager(player.level());
         PacketDistributor.sendToPlayer(player,
-                new ChannelManagerPopupMessage(message.pos, manager.getAllowedChannels(player)));
+            new ChannelManagerPopupMessage(message.pos, manager.getAllowedChannels(player)));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -21,20 +21,20 @@ public record RequestPipeSignsMessage(BlockPos pos) implements CustomPacketPaylo
     public static final Type<RequestPipeSignsMessage> TYPE = new Type<>(LPConstants.rl("request_pipe_signs"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestPipeSignsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestPipeSignsMessage::pos,
-                    RequestPipeSignsMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestPipeSignsMessage::pos,
+            RequestPipeSignsMessage::new);
+
+    public static void handle(RequestPipeSignsMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof CoreRoutedPipe pipe) {
+            pipe.sendSignData(context.player(), false);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestPipeSignsMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof CoreRoutedPipe pipe) {
-            pipe.sendSignData(context.player(), false);
-        }
     }
 }

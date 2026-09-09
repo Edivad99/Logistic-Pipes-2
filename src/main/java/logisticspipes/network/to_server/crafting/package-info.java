@@ -1,4 +1,6 @@
-/** Messages about the crafting grid and the crafter module. Sent client to server. */
+/**
+ * Messages about the crafting grid and the crafter module. Sent client to server.
+ */
 @NullMarked
 package logisticspipes.network.to_server.crafting;
 

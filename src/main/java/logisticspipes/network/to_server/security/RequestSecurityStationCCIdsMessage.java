@@ -17,23 +17,23 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 public record RequestSecurityStationCCIdsMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestSecurityStationCCIdsMessage> TYPE =
-            new Type<>(LPConstants.rl("request_security_station_cc_ids"));
+        new Type<>(LPConstants.rl("request_security_station_cc_ids"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestSecurityStationCCIdsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestSecurityStationCCIdsMessage::pos,
-                    RequestSecurityStationCCIdsMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestSecurityStationCCIdsMessage::pos,
+            RequestSecurityStationCCIdsMessage::new);
+
+    public static void handle(RequestSecurityStationCCIdsMessage message, IPayloadContext context) {
+        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+        if (be != null) {
+            be.requestList(context.player());
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestSecurityStationCCIdsMessage message, IPayloadContext context) {
-        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
-        if (be != null) {
-            be.requestList(context.player());
-        }
     }
 }

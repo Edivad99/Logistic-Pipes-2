@@ -20,27 +20,27 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  * What sits in the inventory a pipe is attached to, for the players watching its HUD.
  */
 public record ChestContentMessage(BlockPos pos, List<ItemIdentifierStack> contents)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ChestContentMessage> TYPE = new Type<>(LPConstants.rl("chest_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ChestContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ChestContentMessage::pos,
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    ChestContentMessage::contents,
-                    ChestContentMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ChestContentMessage::pos,
+            ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            ChestContentMessage::contents,
+            ChestContentMessage::new);
+
+    public static void handle(ChestContentMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof IChestContentReceiver receiver) {
+            receiver.setReceivedChestContent(message.contents);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(ChestContentMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof IChestContentReceiver receiver) {
-            receiver.setReceivedChestContent(message.contents);
-        }
     }
 }

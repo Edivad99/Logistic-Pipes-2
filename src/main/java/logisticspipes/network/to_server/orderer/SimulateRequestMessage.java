@@ -15,25 +15,26 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 /**
  * A request typed into an orderer GUI.
  */
-public record SimulateRequestMessage(RemotePipeTarget target, ItemIdentifierStack stack) implements CustomPacketPayload {
+public record SimulateRequestMessage(RemotePipeTarget target, ItemIdentifierStack stack)
+    implements CustomPacketPayload {
 
     public static final Type<SimulateRequestMessage> TYPE = new Type<>(LPConstants.rl("simulate_request"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SimulateRequestMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    RemotePipeTarget.STREAM_CODEC, SimulateRequestMessage::target,
-                    ItemIdentifierStack.STREAM_CODEC, SimulateRequestMessage::stack,
-                    SimulateRequestMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            RemotePipeTarget.STREAM_CODEC, SimulateRequestMessage::target,
+            ItemIdentifierStack.STREAM_CODEC, SimulateRequestMessage::stack,
+            SimulateRequestMessage::new);
 
     public static void handle(SimulateRequestMessage message, IPayloadContext context) {
         final CoreRoutedPipe pipe = message.target.resolve();
         if (pipe != null) {
             RequestHandler.simulate(context.player(), message.stack, pipe);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

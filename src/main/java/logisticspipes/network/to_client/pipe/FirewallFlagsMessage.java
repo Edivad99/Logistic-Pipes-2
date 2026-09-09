@@ -18,24 +18,24 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record FirewallFlagsMessage(BlockPos pos, PipeItemsFirewall.FirewallFlags flags) implements CustomPacketPayload {
 
     public static final Type<FirewallFlagsMessage> TYPE =
-            new Type<>(LPConstants.rl("firewall_flags"));
+        new Type<>(LPConstants.rl("firewall_flags"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FirewallFlagsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, FirewallFlagsMessage::pos,
-                    PipeItemsFirewall.FirewallFlags.STREAM_CODEC, FirewallFlagsMessage::flags,
-                    FirewallFlagsMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, FirewallFlagsMessage::pos,
+            PipeItemsFirewall.FirewallFlags.STREAM_CODEC, FirewallFlagsMessage::flags,
+            FirewallFlagsMessage::new);
+
+    public static void handle(FirewallFlagsMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe container =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (container != null && container.pipe instanceof PipeItemsFirewall firewall) {
+            firewall.setFlags(message.flags);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(FirewallFlagsMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (container != null && container.pipe instanceof PipeItemsFirewall firewall) {
-            firewall.setFlags(message.flags);
-        }
     }
 }

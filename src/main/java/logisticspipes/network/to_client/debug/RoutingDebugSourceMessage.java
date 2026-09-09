@@ -10,23 +10,25 @@ import logisticspipes.LPConstants;
 import logisticspipes.routing.debug.ClientViewController;
 import logisticspipes.routing.debug.RouteDebugInfo;
 
-/** The pipe the debugger is currently working outwards from. */
+/**
+ * The pipe the debugger is currently working outwards from.
+ */
 public record RoutingDebugSourceMessage(RouteDebugInfo route) implements CustomPacketPayload {
 
     public static final Type<RoutingDebugSourceMessage> TYPE =
-            new Type<>(LPConstants.rl("routing_debug_source"));
+        new Type<>(LPConstants.rl("routing_debug_source"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RoutingDebugSourceMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    RouteDebugInfo.STREAM_CODEC, RoutingDebugSourceMessage::route,
-                    RoutingDebugSourceMessage::new);
+        StreamCodec.composite(
+            RouteDebugInfo.STREAM_CODEC, RoutingDebugSourceMessage::route,
+            RoutingDebugSourceMessage::new);
+
+    public static void handle(RoutingDebugSourceMessage message, IPayloadContext context) {
+        ClientViewController.instance().setSource(message.route);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RoutingDebugSourceMessage message, IPayloadContext context) {
-        ClientViewController.instance().setSource(message.route);
     }
 }

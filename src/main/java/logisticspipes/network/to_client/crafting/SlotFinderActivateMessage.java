@@ -22,24 +22,24 @@ import logisticspipes.renderer.GuiOverlay;
  * @param slot         the index in the module's slot assignment pattern being filled in
  */
 public record SlotFinderActivateMessage(ModuleTarget target, BlockPos inventoryPos, int slot)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SlotFinderActivateMessage> TYPE =
-            new Type<>(LPConstants.rl("slot_finder_activate"));
+        new Type<>(LPConstants.rl("slot_finder_activate"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SlotFinderActivateMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SlotFinderActivateMessage::target,
-                    BlockPos.STREAM_CODEC, SlotFinderActivateMessage::inventoryPos,
-                    ByteBufCodecs.VAR_INT, SlotFinderActivateMessage::slot,
-                    SlotFinderActivateMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SlotFinderActivateMessage::target,
+            BlockPos.STREAM_CODEC, SlotFinderActivateMessage::inventoryPos,
+            ByteBufCodecs.VAR_INT, SlotFinderActivateMessage::slot,
+            SlotFinderActivateMessage::new);
+
+    public static void handle(SlotFinderActivateMessage message, IPayloadContext context) {
+        GuiOverlay.getInstance().activate(message.target, message.inventoryPos, message.slot);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SlotFinderActivateMessage message, IPayloadContext context) {
-        GuiOverlay.getInstance().activate(message.target, message.inventoryPos, message.slot);
     }
 }

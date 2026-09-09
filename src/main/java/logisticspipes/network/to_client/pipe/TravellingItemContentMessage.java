@@ -23,22 +23,17 @@ import logisticspipes.utils.tuples.Pair;
  */
 public record TravellingItemContentMessage(int travelId, ItemIdentifierStack item) implements CustomPacketPayload {
 
-    /** How long a newly announced item is kept alive before the weak reference may go. */
-    private static final int KEEP_TICKS = 10;
-
     public static final Type<TravellingItemContentMessage> TYPE =
-            new Type<>(LPConstants.rl("travelling_item_content"));
-
+        new Type<>(LPConstants.rl("travelling_item_content"));
     public static final StreamCodec<RegistryFriendlyByteBuf, TravellingItemContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, TravellingItemContentMessage::travelId,
-                    ItemIdentifierStack.STREAM_CODEC, TravellingItemContentMessage::item,
-                    TravellingItemContentMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, TravellingItemContentMessage::travelId,
+            ItemIdentifierStack.STREAM_CODEC, TravellingItemContentMessage::item,
+            TravellingItemContentMessage::new);
+    /**
+     * How long a newly announced item is kept alive before the weak reference may go.
+     */
+    private static final int KEEP_TICKS = 10;
 
     public static void handle(TravellingItemContentMessage message, IPayloadContext context) {
         final WeakReference<LPTravelingItemClient> ref = LPTravelingItem.clientList.get(message.travelId);
@@ -52,5 +47,10 @@ public record TravellingItemContentMessage(int travelId, ItemIdentifierStack ite
         synchronized (LPTravelingItem.forceKeep) {
             LPTravelingItem.forceKeep.add(new Pair<>(KEEP_TICKS, item));
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -20,28 +20,28 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  * The modules a chassis pipe holds, for the players watching its HUD.
  */
 public record ChassisModuleContentMessage(BlockPos pos, List<@Nullable ItemIdentifierStack> modules)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ChassisModuleContentMessage> TYPE =
-            new Type<>(LPConstants.rl("chassis_module_content"));
+        new Type<>(LPConstants.rl("chassis_module_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ChassisModuleContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ChassisModuleContentMessage::pos,
-                    ItemIdentifierStack.NULLABLE_LIST_STREAM_CODEC,
-                    ChassisModuleContentMessage::modules,
-                    ChassisModuleContentMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ChassisModuleContentMessage::pos,
+            ItemIdentifierStack.NULLABLE_LIST_STREAM_CODEC,
+            ChassisModuleContentMessage::modules,
+            ChassisModuleContentMessage::new);
+
+    public static void handle(ChassisModuleContentMessage message, IPayloadContext context) {
+        final PipeLogisticsChassis chassis =
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeLogisticsChassis.class);
+        if (chassis != null) {
+            chassis.handleModuleItemIdentifierList(message.modules);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(ChassisModuleContentMessage message, IPayloadContext context) {
-        final PipeLogisticsChassis chassis =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, PipeLogisticsChassis.class);
-        if (chassis != null) {
-            chassis.handleModuleItemIdentifierList(message.modules);
-        }
     }
 }

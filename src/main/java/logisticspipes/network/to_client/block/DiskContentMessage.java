@@ -22,19 +22,14 @@ public record DiskContentMessage(BlockPos pos, ItemStack disk) implements Custom
     public static final Type<DiskContentMessage> TYPE = new Type<>(LPConstants.rl("disk_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DiskContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, DiskContentMessage::pos,
-                    ItemStack.OPTIONAL_STREAM_CODEC, DiskContentMessage::disk,
-                    DiskContentMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, DiskContentMessage::pos,
+            ItemStack.OPTIONAL_STREAM_CODEC, DiskContentMessage::disk,
+            DiskContentMessage::new);
 
     public static void handle(DiskContentMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (container == null) {
             return;
         }
@@ -43,5 +38,10 @@ public record DiskContentMessage(BlockPos pos, ItemStack disk) implements Custom
         } else if (container.pipe instanceof PipeBlockRequestTable requestTable) {
             requestTable.diskInv.setItem(0, message.disk);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

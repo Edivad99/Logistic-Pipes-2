@@ -32,31 +32,13 @@ import logisticspipes.routing.debug.DebugController;
  */
 public record DebugTargetMessage(Purpose purpose, DebugTarget target) implements CustomPacketPayload {
 
-    /** Which debug tool asked. */
-    public enum Purpose {
-        /** Step through a routing table update, one pipe at a time. */
-        ROUTING_TABLE,
-        /** Watch a block entity's or an entity's fields live. */
-        INSPECTOR,
-        /** Follow a pipe's own log in a window. */
-        PIPE_LOG,
-        /** Turn the pipe log on or off for the server's copy of the pipe. */
-        PIPE_DEBUG,
-    }
-
     public static final Type<DebugTargetMessage> TYPE = new Type<>(LPConstants.rl("debug_target"));
-
     public static final StreamCodec<RegistryFriendlyByteBuf, DebugTargetMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    NeoForgeStreamCodecs.<RegistryFriendlyByteBuf, Purpose>enumCodec(Purpose.class),
-                    DebugTargetMessage::purpose,
-                    DebugTarget.STREAM_CODEC, DebugTargetMessage::target,
-                    DebugTargetMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            NeoForgeStreamCodecs.enumCodec(Purpose.class),
+            DebugTargetMessage::purpose,
+            DebugTarget.STREAM_CODEC, DebugTargetMessage::target,
+            DebugTargetMessage::new);
 
     public static void handle(DebugTargetMessage message, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) {
@@ -71,40 +53,40 @@ public record DebugTargetMessage(Purpose purpose, DebugTarget target) implements
     }
 
     private static void debugRoutingTable(ServerPlayer player, DebugTarget target) {
-        if (!(target instanceof DebugTarget.Block block)) {
+        if (!(target instanceof DebugTarget.Block(net.minecraft.core.BlockPos pos))) {
             player.sendSystemMessage(Component.literal(
-                    target instanceof DebugTarget.Entity ? "Entities cannot be debugged this way"
-                            : "No target found").withStyle(ChatFormatting.RED));
+                target instanceof DebugTarget.Entity ? "Entities cannot be debugged this way"
+                    : "No target found").withStyle(ChatFormatting.RED));
             return;
         }
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(player, block.pos(), LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(player, pos, LogisticsTileGenericPipe.class);
         if (be == null || !(be.pipe instanceof CoreRoutedPipe pipe)
-                || !(pipe.getRouter() instanceof ServerRouter router)) {
+            || !(pipe.getRouter() instanceof ServerRouter router)) {
             player.sendSystemMessage(
-                    Component.literal("No routed pipe at " + block.pos()).withStyle(ChatFormatting.RED));
+                Component.literal("No routed pipe at " + pos).withStyle(ChatFormatting.RED));
             return;
         }
-        Confirmations.ask(player, "Start a routing table debug update on the pipe at " + block.pos(),
-                asked -> {
-                    asked.sendSystemMessage(Component.literal("Starting routing table debug update.")
-                            .withStyle(ChatFormatting.GREEN));
-                    DebugController.instance(asked).debug(router);
-                });
+        Confirmations.ask(player, "Start a routing table debug update on the pipe at " + pos,
+            asked -> {
+                asked.sendSystemMessage(Component.literal("Starting routing table debug update.")
+                    .withStyle(ChatFormatting.GREEN));
+                DebugController.instance(asked).debug(router);
+            });
     }
 
     private static void openPipeLog(ServerPlayer player, DebugTarget target) {
-        if (!(target instanceof DebugTarget.Block block)) {
+        if (!(target instanceof DebugTarget.Block(net.minecraft.core.BlockPos pos))) {
             player.sendSystemMessage(Component.literal("Point at a pipe").withStyle(ChatFormatting.RED));
             return;
         }
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(player, block.pos(), LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(player, pos, LogisticsTileGenericPipe.class);
         // The old packet cast the pipe to CoreRoutedPipe without asking first, so pointing at an
         // unrouted pipe was a ClassCastException in the handler.
         if (be == null || !(be.pipe instanceof CoreRoutedPipe pipe)) {
             player.sendSystemMessage(
-                    Component.literal("No routed pipe at " + block.pos()).withStyle(ChatFormatting.RED));
+                Component.literal("No routed pipe at " + pos).withStyle(ChatFormatting.RED));
             return;
         }
         pipe.debug.openForPlayer(player);
@@ -112,42 +94,69 @@ public record DebugTargetMessage(Purpose purpose, DebugTarget target) implements
     }
 
     private static void togglePipeDebug(ServerPlayer player, DebugTarget target) {
-        if (!(target instanceof DebugTarget.Block block)) {
+        if (!(target instanceof DebugTarget.Block(net.minecraft.core.BlockPos pos))) {
             player.sendSystemMessage(Component.literal("Point at a pipe").withStyle(ChatFormatting.RED));
             return;
         }
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(player, block.pos(), LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(player, pos, LogisticsTileGenericPipe.class);
         if (be == null || !be.isInitialized()) {
             player.sendSystemMessage(
-                    Component.literal("No pipe at " + block.pos()).withStyle(ChatFormatting.RED));
+                Component.literal("No pipe at " + pos).withStyle(ChatFormatting.RED));
             return;
         }
         be.pipe.debug.debugThisPipe = !be.pipe.debug.debugThisPipe;
         player.sendSystemMessage(Component.literal(
-                be.pipe.debug.debugThisPipe ? "Debug enabled on server" : "Debug disabled on server"));
+            be.pipe.debug.debugThisPipe ? "Debug enabled on server" : "Debug disabled on server"));
     }
 
     private static void inspect(ServerPlayer player, DebugTarget target) {
-        if (target instanceof DebugTarget.Block block) {
-            final BlockEntity be = TargetLookup.blockEntityAt(player, block.pos(), BlockEntity.class);
+        if (target instanceof DebugTarget.Block(net.minecraft.core.BlockPos pos)) {
+            final BlockEntity be = TargetLookup.blockEntityAt(player, pos, BlockEntity.class);
             if (be == null) {
                 player.sendSystemMessage(
-                        Component.literal("No block entity at " + block.pos()).withStyle(ChatFormatting.RED));
+                    Component.literal("No block entity at " + pos).withStyle(ChatFormatting.RED));
                 return;
             }
             Confirmations.ask(player, "Start debugging block entity " + be.getClass().getSimpleName(),
-                    asked -> DebugGuiController.instance().startWatchingOf(be, asked));
-        } else if (target instanceof DebugTarget.Entity wanted) {
-            final Entity entity = player.level().getEntity(wanted.entityId());
+                asked -> DebugGuiController.instance().startWatchingOf(be, asked));
+        } else if (target instanceof DebugTarget.Entity(int entityId)) {
+            final Entity entity = player.level().getEntity(entityId);
             if (entity == null) {
                 player.sendSystemMessage(Component.literal("No entity found").withStyle(ChatFormatting.RED));
                 return;
             }
             Confirmations.ask(player, "Start debugging entity " + entity.getClass().getSimpleName(),
-                    asked -> DebugGuiController.instance().startWatchingOf(entity, asked));
+                asked -> DebugGuiController.instance().startWatchingOf(entity, asked));
         } else {
             player.sendSystemMessage(Component.literal("No target found").withStyle(ChatFormatting.RED));
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
+    /**
+     * Which debug tool asked.
+     */
+    public enum Purpose {
+        /**
+         * Step through a routing table update, one pipe at a time.
+         */
+        ROUTING_TABLE,
+        /**
+         * Watch a block entity's or an entity's fields live.
+         */
+        INSPECTOR,
+        /**
+         * Follow a pipe's own log in a window.
+         */
+        PIPE_LOG,
+        /**
+         * Turn the pipe log on or off for the server's copy of the pipe.
+         */
+        PIPE_DEBUG,
     }
 }

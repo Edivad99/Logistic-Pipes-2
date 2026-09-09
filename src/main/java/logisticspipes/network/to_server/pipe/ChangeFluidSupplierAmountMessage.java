@@ -24,24 +24,24 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record ChangeFluidSupplierAmountMessage(BlockPos pos, int change) implements CustomPacketPayload {
 
     public static final Type<ChangeFluidSupplierAmountMessage> TYPE =
-            new Type<>(LPConstants.rl("change_fluid_supplier_amount"));
+        new Type<>(LPConstants.rl("change_fluid_supplier_amount"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ChangeFluidSupplierAmountMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ChangeFluidSupplierAmountMessage::pos,
-                    ByteBufCodecs.VAR_INT, ChangeFluidSupplierAmountMessage::change,
-                    ChangeFluidSupplierAmountMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ChangeFluidSupplierAmountMessage::pos,
+            ByteBufCodecs.VAR_INT, ChangeFluidSupplierAmountMessage::change,
+            ChangeFluidSupplierAmountMessage::new);
+
+    public static void handle(ChangeFluidSupplierAmountMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof PipeFluidSupplierMk2 pipe) {
+            pipe.changeFluidAmount(message.change, context.player());
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(ChangeFluidSupplierAmountMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof PipeFluidSupplierMk2 pipe) {
-            pipe.changeFluidAmount(message.change, context.player());
-        }
     }
 }

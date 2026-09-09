@@ -20,27 +20,27 @@ import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
  * two buttons sit next to each other.
  */
 public record TrackItemMessage(BlockPos pos, ItemIdentifier item, boolean tracked)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<TrackItemMessage> TYPE = new Type<>(LPConstants.rl("track_item"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TrackItemMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, TrackItemMessage::pos,
-                    ItemIdentifier.STREAM_CODEC, TrackItemMessage::item,
-                    ByteBufCodecs.BOOL, TrackItemMessage::tracked,
-                    TrackItemMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, TrackItemMessage::pos,
+            ItemIdentifier.STREAM_CODEC, TrackItemMessage::item,
+            ByteBufCodecs.BOOL, TrackItemMessage::tracked,
+            TrackItemMessage::new);
+
+    public static void handle(TrackItemMessage message, IPayloadContext context) {
+        final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
+        if (be != null) {
+            be.setTracked(message.item, message.tracked);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(TrackItemMessage message, IPayloadContext context) {
-        final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
-        if (be != null) {
-            be.setTracked(message.item, message.tracked);
-        }
     }
 }

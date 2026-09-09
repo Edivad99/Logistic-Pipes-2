@@ -21,17 +21,17 @@ public record UpdateStatusEntriesMessage(int logId, List<StatusEntry> status) im
     public static final Type<UpdateStatusEntriesMessage> TYPE = new Type<>(LPConstants.rl("update_status_entries"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UpdateStatusEntriesMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, UpdateStatusEntriesMessage::logId,
-                    StatusEntry.STREAM_CODEC.apply(ByteBufCodecs.list()), UpdateStatusEntriesMessage::status,
-                    UpdateStatusEntriesMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, UpdateStatusEntriesMessage::logId,
+            StatusEntry.STREAM_CODEC.apply(ByteBufCodecs.list()), UpdateStatusEntriesMessage::status,
+            UpdateStatusEntriesMessage::new);
+
+    public static void handle(UpdateStatusEntriesMessage message, IPayloadContext context) {
+        PipeLogBuffer.of(message.logId).setStatus(message.status);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(UpdateStatusEntriesMessage message, IPayloadContext context) {
-        PipeLogBuffer.of(message.logId).setStatus(message.status);
     }
 }

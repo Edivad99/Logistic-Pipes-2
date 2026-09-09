@@ -30,25 +30,22 @@ import network.rs485.logisticspipes.property.PropertyHolder;
  * assume its own edit took.
  */
 public record ModulePropertiesMessage(ModuleTarget target, CompoundTag properties)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ModulePropertiesMessage> TYPE =
-            new Type<>(LPConstants.rl("module_properties"));
+        new Type<>(LPConstants.rl("module_properties"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ModulePropertiesMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, ModulePropertiesMessage::target,
-                    ByteBufCodecs.COMPOUND_TAG, ModulePropertiesMessage::properties,
-                    ModulePropertiesMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, ModulePropertiesMessage::target,
+            ByteBufCodecs.COMPOUND_TAG, ModulePropertiesMessage::properties,
+            ModulePropertiesMessage::new);
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
-    /** Everything the holder has, for a full resync. */
+    /**
+     * Everything the holder has, for a full resync.
+     */
     public static ModulePropertiesMessage of(ModuleTarget target, PropertyHolder holder,
-            HolderLookup.Provider registries) {
+        HolderLookup.Provider registries) {
         final TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
         PropertyHolder.serialize(output, holder);
         return new ModulePropertiesMessage(target, output.buildResult());
@@ -62,10 +59,15 @@ public record ModulePropertiesMessage(ModuleTarget target, CompoundTag propertie
         final RegistryAccess registries = context.player().level().registryAccess();
         module.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, registries, message.properties));
         if (message.target.slot().filter(ModulePositionType::isInWorld).isEmpty()
-                && context.player().containerMenu instanceof InventoryMenu) {
+            && context.player().containerMenu instanceof InventoryMenu) {
             ItemModuleInformationManager.saveInformation(context.player().level(),
-                    context.player().getInventory().getItem(message.target.positionInt()), module, registries);
+                context.player().getInventory().getItem(message.target.positionInt()), module, registries);
             context.player().getInventory().setChanged();
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

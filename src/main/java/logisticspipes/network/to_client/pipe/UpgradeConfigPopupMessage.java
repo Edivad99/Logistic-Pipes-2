@@ -33,39 +33,58 @@ import network.rs485.logisticspipes.world.WorldCoordinatesWrapper;
  * round trip; everything the popup shows the client can work out for itself.
  */
 public record UpgradeConfigPopupMessage(Kind kind, BlockPos pipePos, int slotIndex)
-        implements CustomPacketPayload {
-
-    /** Which upgrade asked, and so which popup to build. */
-    public enum Kind {
-        SNEAKY,
-        DISCONNECTION,
-    }
+    implements CustomPacketPayload {
 
     public static final Type<UpgradeConfigPopupMessage> TYPE =
-            new Type<>(LPConstants.rl("upgrade_config_popup"));
-
+        new Type<>(LPConstants.rl("upgrade_config_popup"));
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeConfigPopupMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    NeoForgeStreamCodecs.<RegistryFriendlyByteBuf, Kind>enumCodec(Kind.class),
-                    UpgradeConfigPopupMessage::kind,
-                    BlockPos.STREAM_CODEC, UpgradeConfigPopupMessage::pipePos,
-                    ByteBufCodecs.VAR_INT, UpgradeConfigPopupMessage::slotIndex,
-                    UpgradeConfigPopupMessage::new);
+        StreamCodec.composite(
+            NeoForgeStreamCodecs.enumCodec(Kind.class),
+            UpgradeConfigPopupMessage::kind,
+            BlockPos.STREAM_CODEC, UpgradeConfigPopupMessage::pipePos,
+            ByteBufCodecs.VAR_INT, UpgradeConfigPopupMessage::slotIndex,
+            UpgradeConfigPopupMessage::new);
+
+    public static void handle(UpgradeConfigPopupMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
+
+    /**
+     * The neighbours a sneaky upgrade can be pointed at: the inventories first, and if there are
+     * none, every neighbour, so the popup is never empty.
+     */
+    private static List<BlockPos> extractableSides(LogisticsTileGenericPipe container) {
+        final List<BlockPos> inventories = new WorldCoordinatesWrapper(container).connectedTileEntities()
+            .stream()
+            .filter(neighbor -> SimpleServiceLocator.pipeInformationManager.isNotAPipe(neighbor.getTileEntity()))
+            .map(neighbor -> neighbor.getTileEntity().getBlockPos())
+            .collect(Collectors.toList());
+        if (!inventories.isEmpty()) {
+            return inventories;
+        }
+        return new WorldCoordinatesWrapper(container).connectedTileEntities().stream()
+            .map(neighbor -> neighbor.getTileEntity().getBlockPos())
+            .collect(Collectors.toList());
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public static void handle(UpgradeConfigPopupMessage message, IPayloadContext context) {
-        Client.handle(message, context);
+    /**
+     * Which upgrade asked, and so which popup to build.
+     */
+    public enum Kind {
+        SNEAKY,
+        DISCONNECTION,
     }
 
     private static final class Client {
 
         static void handle(UpgradeConfigPopupMessage message, IPayloadContext context) {
             final LogisticsTileGenericPipe container =
-                    TargetLookup.blockEntityAt(context.player(), message.pipePos, LogisticsTileGenericPipe.class);
+                TargetLookup.blockEntityAt(context.player(), message.pipePos, LogisticsTileGenericPipe.class);
             final UpgradeSlot slot = TargetLookup.slotIn(context.player(), message.slotIndex, UpgradeSlot.class);
             if (container == null || slot == null || !(container.pipe instanceof CoreRoutedPipe pipe)) {
                 return;
@@ -77,28 +96,10 @@ public record UpgradeConfigPopupMessage(Kind kind, BlockPos pipePos, int slotInd
         }
 
         private static SubGuiScreen popupFor(Kind kind, LogisticsTileGenericPipe container, CoreRoutedPipe pipe,
-                UpgradeSlot slot) {
+            UpgradeSlot slot) {
             return kind == Kind.DISCONNECTION
-                    ? new DisconnectionConfigurationPopup(pipe, slot)
-                    : new SneakyConfigurationPopup(extractableSides(container), slot);
+                ? new DisconnectionConfigurationPopup(pipe, slot)
+                : new SneakyConfigurationPopup(extractableSides(container), slot);
         }
-    }
-
-    /**
-     * The neighbours a sneaky upgrade can be pointed at: the inventories first, and if there are
-     * none, every neighbour, so the popup is never empty.
-     */
-    private static List<BlockPos> extractableSides(LogisticsTileGenericPipe container) {
-        final List<BlockPos> inventories = new WorldCoordinatesWrapper(container).connectedTileEntities()
-                .stream()
-                .filter(neighbor -> SimpleServiceLocator.pipeInformationManager.isNotAPipe(neighbor.getTileEntity()))
-                .map(neighbor -> neighbor.getTileEntity().getBlockPos())
-                .collect(Collectors.toList());
-        if (!inventories.isEmpty()) {
-            return inventories;
-        }
-        return new WorldCoordinatesWrapper(container).connectedTileEntities().stream()
-                .map(neighbor -> neighbor.getTileEntity().getBlockPos())
-                .collect(Collectors.toList());
     }
 }

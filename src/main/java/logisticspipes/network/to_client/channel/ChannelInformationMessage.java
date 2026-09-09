@@ -24,24 +24,24 @@ import logisticspipes.routing.channels.ChannelInformation;
  *                 channel manager telling every watcher that a channel changed
  */
 public record ChannelInformationMessage(ChannelInformation channel, boolean targeted)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ChannelInformationMessage> TYPE =
-            new Type<>(LPConstants.rl("channel_information"));
+        new Type<>(LPConstants.rl("channel_information"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ChannelInformationMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ChannelInformation.STREAM_CODEC.cast(), ChannelInformationMessage::channel,
-                    ByteBufCodecs.BOOL, ChannelInformationMessage::targeted,
-                    ChannelInformationMessage::new);
+        StreamCodec.composite(
+            ChannelInformation.STREAM_CODEC.cast(), ChannelInformationMessage::channel,
+            ByteBufCodecs.BOOL, ChannelInformationMessage::targeted,
+            ChannelInformationMessage::new);
+
+    public static void handle(ChannelInformationMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(ChannelInformationMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

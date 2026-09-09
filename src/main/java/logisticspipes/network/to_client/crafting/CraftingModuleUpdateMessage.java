@@ -22,33 +22,33 @@ import logisticspipes.network.ModuleTarget;
  * only exists on the server.
  */
 public record CraftingModuleUpdateMessage(
-        ModuleTarget target,
-        List<Integer> liquidAmounts,
-        ClientSideSatelliteNames satelliteNames,
-        int priority
+    ModuleTarget target,
+    List<Integer> liquidAmounts,
+    ClientSideSatelliteNames satelliteNames,
+    int priority
 ) implements CustomPacketPayload {
 
     public static final Type<CraftingModuleUpdateMessage> TYPE =
-            new Type<>(LPConstants.rl("crafting_module_update"));
+        new Type<>(LPConstants.rl("crafting_module_update"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingModuleUpdateMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, CraftingModuleUpdateMessage::target,
-                    ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()),
-                    CraftingModuleUpdateMessage::liquidAmounts,
-                    ClientSideSatelliteNames.STREAM_CODEC, CraftingModuleUpdateMessage::satelliteNames,
-                    ByteBufCodecs.VAR_INT, CraftingModuleUpdateMessage::priority,
-                    CraftingModuleUpdateMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, CraftingModuleUpdateMessage::target,
+            ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()),
+            CraftingModuleUpdateMessage::liquidAmounts,
+            ClientSideSatelliteNames.STREAM_CODEC, CraftingModuleUpdateMessage::satelliteNames,
+            ByteBufCodecs.VAR_INT, CraftingModuleUpdateMessage::priority,
+            CraftingModuleUpdateMessage::new);
 
     public static void handle(CraftingModuleUpdateMessage message, IPayloadContext context) {
         final ModuleCrafter module = message.target.resolve(context.player(), ModuleCrafter.class);
         if (module != null) {
             module.applyUpdate(message.liquidAmounts, message.satelliteNames, message.priority);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

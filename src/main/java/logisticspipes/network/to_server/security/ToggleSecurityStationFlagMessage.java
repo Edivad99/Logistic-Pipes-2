@@ -24,24 +24,24 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.Secu
 public record ToggleSecurityStationFlagMessage(BlockPos pos, SecurityFlag flag) implements CustomPacketPayload {
 
     public static final Type<ToggleSecurityStationFlagMessage> TYPE =
-            new Type<>(LPConstants.rl("toggle_security_station_flag"));
+        new Type<>(LPConstants.rl("toggle_security_station_flag"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ToggleSecurityStationFlagMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ToggleSecurityStationFlagMessage::pos,
-                    NeoForgeStreamCodecs.enumCodec(SecurityFlag.class), ToggleSecurityStationFlagMessage::flag,
-                    ToggleSecurityStationFlagMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ToggleSecurityStationFlagMessage::pos,
+            NeoForgeStreamCodecs.enumCodec(SecurityFlag.class), ToggleSecurityStationFlagMessage::flag,
+            ToggleSecurityStationFlagMessage::new);
+
+    public static void handle(ToggleSecurityStationFlagMessage message, IPayloadContext context) {
+        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+        if (be != null) {
+            be.toggleFlag(message.flag);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(ToggleSecurityStationFlagMessage message, IPayloadContext context) {
-        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
-        if (be != null) {
-            be.toggleFlag(message.flag);
-        }
     }
 }

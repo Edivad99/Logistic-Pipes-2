@@ -23,21 +23,21 @@ import logisticspipes.network.to_server.debug.DebugTargetMessage.Purpose;
 public record AskForDebugTargetMessage(Purpose purpose) implements CustomPacketPayload {
 
     public static final Type<AskForDebugTargetMessage> TYPE =
-            new Type<>(LPConstants.rl("ask_for_debug_target"));
+        new Type<>(LPConstants.rl("ask_for_debug_target"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AskForDebugTargetMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    NeoForgeStreamCodecs.<RegistryFriendlyByteBuf, Purpose>enumCodec(Purpose.class),
-                    AskForDebugTargetMessage::purpose,
-                    AskForDebugTargetMessage::new);
+        StreamCodec.composite(
+            NeoForgeStreamCodecs.enumCodec(Purpose.class),
+            AskForDebugTargetMessage::purpose,
+            AskForDebugTargetMessage::new);
+
+    public static void handle(AskForDebugTargetMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(AskForDebugTargetMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

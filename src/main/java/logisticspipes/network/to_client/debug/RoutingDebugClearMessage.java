@@ -17,14 +17,14 @@ public record RoutingDebugClearMessage() implements CustomPacketPayload {
     public static final Type<RoutingDebugClearMessage> TYPE = new Type<>(LPConstants.rl("routing_debug_clear"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RoutingDebugClearMessage> STREAM_CODEC =
-            StreamCodec.unit(new RoutingDebugClearMessage());
+        StreamCodec.unit(new RoutingDebugClearMessage());
+
+    public static void handle(RoutingDebugClearMessage message, IPayloadContext context) {
+        ClientViewController.instance().clear();
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RoutingDebugClearMessage message, IPayloadContext context) {
-        ClientViewController.instance().clear();
     }
 }

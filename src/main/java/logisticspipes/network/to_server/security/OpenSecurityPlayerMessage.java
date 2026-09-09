@@ -18,27 +18,27 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 public record OpenSecurityPlayerMessage(BlockPos pos, String playerName) implements CustomPacketPayload {
 
     public static final Type<OpenSecurityPlayerMessage> TYPE =
-            new Type<>(LPConstants.rl("open_security_player"));
+        new Type<>(LPConstants.rl("open_security_player"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenSecurityPlayerMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, OpenSecurityPlayerMessage::pos,
-                    ByteBufCodecs.STRING_UTF8, OpenSecurityPlayerMessage::playerName,
-                    OpenSecurityPlayerMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, OpenSecurityPlayerMessage::pos,
+            ByteBufCodecs.STRING_UTF8, OpenSecurityPlayerMessage::playerName,
+            OpenSecurityPlayerMessage::new);
 
     public static void handle(OpenSecurityPlayerMessage message, IPayloadContext context) {
         if (message.playerName.isEmpty()) {
             return;
         }
         final LogisticsSecurityBlockEntity station =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (station != null) {
             station.handleOpenSecurityPlayer(context.player(), message.playerName);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

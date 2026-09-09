@@ -26,25 +26,27 @@ import logisticspipes.renderer.state.PipeRenderState;
  * @param stateId counts up per pipe, so a state that overtook a newer one on the way is dropped
  */
 public record PipeStateMessage(
-        BlockPos pos,
-        PipeRenderState.Wire renderState,
-        String pipeIdName,
-        byte[] pipeState,
-        int stateId
+    BlockPos pos,
+    PipeRenderState.Wire renderState,
+    String pipeIdName,
+    byte[] pipeState,
+    int stateId
 ) implements CustomPacketPayload {
 
     public static final Type<PipeStateMessage> TYPE = new Type<>(LPConstants.rl("pipe_state"));
 
     public static final StreamCodec<FriendlyByteBuf, PipeStateMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeStateMessage::pos,
-                    PipeRenderState.Wire.STREAM_CODEC.cast(), PipeStateMessage::renderState,
-                    ByteBufCodecs.STRING_UTF8, PipeStateMessage::pipeIdName,
-                    ByteBufCodecs.BYTE_ARRAY, PipeStateMessage::pipeState,
-                    ByteBufCodecs.VAR_INT, PipeStateMessage::stateId,
-                    PipeStateMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeStateMessage::pos,
+            PipeRenderState.Wire.STREAM_CODEC.cast(), PipeStateMessage::renderState,
+            ByteBufCodecs.STRING_UTF8, PipeStateMessage::pipeIdName,
+            ByteBufCodecs.BYTE_ARRAY, PipeStateMessage::pipeState,
+            ByteBufCodecs.VAR_INT, PipeStateMessage::stateId,
+            PipeStateMessage::new);
 
-    /** Snapshots the pipe's current client state. Server side. */
+    /**
+     * Snapshots the pipe's current client state. Server side.
+     */
     public static PipeStateMessage of(LogisticsTileGenericPipe container) {
         final FriendlyByteBuf pipeBuffer = new FriendlyByteBuf(Unpooled.buffer());
         if (container.pipe != null) {
@@ -53,11 +55,19 @@ public record PipeStateMessage(
         final byte[] pipeState = new byte[pipeBuffer.readableBytes()];
         pipeBuffer.readBytes(pipeState);
         return new PipeStateMessage(
-                container.getBlockPos(),
-                container.renderState.snapshot(),
-                container.coreState.pipeIdName == null ? "" : container.coreState.pipeIdName,
-                pipeState,
-                container.statePacketId++);
+            container.getBlockPos(),
+            container.renderState.snapshot(),
+            container.coreState.pipeIdName == null ? "" : container.coreState.pipeIdName,
+            pipeState,
+            container.statePacketId++);
+    }
+
+    public static void handle(PipeStateMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe container =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (container != null) {
+            message.applyTo(container);
+        }
     }
 
     @Override
@@ -65,15 +75,9 @@ public record PipeStateMessage(
         return TYPE;
     }
 
-    public static void handle(PipeStateMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (container != null) {
-            message.applyTo(container);
-        }
-    }
-
-    /** Reads the state into a pipe, unless it already has a newer one. */
+    /**
+     * Reads the state into a pipe, unless it already has a newer one.
+     */
     public void applyTo(LogisticsTileGenericPipe container) {
         if (container.statePacketId > stateId) {
             return;

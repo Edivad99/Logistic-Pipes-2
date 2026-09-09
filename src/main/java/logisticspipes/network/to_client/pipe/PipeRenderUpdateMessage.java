@@ -20,23 +20,23 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record PipeRenderUpdateMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<PipeRenderUpdateMessage> TYPE =
-            new Type<>(LPConstants.rl("pipe_render_update"));
+        new Type<>(LPConstants.rl("pipe_render_update"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipeRenderUpdateMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeRenderUpdateMessage::pos,
-                    PipeRenderUpdateMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeRenderUpdateMessage::pos,
+            PipeRenderUpdateMessage::new);
+
+    public static void handle(PipeRenderUpdateMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null) {
+            be.renderState.checkForRenderUpdate(context.player().level(), message.pos);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(PipeRenderUpdateMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null) {
-            be.renderState.checkForRenderUpdate(context.player().level(), message.pos);
-        }
     }
 }

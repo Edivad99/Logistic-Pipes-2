@@ -20,28 +20,28 @@ import logisticspipes.network.ModuleTarget;
  * made good by the next subscribe.
  */
 public record StringBasedItemSinkListMessage(ModuleTarget target, List<String> names)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<StringBasedItemSinkListMessage> TYPE =
-            new Type<>(LPConstants.rl("string_based_item_sink_list"));
+        new Type<>(LPConstants.rl("string_based_item_sink_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StringBasedItemSinkListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, StringBasedItemSinkListMessage::target,
-                    ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
-                    StringBasedItemSinkListMessage::names,
-                    StringBasedItemSinkListMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, StringBasedItemSinkListMessage::target,
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
+            StringBasedItemSinkListMessage::names,
+            StringBasedItemSinkListMessage::new);
+
+    public static void handle(StringBasedItemSinkListMessage message, IPayloadContext context) {
+        final IStringBasedModule module =
+            message.target.resolve(context.player(), IStringBasedModule.class);
+        if (module != null) {
+            module.stringListProperty().replaceContent(message.names);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(StringBasedItemSinkListMessage message, IPayloadContext context) {
-        final IStringBasedModule module =
-                message.target.resolve(context.player(), IStringBasedModule.class);
-        if (module != null) {
-            module.stringListProperty().replaceContent(message.names);
-        }
     }
 }

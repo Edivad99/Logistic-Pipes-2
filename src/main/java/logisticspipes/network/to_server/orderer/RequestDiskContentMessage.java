@@ -25,26 +25,26 @@ import logisticspipes.world.item.ItemDisk;
 public record RequestDiskContentMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestDiskContentMessage> TYPE =
-            new Type<>(LPConstants.rl("request_disk_content"));
+        new Type<>(LPConstants.rl("request_disk_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestDiskContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestDiskContentMessage::pos,
-                    RequestDiskContentMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestDiskContentMessage::pos,
+            RequestDiskContentMessage::new);
+
+    public static void handle(RequestDiskContentMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be == null || !(be.pipe instanceof PipeItemsRequestLogistics requester)
+            || !(context.player() instanceof ServerPlayer player)) {
+            return;
+        }
+        PacketDistributor.sendToPlayer(player,
+            new DiskContentMessage(message.pos, ItemDisk.withData(requester.getDisk())));
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestDiskContentMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be == null || !(be.pipe instanceof PipeItemsRequestLogistics requester)
-                || !(context.player() instanceof ServerPlayer player)) {
-            return;
-        }
-        PacketDistributor.sendToPlayer(player,
-                new DiskContentMessage(message.pos, ItemDisk.withData(requester.getDisk())));
     }
 }

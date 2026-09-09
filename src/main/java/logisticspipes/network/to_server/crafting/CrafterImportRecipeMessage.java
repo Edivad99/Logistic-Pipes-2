@@ -20,22 +20,22 @@ import logisticspipes.network.ModuleTarget;
 public record CrafterImportRecipeMessage(ModuleTarget target) implements CustomPacketPayload {
 
     public static final Type<CrafterImportRecipeMessage> TYPE =
-            new Type<>(LPConstants.rl("crafter_import_recipe"));
+        new Type<>(LPConstants.rl("crafter_import_recipe"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrafterImportRecipeMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, CrafterImportRecipeMessage::target,
-                    CrafterImportRecipeMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, CrafterImportRecipeMessage::target,
+            CrafterImportRecipeMessage::new);
 
     public static void handle(CrafterImportRecipeMessage message, IPayloadContext context) {
         final ModuleCrafter module = message.target.resolve(context.player(), ModuleCrafter.class);
         if (module != null) {
             module.importFromCraftingTable(context.player());
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

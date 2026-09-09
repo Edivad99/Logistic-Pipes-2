@@ -20,24 +20,24 @@ import logisticspipes.network.TargetLookup;
 public record CycleCraftingRecipeMessage(BlockPos pos, boolean down) implements CustomPacketPayload {
 
     public static final Type<CycleCraftingRecipeMessage> TYPE =
-            new Type<>(LPConstants.rl("cycle_crafting_recipe"));
+        new Type<>(LPConstants.rl("cycle_crafting_recipe"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CycleCraftingRecipeMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, CycleCraftingRecipeMessage::pos,
-                    ByteBufCodecs.BOOL, CycleCraftingRecipeMessage::down,
-                    CycleCraftingRecipeMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, CycleCraftingRecipeMessage::pos,
+            ByteBufCodecs.BOOL, CycleCraftingRecipeMessage::down,
+            CycleCraftingRecipeMessage::new);
+
+    public static void handle(CycleCraftingRecipeMessage message, IPayloadContext context) {
+        final ICraftingRecipeGrid grid =
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
+        if (grid != null) {
+            grid.cycleRecipe(message.down);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(CycleCraftingRecipeMessage message, IPayloadContext context) {
-        final ICraftingRecipeGrid grid =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
-        if (grid != null) {
-            grid.cycleRecipe(message.down);
-        }
     }
 }

@@ -28,28 +28,28 @@ import logisticspipes.routing.order.LinkedLogisticsOrderList;
  *                  monitor shows as "List"
  */
 public record OrderWatchMessage(BlockPos pos, int watcherId, Optional<IResource> resource,
-        LinkedLogisticsOrderList orders) implements CustomPacketPayload {
+                                LinkedLogisticsOrderList orders) implements CustomPacketPayload {
 
     public static final Type<OrderWatchMessage> TYPE = new Type<>(LPConstants.rl("order_watch"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OrderWatchMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, OrderWatchMessage::pos,
-                    ByteBufCodecs.VAR_INT, OrderWatchMessage::watcherId,
-                    ByteBufCodecs.optional(IResource.STREAM_CODEC), OrderWatchMessage::resource,
-                    LinkedLogisticsOrderList.STREAM_CODEC, OrderWatchMessage::orders,
-                    OrderWatchMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, OrderWatchMessage::pos,
+            ByteBufCodecs.VAR_INT, OrderWatchMessage::watcherId,
+            ByteBufCodecs.optional(IResource.STREAM_CODEC), OrderWatchMessage::resource,
+            LinkedLogisticsOrderList.STREAM_CODEC, OrderWatchMessage::orders,
+            OrderWatchMessage::new);
+
+    public static void handle(OrderWatchMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof IRequestWatcher watcher) {
+            watcher.handleClientSideListInfo(message.watcherId, message.resource.orElse(null), message.orders);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(OrderWatchMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof IRequestWatcher watcher) {
-            watcher.handleClientSideListInfo(message.watcherId, message.resource.orElse(null), message.orders);
-        }
     }
 }

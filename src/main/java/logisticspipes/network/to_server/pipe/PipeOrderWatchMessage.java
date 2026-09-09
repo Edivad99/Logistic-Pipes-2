@@ -21,19 +21,14 @@ public record PipeOrderWatchMessage(BlockPos pos, boolean watching) implements C
     public static final Type<PipeOrderWatchMessage> TYPE = new Type<>(LPConstants.rl("pipe_order_watch"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipeOrderWatchMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeOrderWatchMessage::pos,
-                    ByteBufCodecs.BOOL, PipeOrderWatchMessage::watching,
-                    PipeOrderWatchMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeOrderWatchMessage::pos,
+            ByteBufCodecs.BOOL, PipeOrderWatchMessage::watching,
+            PipeOrderWatchMessage::new);
 
     public static void handle(PipeOrderWatchMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null || !(be.pipe instanceof CoreRoutedPipe pipe)) {
             return;
         }
@@ -42,5 +37,10 @@ public record PipeOrderWatchMessage(BlockPos pos, boolean watching) implements C
         } else {
             pipe.getOrderManager().stopWatching(context.player());
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

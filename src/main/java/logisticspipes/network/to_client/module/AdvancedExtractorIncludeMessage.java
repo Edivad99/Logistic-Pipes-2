@@ -16,27 +16,27 @@ import network.rs485.logisticspipes.module.AsyncAdvancedExtractor;
  * Whether an advanced extractor's filter includes or excludes, for the players watching its HUD.
  */
 public record AdvancedExtractorIncludeMessage(ModuleTarget target, boolean included)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<AdvancedExtractorIncludeMessage> TYPE =
-            new Type<>(LPConstants.rl("advanced_extractor_include"));
+        new Type<>(LPConstants.rl("advanced_extractor_include"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AdvancedExtractorIncludeMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, AdvancedExtractorIncludeMessage::target,
-                    ByteBufCodecs.BOOL, AdvancedExtractorIncludeMessage::included,
-                    AdvancedExtractorIncludeMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, AdvancedExtractorIncludeMessage::target,
+            ByteBufCodecs.BOOL, AdvancedExtractorIncludeMessage::included,
+            AdvancedExtractorIncludeMessage::new);
+
+    public static void handle(AdvancedExtractorIncludeMessage message, IPayloadContext context) {
+        final AsyncAdvancedExtractor module =
+            message.target.resolve(context.player(), AsyncAdvancedExtractor.class);
+        if (module != null) {
+            module.getItemsIncluded().setValue(message.included);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(AdvancedExtractorIncludeMessage message, IPayloadContext context) {
-        final AsyncAdvancedExtractor module =
-                message.target.resolve(context.player(), AsyncAdvancedExtractor.class);
-        if (module != null) {
-            module.getItemsIncluded().setValue(message.included);
-        }
     }
 }

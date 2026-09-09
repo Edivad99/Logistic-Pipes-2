@@ -22,26 +22,21 @@ import logisticspipes.network.TargetLookup;
  * <p>Nine slots, some of them empty, which is why the stacks travel with the optional codec.
  */
 public record ImportCraftingRecipeMessage(BlockPos pos, List<ItemStack> contents)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ImportCraftingRecipeMessage> TYPE =
-            new Type<>(LPConstants.rl("import_crafting_recipe"));
+        new Type<>(LPConstants.rl("import_crafting_recipe"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ImportCraftingRecipeMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ImportCraftingRecipeMessage::pos,
-                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    ImportCraftingRecipeMessage::contents,
-                    ImportCraftingRecipeMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ImportCraftingRecipeMessage::pos,
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()),
+            ImportCraftingRecipeMessage::contents,
+            ImportCraftingRecipeMessage::new);
 
     public static void handle(ImportCraftingRecipeMessage message, IPayloadContext context) {
         final ICraftingRecipeGrid grid =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
         if (grid == null) {
             return;
         }
@@ -50,5 +45,10 @@ public record ImportCraftingRecipeMessage(BlockPos pos, List<ItemStack> contents
             contents.set(i, message.contents.get(i));
         }
         grid.handleRecipeViewerImport(contents);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

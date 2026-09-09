@@ -21,20 +21,20 @@ public record SatelliteNameResultMessage(SatelliteNamingResult result, String na
     public static final Type<SatelliteNameResultMessage> TYPE = new Type<>(LPConstants.rl("satellite_name_result"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SatelliteNameResultMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    NeoForgeStreamCodecs.<RegistryFriendlyByteBuf, SatelliteNamingResult>enumCodec(
-                            SatelliteNamingResult.class),
-                    SatelliteNameResultMessage::result,
-                    ByteBufCodecs.STRING_UTF8, SatelliteNameResultMessage::name,
-                    SatelliteNameResultMessage::new);
+        StreamCodec.composite(
+            NeoForgeStreamCodecs.enumCodec(
+                SatelliteNamingResult.class),
+            SatelliteNameResultMessage::result,
+            ByteBufCodecs.STRING_UTF8, SatelliteNameResultMessage::name,
+            SatelliteNameResultMessage::new);
+
+    public static void handle(SatelliteNameResultMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SatelliteNameResultMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

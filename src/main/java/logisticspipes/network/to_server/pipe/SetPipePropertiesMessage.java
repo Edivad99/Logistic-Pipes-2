@@ -32,22 +32,19 @@ import network.rs485.logisticspipes.property.PropertyHolder;
 public record SetPipePropertiesMessage(BlockPos pos, CompoundTag properties) implements CustomPacketPayload {
 
     public static final Type<SetPipePropertiesMessage> TYPE =
-            new Type<>(LPConstants.rl("set_pipe_properties"));
+        new Type<>(LPConstants.rl("set_pipe_properties"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetPipePropertiesMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetPipePropertiesMessage::pos,
-                    ByteBufCodecs.COMPOUND_TAG, SetPipePropertiesMessage::properties,
-                    SetPipePropertiesMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SetPipePropertiesMessage::pos,
+            ByteBufCodecs.COMPOUND_TAG, SetPipePropertiesMessage::properties,
+            SetPipePropertiesMessage::new);
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
-    /** What the holder has, for the GUI to send on close: normally only the properties it changed. */
+    /**
+     * What the holder has, for the GUI to send on close: normally only the properties it changed.
+     */
     public static SetPipePropertiesMessage of(BlockPos pos, PropertyHolder holder,
-            HolderLookup.Provider registries) {
+        HolderLookup.Provider registries) {
         final TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
         PropertyHolder.serialize(output, holder);
         return new SetPipePropertiesMessage(pos, output.buildResult());
@@ -55,13 +52,18 @@ public record SetPipePropertiesMessage(BlockPos pos, CompoundTag properties) imp
 
     public static void handle(SetPipePropertiesMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null || !(be.pipe instanceof PropertyHolder holder)
-                || !(context.player() instanceof ServerPlayer player)) {
+            || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
         final RegistryAccess registries = player.level().registryAccess();
         be.pipe.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, registries, message.properties));
         PacketDistributor.sendToPlayer(player, PipePropertiesMessage.of(message.pos, holder, registries));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -21,27 +21,27 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  * What a pipe still has queued to send, for the players watching its HUD.
  */
 public record SendQueueContentMessage(BlockPos pos, List<@Nullable ItemIdentifierStack> queued)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SendQueueContentMessage> TYPE = new Type<>(LPConstants.rl("send_queue_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SendQueueContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SendQueueContentMessage::pos,
-                    ItemIdentifierStack.NULLABLE_LIST_STREAM_CODEC,
-                    SendQueueContentMessage::queued,
-                    SendQueueContentMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SendQueueContentMessage::pos,
+            ItemIdentifierStack.NULLABLE_LIST_STREAM_CODEC,
+            SendQueueContentMessage::queued,
+            SendQueueContentMessage::new);
+
+    public static void handle(SendQueueContentMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof ISendQueueContentRecieiver receiver) {
+            receiver.handleSendQueueItemIdentifierList(message.queued);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SendQueueContentMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof ISendQueueContentRecieiver receiver) {
-            receiver.handleSendQueueItemIdentifierList(message.queued);
-        }
     }
 }

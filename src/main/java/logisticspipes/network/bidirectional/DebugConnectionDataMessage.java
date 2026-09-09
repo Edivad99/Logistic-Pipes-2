@@ -21,17 +21,17 @@ public record DebugConnectionDataMessage(int connectionId, byte[] payload) imple
     public static final Type<DebugConnectionDataMessage> TYPE = new Type<>(LPConstants.rl("debug_connection_data"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DebugConnectionDataMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, DebugConnectionDataMessage::connectionId,
-                    ByteBufCodecs.BYTE_ARRAY, DebugConnectionDataMessage::payload,
-                    DebugConnectionDataMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, DebugConnectionDataMessage::connectionId,
+            ByteBufCodecs.BYTE_ARRAY, DebugConnectionDataMessage::payload,
+            DebugConnectionDataMessage::new);
+
+    public static void handle(DebugConnectionDataMessage message, IPayloadContext context) {
+        DebugGuiController.instance().handleDataPacket(message.payload, message.connectionId, context.player());
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(DebugConnectionDataMessage message, IPayloadContext context) {
-        DebugGuiController.instance().handleDataPacket(message.payload, message.connectionId, context.player());
     }
 }

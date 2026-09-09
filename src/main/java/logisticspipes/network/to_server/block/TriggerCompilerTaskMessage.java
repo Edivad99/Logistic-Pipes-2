@@ -22,28 +22,28 @@ import logisticspipes.world.level.block.entity.LogisticsProgramCompilerBlockEnti
  * of which threw {@code UnsupportedOperationException} on anything else.
  */
 public record TriggerCompilerTaskMessage(BlockPos pos, Identifier category, CompilerTask task)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<TriggerCompilerTaskMessage> TYPE =
-            new Type<>(LPConstants.rl("trigger_compiler_task"));
+        new Type<>(LPConstants.rl("trigger_compiler_task"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TriggerCompilerTaskMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, TriggerCompilerTaskMessage::pos,
-                    Identifier.STREAM_CODEC, TriggerCompilerTaskMessage::category,
-                    NeoForgeStreamCodecs.enumCodec(CompilerTask.class), TriggerCompilerTaskMessage::task,
-                    TriggerCompilerTaskMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, TriggerCompilerTaskMessage::pos,
+            Identifier.STREAM_CODEC, TriggerCompilerTaskMessage::category,
+            NeoForgeStreamCodecs.enumCodec(CompilerTask.class), TriggerCompilerTaskMessage::task,
+            TriggerCompilerTaskMessage::new);
+
+    public static void handle(TriggerCompilerTaskMessage message, IPayloadContext context) {
+        final LogisticsProgramCompilerBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsProgramCompilerBlockEntity.class);
+        if (be != null) {
+            be.triggerNewTask(message.category, message.task);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(TriggerCompilerTaskMessage message, IPayloadContext context) {
-        final LogisticsProgramCompilerBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsProgramCompilerBlockEntity.class);
-        if (be != null) {
-            be.triggerNewTask(message.category, message.task);
-        }
     }
 }

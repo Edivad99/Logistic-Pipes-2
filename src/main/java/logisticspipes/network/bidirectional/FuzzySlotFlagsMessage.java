@@ -26,36 +26,31 @@ import network.rs485.logisticspipes.util.FuzzyFlag;
  * easy to forget.
  */
 public record FuzzySlotFlagsMessage(int slotId, boolean useOreDict, boolean ignoreDamage,
-        boolean ignoreNbt, boolean useOreCategory) implements CustomPacketPayload {
+                                    boolean ignoreNbt, boolean useOreCategory) implements CustomPacketPayload {
 
     public static final Type<FuzzySlotFlagsMessage> TYPE =
-            new Type<>(LPConstants.rl("fuzzy_slot_flags"));
+        new Type<>(LPConstants.rl("fuzzy_slot_flags"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FuzzySlotFlagsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, FuzzySlotFlagsMessage::slotId,
-                    ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::useOreDict,
-                    ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::ignoreDamage,
-                    ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::ignoreNbt,
-                    ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::useOreCategory,
-                    FuzzySlotFlagsMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, FuzzySlotFlagsMessage::slotId,
+            ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::useOreDict,
+            ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::ignoreDamage,
+            ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::ignoreNbt,
+            ByteBufCodecs.BOOL, FuzzySlotFlagsMessage::useOreCategory,
+            FuzzySlotFlagsMessage::new);
 
     public static FuzzySlotFlagsMessage of(int slotId, BitSet flags) {
         return new FuzzySlotFlagsMessage(slotId,
-                flags.get(FuzzyFlag.USE_ORE_DICT.getBit()),
-                flags.get(FuzzyFlag.IGNORE_DAMAGE.getBit()),
-                flags.get(FuzzyFlag.IGNORE_NBT.getBit()),
-                flags.get(FuzzyFlag.USE_ORE_CATEGORY.getBit()));
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+            flags.get(FuzzyFlag.USE_ORE_DICT.getBit()),
+            flags.get(FuzzyFlag.IGNORE_DAMAGE.getBit()),
+            flags.get(FuzzyFlag.IGNORE_NBT.getBit()),
+            flags.get(FuzzyFlag.USE_ORE_CATEGORY.getBit()));
     }
 
     public static void handle(FuzzySlotFlagsMessage message, IPayloadContext context) {
         if (context.player().containerMenu == null || message.slotId < 0
-                || message.slotId >= context.player().containerMenu.slots.size()) {
+            || message.slotId >= context.player().containerMenu.slots.size()) {
             return;
         }
         if (context.player().containerMenu.getSlot(message.slotId) instanceof IFuzzySlot slot) {
@@ -66,5 +61,10 @@ public record FuzzySlotFlagsMessage(int slotId, boolean useOreDict, boolean igno
             flags.set(FuzzyFlag.USE_ORE_CATEGORY.getBit(), message.useOreCategory);
             slot.getFuzzyFlags().replaceWith(flags);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

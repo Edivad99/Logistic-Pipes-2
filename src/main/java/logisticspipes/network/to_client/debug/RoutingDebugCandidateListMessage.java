@@ -13,24 +13,26 @@ import logisticspipes.LPConstants;
 import logisticspipes.routing.debug.ClientViewController;
 import logisticspipes.routing.debug.RouteDebugInfo;
 
-/** The whole candidate set as it stands, for the debug window's list. */
+/**
+ * The whole candidate set as it stands, for the debug window's list.
+ */
 public record RoutingDebugCandidateListMessage(List<RouteDebugInfo> routes) implements CustomPacketPayload {
 
     public static final Type<RoutingDebugCandidateListMessage> TYPE =
-            new Type<>(LPConstants.rl("routing_debug_candidate_list"));
+        new Type<>(LPConstants.rl("routing_debug_candidate_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RoutingDebugCandidateListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    RouteDebugInfo.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    RoutingDebugCandidateListMessage::routes,
-                    RoutingDebugCandidateListMessage::new);
+        StreamCodec.composite(
+            RouteDebugInfo.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            RoutingDebugCandidateListMessage::routes,
+            RoutingDebugCandidateListMessage::new);
+
+    public static void handle(RoutingDebugCandidateListMessage message, IPayloadContext context) {
+        ClientViewController.instance().updateList(message.routes);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RoutingDebugCandidateListMessage message, IPayloadContext context) {
-        ClientViewController.instance().updateList(message.routes);
     }
 }

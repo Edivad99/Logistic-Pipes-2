@@ -21,27 +21,27 @@ import logisticspipes.network.ModuleTarget;
  * dropping one harmless: the next subscribe re-sends it.
  */
 public record SneakyDirectionMessage(ModuleTarget target, Optional<Direction> direction)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SneakyDirectionMessage> TYPE =
-            new Type<>(LPConstants.rl("sneaky_direction"));
+        new Type<>(LPConstants.rl("sneaky_direction"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SneakyDirectionMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SneakyDirectionMessage::target,
-                    ByteBufCodecs.optional(Direction.STREAM_CODEC),
-                    SneakyDirectionMessage::direction,
-                    SneakyDirectionMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SneakyDirectionMessage::target,
+            ByteBufCodecs.optional(Direction.STREAM_CODEC),
+            SneakyDirectionMessage::direction,
+            SneakyDirectionMessage::new);
 
     public static void handle(SneakyDirectionMessage message, IPayloadContext context) {
         final SneakyDirection module = message.target.resolve(context.player(), SneakyDirection.class);
         if (module != null) {
             module.setSneakyDirection(message.direction.orElse(null));
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

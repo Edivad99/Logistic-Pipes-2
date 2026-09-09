@@ -34,21 +34,16 @@ import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 public record RequestTrackableItemsMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestTrackableItemsMessage> TYPE =
-            new Type<>(LPConstants.rl("request_trackable_items"));
+        new Type<>(LPConstants.rl("request_trackable_items"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestTrackableItemsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestTrackableItemsMessage::pos,
-                    RequestTrackableItemsMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestTrackableItemsMessage::pos,
+            RequestTrackableItemsMessage::new);
 
     public static void handle(RequestTrackableItemsMessage message, IPayloadContext context) {
         final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
+            context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
         if (be == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
@@ -60,17 +55,22 @@ public record RequestTrackableItemsMessage(BlockPos pos) implements CustomPacket
         }
         final var routers = pipe.getRouter().getIRoutersByCost();
         final Map<ItemIdentifier, Integer> available =
-                SimpleServiceLocator.logisticsManager.getAvailableItems(routers);
+            SimpleServiceLocator.logisticsManager.getAvailableItems(routers);
         final LinkedList<ItemIdentifier> craftable =
-                SimpleServiceLocator.logisticsManager.getCraftableItems(routers);
+            SimpleServiceLocator.logisticsManager.getCraftableItems(routers);
 
         // Sorted and deduplicated: an item that is both stocked and craftable is offered once,
         // showing what there is rather than a placeholder count.
         final TreeSet<ItemIdentifierStack> items = new TreeSet<>();
         available.forEach((item, amount) -> items.add(item.makeStack(amount)));
         craftable.stream().filter(item -> !available.containsKey(item))
-                .forEach(item -> items.add(item.makeStack(1)));
+            .forEach(item -> items.add(item.makeStack(1)));
 
         PacketDistributor.sendToPlayer(player, new TrackableItemsMessage(List.copyOf(items)));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

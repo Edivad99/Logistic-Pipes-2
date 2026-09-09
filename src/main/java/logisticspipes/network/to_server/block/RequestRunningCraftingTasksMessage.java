@@ -27,21 +27,16 @@ import logisticspipes.world.level.block.entity.LogisticsStatisticsBlockEntity;
 public record RequestRunningCraftingTasksMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestRunningCraftingTasksMessage> TYPE =
-            new Type<>(LPConstants.rl("request_running_crafting_tasks"));
+        new Type<>(LPConstants.rl("request_running_crafting_tasks"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestRunningCraftingTasksMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestRunningCraftingTasksMessage::pos,
-                    RequestRunningCraftingTasksMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestRunningCraftingTasksMessage::pos,
+            RequestRunningCraftingTasksMessage::new);
 
     public static void handle(RequestRunningCraftingTasksMessage message, IPayloadContext context) {
         final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
+            context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
         if (be == null || !(context.player() instanceof ServerPlayer player)) {
             return;
         }
@@ -56,5 +51,10 @@ public record RequestRunningCraftingTasksMessage(BlockPos pos) implements Custom
             }
         }
         PacketDistributor.sendToPlayer(player, new RunningCraftingTasksMessage(tasks));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

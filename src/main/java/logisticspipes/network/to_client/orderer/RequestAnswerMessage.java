@@ -35,18 +35,18 @@ public record RequestAnswerMessage(List<IResource> resources, boolean missing) i
     public static final Type<RequestAnswerMessage> TYPE = new Type<>(LPConstants.rl("request_answer"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestAnswerMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    IResource.STREAM_CODEC.apply(ByteBufCodecs.list()), RequestAnswerMessage::resources,
-                    ByteBufCodecs.BOOL, RequestAnswerMessage::missing,
-                    RequestAnswerMessage::new);
+        StreamCodec.composite(
+            IResource.STREAM_CODEC.apply(ByteBufCodecs.list()), RequestAnswerMessage::resources,
+            ByteBufCodecs.BOOL, RequestAnswerMessage::missing,
+            RequestAnswerMessage::new);
+
+    public static void handle(RequestAnswerMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestAnswerMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {
@@ -61,12 +61,12 @@ public record RequestAnswerMessage(List<IResource> resources, boolean missing) i
             } else if (message.missing) {
                 for (IResource resource : message.resources) {
                     player.sendSystemMessage(Component.literal("Missing: " + resource.getDisplayText(ColorCode.NONE))
-                            .withStyle(ChatFormatting.RED));
+                        .withStyle(ChatFormatting.RED));
                 }
             } else {
                 for (IResource resource : message.resources) {
                     player.sendSystemMessage(Component.literal("Requested: " + resource.getDisplayText(ColorCode.NONE))
-                            .withStyle(ChatFormatting.GREEN));
+                        .withStyle(ChatFormatting.GREEN));
                 }
                 player.sendSystemMessage(Component.literal("Request successful!").withStyle(ChatFormatting.GREEN));
             }

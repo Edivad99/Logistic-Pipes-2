@@ -26,21 +26,21 @@ public record PipeSignTypesMessage(BlockPos pos, List<Integer> types) implements
     public static final Type<PipeSignTypesMessage> TYPE = new Type<>(LPConstants.rl("pipe_sign_types"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipeSignTypesMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeSignTypesMessage::pos,
-                    ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), PipeSignTypesMessage::types,
-                    PipeSignTypesMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeSignTypesMessage::pos,
+            ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()), PipeSignTypesMessage::types,
+            PipeSignTypesMessage::new);
+
+    public static void handle(PipeSignTypesMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.isInitialized() && be.pipe instanceof CoreRoutedPipe pipe) {
+            pipe.handleSignPacket(message.types);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(PipeSignTypesMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.isInitialized() && be.pipe instanceof CoreRoutedPipe pipe) {
-            pipe.handleSignPacket(message.types);
-        }
     }
 }

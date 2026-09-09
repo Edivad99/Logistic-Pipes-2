@@ -25,29 +25,29 @@ import logisticspipes.routing.debug.ClientViewController;
  * type ordinal out of range was read as a terminator or an array index.
  */
 public record RoutingDebugFiltersMessage(BlockPos pos, Map<PipeRoutingConnectionType, List<List<BlockPos>>> filters)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<RoutingDebugFiltersMessage> TYPE =
-            new Type<>(LPConstants.rl("routing_debug_filters"));
+        new Type<>(LPConstants.rl("routing_debug_filters"));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, Map<PipeRoutingConnectionType, List<List<BlockPos>>>>
-            FILTERS_CODEC = ByteBufCodecs.map(
-                    size -> new EnumMap<>(PipeRoutingConnectionType.class),
-                    NeoForgeStreamCodecs.enumCodec(PipeRoutingConnectionType.class),
-                    BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()).apply(ByteBufCodecs.list()));
+        FILTERS_CODEC = ByteBufCodecs.map(
+        size -> new EnumMap<>(PipeRoutingConnectionType.class),
+        NeoForgeStreamCodecs.enumCodec(PipeRoutingConnectionType.class),
+        BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()).apply(ByteBufCodecs.list()));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RoutingDebugFiltersMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RoutingDebugFiltersMessage::pos,
-                    FILTERS_CODEC, RoutingDebugFiltersMessage::filters,
-                    RoutingDebugFiltersMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RoutingDebugFiltersMessage::pos,
+            FILTERS_CODEC, RoutingDebugFiltersMessage::filters,
+            RoutingDebugFiltersMessage::new);
+
+    public static void handle(RoutingDebugFiltersMessage message, IPayloadContext context) {
+        ClientViewController.instance().setFilters(message.pos, message.filters);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RoutingDebugFiltersMessage message, IPayloadContext context) {
-        ClientViewController.instance().setFilters(message.pos, message.filters);
     }
 }

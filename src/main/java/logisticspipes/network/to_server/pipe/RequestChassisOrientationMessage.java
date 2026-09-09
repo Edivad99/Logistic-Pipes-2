@@ -24,25 +24,25 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record RequestChassisOrientationMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestChassisOrientationMessage> TYPE =
-            new Type<>(LPConstants.rl("request_chassis_orientation"));
+        new Type<>(LPConstants.rl("request_chassis_orientation"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestChassisOrientationMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestChassisOrientationMessage::pos,
-                    RequestChassisOrientationMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestChassisOrientationMessage::pos,
+            RequestChassisOrientationMessage::new);
+
+    public static void handle(RequestChassisOrientationMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof PipeLogisticsChassis chassis
+            && context.player() instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new ChassisOrientationMessage(
+                message.pos, Optional.ofNullable(chassis.getPointedOrientation())));
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestChassisOrientationMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof PipeLogisticsChassis chassis
-                && context.player() instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new ChassisOrientationMessage(
-                    message.pos, Optional.ofNullable(chassis.getPointedOrientation())));
-        }
     }
 }

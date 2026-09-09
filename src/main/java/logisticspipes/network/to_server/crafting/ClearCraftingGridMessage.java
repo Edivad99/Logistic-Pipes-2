@@ -17,24 +17,24 @@ import logisticspipes.network.TargetLookup;
 public record ClearCraftingGridMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<ClearCraftingGridMessage> TYPE =
-            new Type<>(LPConstants.rl("clear_crafting_grid"));
+        new Type<>(LPConstants.rl("clear_crafting_grid"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClearCraftingGridMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, ClearCraftingGridMessage::pos,
-                    ClearCraftingGridMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, ClearCraftingGridMessage::pos,
+            ClearCraftingGridMessage::new);
 
     public static void handle(ClearCraftingGridMessage message, IPayloadContext context) {
         final ICraftingRecipeGrid grid =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
         if (grid != null) {
             grid.getMatrix().clearGrid();
             grid.cacheRecipe();
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

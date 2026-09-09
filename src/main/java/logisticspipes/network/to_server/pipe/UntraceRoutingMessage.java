@@ -16,19 +16,19 @@ import logisticspipes.routing.debug.DebugController;
 public record UntraceRoutingMessage(int index) implements CustomPacketPayload {
 
     public static final Type<UntraceRoutingMessage> TYPE =
-            new Type<>(LPConstants.rl("untrace_routing"));
+        new Type<>(LPConstants.rl("untrace_routing"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UntraceRoutingMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, UntraceRoutingMessage::index,
-                    UntraceRoutingMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, UntraceRoutingMessage::index,
+            UntraceRoutingMessage::new);
+
+    public static void handle(UntraceRoutingMessage message, IPayloadContext context) {
+        DebugController.instance(context.player()).untrace(message.index);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(UntraceRoutingMessage message, IPayloadContext context) {
-        DebugController.instance(context.player()).untrace(message.index);
     }
 }

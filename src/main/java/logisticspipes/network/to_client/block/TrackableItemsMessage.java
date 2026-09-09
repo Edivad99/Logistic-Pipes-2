@@ -22,17 +22,17 @@ public record TrackableItemsMessage(List<ItemIdentifierStack> items) implements 
     public static final Type<TrackableItemsMessage> TYPE = new Type<>(LPConstants.rl("trackable_items"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TrackableItemsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()), TrackableItemsMessage::items,
-                    TrackableItemsMessage::new);
+        StreamCodec.composite(
+            ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()), TrackableItemsMessage::items,
+            TrackableItemsMessage::new);
+
+    public static void handle(TrackableItemsMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(TrackableItemsMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

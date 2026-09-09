@@ -18,14 +18,14 @@ public record QuickSortMarkerMessage() implements CustomPacketPayload {
     public static final Type<QuickSortMarkerMessage> TYPE = new Type<>(LPConstants.rl("quick_sort_marker"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuickSortMarkerMessage> STREAM_CODEC =
-            StreamCodec.unit(new QuickSortMarkerMessage());
+        StreamCodec.unit(new QuickSortMarkerMessage());
+
+    public static void handle(QuickSortMarkerMessage message, IPayloadContext context) {
+        QuickSortChestMarkerStorage.getInstance().enable();
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(QuickSortMarkerMessage message, IPayloadContext context) {
-        QuickSortChestMarkerStorage.getInstance().enable();
     }
 }

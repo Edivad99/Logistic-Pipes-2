@@ -21,27 +21,27 @@ import logisticspipes.network.ModuleTarget;
  * {@code Direction}: "no sneaky direction" is a value the module holds, not a missing field.
  */
 public record SetSneakyDirectionMessage(ModuleTarget target, Optional<Direction> direction)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SetSneakyDirectionMessage> TYPE =
-            new Type<>(LPConstants.rl("set_sneaky_direction"));
+        new Type<>(LPConstants.rl("set_sneaky_direction"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetSneakyDirectionMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SetSneakyDirectionMessage::target,
-                    ByteBufCodecs.optional(Direction.STREAM_CODEC),
-                    SetSneakyDirectionMessage::direction,
-                    SetSneakyDirectionMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SetSneakyDirectionMessage::target,
+            ByteBufCodecs.optional(Direction.STREAM_CODEC),
+            SetSneakyDirectionMessage::direction,
+            SetSneakyDirectionMessage::new);
 
     public static void handle(SetSneakyDirectionMessage message, IPayloadContext context) {
         final SneakyDirection module = message.target.resolve(context.player(), SneakyDirection.class);
         if (module != null) {
             module.setSneakyDirection(message.direction.orElse(null));
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

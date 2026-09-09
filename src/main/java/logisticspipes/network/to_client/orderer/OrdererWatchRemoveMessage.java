@@ -21,24 +21,24 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record OrdererWatchRemoveMessage(BlockPos pos, int watcherId) implements CustomPacketPayload {
 
     public static final Type<OrdererWatchRemoveMessage> TYPE =
-            new Type<>(LPConstants.rl("orderer_watch_remove"));
+        new Type<>(LPConstants.rl("orderer_watch_remove"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OrdererWatchRemoveMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, OrdererWatchRemoveMessage::pos,
-                    ByteBufCodecs.VAR_INT, OrdererWatchRemoveMessage::watcherId,
-                    OrdererWatchRemoveMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, OrdererWatchRemoveMessage::pos,
+            ByteBufCodecs.VAR_INT, OrdererWatchRemoveMessage::watcherId,
+            OrdererWatchRemoveMessage::new);
+
+    public static void handle(OrdererWatchRemoveMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof IRequestWatcher watcher) {
+            watcher.handleClientSideRemove(message.watcherId);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(OrdererWatchRemoveMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof IRequestWatcher watcher) {
-            watcher.handleClientSideRemove(message.watcherId);
-        }
     }
 }

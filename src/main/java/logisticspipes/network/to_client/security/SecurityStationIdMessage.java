@@ -25,24 +25,24 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 public record SecurityStationIdMessage(BlockPos pos, Optional<UUID> id) implements CustomPacketPayload {
 
     public static final Type<SecurityStationIdMessage> TYPE =
-            new Type<>(LPConstants.rl("security_station_id"));
+        new Type<>(LPConstants.rl("security_station_id"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SecurityStationIdMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SecurityStationIdMessage::pos,
-                    ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), SecurityStationIdMessage::id,
-                    SecurityStationIdMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SecurityStationIdMessage::pos,
+            ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), SecurityStationIdMessage::id,
+            SecurityStationIdMessage::new);
+
+    public static void handle(SecurityStationIdMessage message, IPayloadContext context) {
+        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+        if (be != null) {
+            message.id.ifPresent(be::setClientUUID);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SecurityStationIdMessage message, IPayloadContext context) {
-        final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
-        if (be != null) {
-            message.id.ifPresent(be::setClientUUID);
-        }
     }
 }

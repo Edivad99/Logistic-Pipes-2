@@ -20,20 +20,20 @@ public record SubmitRequestMessage(RemotePipeTarget target, ItemIdentifierStack 
     public static final Type<SubmitRequestMessage> TYPE = new Type<>(LPConstants.rl("submit_request"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SubmitRequestMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    RemotePipeTarget.STREAM_CODEC, SubmitRequestMessage::target,
-                    ItemIdentifierStack.STREAM_CODEC, SubmitRequestMessage::stack,
-                    SubmitRequestMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            RemotePipeTarget.STREAM_CODEC, SubmitRequestMessage::target,
+            ItemIdentifierStack.STREAM_CODEC, SubmitRequestMessage::stack,
+            SubmitRequestMessage::new);
 
     public static void handle(SubmitRequestMessage message, IPayloadContext context) {
         final CoreRoutedPipe pipe = message.target.resolve();
         if (pipe != null) {
             RequestHandler.request(context.player(), message.stack, pipe);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -27,22 +27,22 @@ public record PipeOrdersMessage(BlockPos pos, List<IOrderInfoProvider> orders) i
     public static final Type<PipeOrdersMessage> TYPE = new Type<>(LPConstants.rl("pipe_orders"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipeOrdersMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeOrdersMessage::pos,
-                    IOrderInfoProvider.STREAM_CODEC.apply(ByteBufCodecs.list()), PipeOrdersMessage::orders,
-                    PipeOrdersMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeOrdersMessage::pos,
+            IOrderInfoProvider.STREAM_CODEC.apply(ByteBufCodecs.list()), PipeOrdersMessage::orders,
+            PipeOrdersMessage::new);
 
     public static void handle(PipeOrdersMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be != null && be.pipe instanceof CoreRoutedPipe pipe) {
             pipe.getClientSideOrderManager().clear();
             pipe.getClientSideOrderManager().addAll(message.orders);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

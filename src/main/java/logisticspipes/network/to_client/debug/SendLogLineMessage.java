@@ -21,17 +21,17 @@ public record SendLogLineMessage(int logId, String line) implements CustomPacket
     public static final Type<SendLogLineMessage> TYPE = new Type<>(LPConstants.rl("log_line"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SendLogLineMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, SendLogLineMessage::logId,
-                    ByteBufCodecs.STRING_UTF8, SendLogLineMessage::line,
-                    SendLogLineMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SendLogLineMessage::logId,
+            ByteBufCodecs.STRING_UTF8, SendLogLineMessage::line,
+            SendLogLineMessage::new);
+
+    public static void handle(SendLogLineMessage message, IPayloadContext context) {
+        PipeLogBuffer.of(message.logId).addLine(message.line);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SendLogLineMessage message, IPayloadContext context) {
-        PipeLogBuffer.of(message.logId).addLine(message.line);
     }
 }

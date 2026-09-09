@@ -24,25 +24,20 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
  * about both rather than resolving to a common type.
  */
 public record FluidSupplierPartialsMessage(BlockPos pos, boolean requestingPartials)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<FluidSupplierPartialsMessage> TYPE =
-            new Type<>(LPConstants.rl("fluid_supplier_partials"));
+        new Type<>(LPConstants.rl("fluid_supplier_partials"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidSupplierPartialsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, FluidSupplierPartialsMessage::pos,
-                    ByteBufCodecs.BOOL, FluidSupplierPartialsMessage::requestingPartials,
-                    FluidSupplierPartialsMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, FluidSupplierPartialsMessage::pos,
+            ByteBufCodecs.BOOL, FluidSupplierPartialsMessage::requestingPartials,
+            FluidSupplierPartialsMessage::new);
 
     public static void handle(FluidSupplierPartialsMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null) {
             return;
         }
@@ -51,5 +46,10 @@ public record FluidSupplierPartialsMessage(BlockPos pos, boolean requestingParti
         } else if (be.pipe instanceof PipeFluidSupplierMk2 pipe) {
             pipe.setRequestingPartials(message.requestingPartials);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

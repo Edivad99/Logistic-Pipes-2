@@ -16,25 +16,20 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
  * The player authorized or deauthorized a security station.
  */
 public record SetSecurityStationAuthorizedMessage(BlockPos pos, boolean authorized)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SetSecurityStationAuthorizedMessage> TYPE =
-            new Type<>(LPConstants.rl("set_security_station_authorized"));
+        new Type<>(LPConstants.rl("set_security_station_authorized"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetSecurityStationAuthorizedMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetSecurityStationAuthorizedMessage::pos,
-                    ByteBufCodecs.BOOL, SetSecurityStationAuthorizedMessage::authorized,
-                    SetSecurityStationAuthorizedMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SetSecurityStationAuthorizedMessage::pos,
+            ByteBufCodecs.BOOL, SetSecurityStationAuthorizedMessage::authorized,
+            SetSecurityStationAuthorizedMessage::new);
 
     public static void handle(SetSecurityStationAuthorizedMessage message, IPayloadContext context) {
         final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+            context.player(), message.pos, LogisticsSecurityBlockEntity.class);
         if (be == null) {
             return;
         }
@@ -43,5 +38,10 @@ public record SetSecurityStationAuthorizedMessage(BlockPos pos, boolean authoriz
         } else {
             be.deauthorizeStation();
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

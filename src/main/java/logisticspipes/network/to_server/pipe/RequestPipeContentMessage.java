@@ -25,17 +25,12 @@ import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 public record RequestPipeContentMessage(int travelId) implements CustomPacketPayload {
 
     public static final Type<RequestPipeContentMessage> TYPE =
-            new Type<>(LPConstants.rl("request_pipe_content"));
+        new Type<>(LPConstants.rl("request_pipe_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestPipeContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, RequestPipeContentMessage::travelId,
-                    RequestPipeContentMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, RequestPipeContentMessage::travelId,
+            RequestPipeContentMessage::new);
 
     public static void handle(RequestPipeContentMessage message, IPayloadContext context) {
         final WeakReference<LPTravelingItemServer> ref = LPTravelingItem.serverList.get(message.travelId);
@@ -46,8 +41,13 @@ public record RequestPipeContentMessage(int travelId) implements CustomPacketPay
         if (item != null) {
             if (context.player() instanceof ServerPlayer player) {
                 PacketDistributor.sendToPlayer(player,
-                        new TravellingItemContentMessage(item.getId(), item.getItemIdentifierStack()));
+                    new TravellingItemContentMessage(item.getId(), item.getItemIdentifierStack()));
             }
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -15,26 +15,26 @@ import logisticspipes.network.ModuleTarget;
  * Whether an item sink is the default route, for the players watching its HUD.
  */
 public record ItemSinkDefaultRouteMessage(ModuleTarget target, boolean defaultRoute)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<ItemSinkDefaultRouteMessage> TYPE =
-            new Type<>(LPConstants.rl("item_sink_default_route"));
+        new Type<>(LPConstants.rl("item_sink_default_route"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemSinkDefaultRouteMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, ItemSinkDefaultRouteMessage::target,
-                    ByteBufCodecs.BOOL, ItemSinkDefaultRouteMessage::defaultRoute,
-                    ItemSinkDefaultRouteMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, ItemSinkDefaultRouteMessage::target,
+            ByteBufCodecs.BOOL, ItemSinkDefaultRouteMessage::defaultRoute,
+            ItemSinkDefaultRouteMessage::new);
 
     public static void handle(ItemSinkDefaultRouteMessage message, IPayloadContext context) {
         final ModuleItemSink module = message.target.resolve(context.player(), ModuleItemSink.class);
         if (module != null) {
             module.setDefaultRoute(message.defaultRoute);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

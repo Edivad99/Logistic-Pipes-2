@@ -20,23 +20,23 @@ import logisticspipes.network.to_client.block.BlockRotationMessage;
 public record RequestBlockRotationMessage(BlockPos pos) implements CustomPacketPayload {
 
     public static final Type<RequestBlockRotationMessage> TYPE =
-            new Type<>(LPConstants.rl("request_block_rotation"));
+        new Type<>(LPConstants.rl("request_block_rotation"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestBlockRotationMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestBlockRotationMessage::pos,
-                    RequestBlockRotationMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestBlockRotationMessage::pos,
+            RequestBlockRotationMessage::new);
+
+    public static void handle(RequestBlockRotationMessage message, IPayloadContext context) {
+        final IRotationProvider target =
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, IRotationProvider.class);
+        if (target != null && context.player() instanceof ServerPlayer player) {
+            PacketDistributor.sendToPlayer(player, new BlockRotationMessage(message.pos, target.getRotation()));
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RequestBlockRotationMessage message, IPayloadContext context) {
-        final IRotationProvider target =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, IRotationProvider.class);
-        if (target != null && context.player() instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new BlockRotationMessage(message.pos, target.getRotation()));
-        }
     }
 }

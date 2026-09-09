@@ -23,19 +23,14 @@ public record ModuleWatchMessage(ModuleTarget target, boolean watching) implemen
     public static final Type<ModuleWatchMessage> TYPE = new Type<>(LPConstants.rl("module_watch"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ModuleWatchMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, ModuleWatchMessage::target,
-                    ByteBufCodecs.BOOL, ModuleWatchMessage::watching,
-                    ModuleWatchMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, ModuleWatchMessage::target,
+            ByteBufCodecs.BOOL, ModuleWatchMessage::watching,
+            ModuleWatchMessage::new);
 
     public static void handle(ModuleWatchMessage message, IPayloadContext context) {
         final IModuleWatchReciver module =
-                message.target.resolve(context.player(), IModuleWatchReciver.class);
+            message.target.resolve(context.player(), IModuleWatchReciver.class);
         if (module == null) {
             return;
         }
@@ -44,5 +39,10 @@ public record ModuleWatchMessage(ModuleTarget target, boolean watching) implemen
         } else {
             module.stopWatching(context.player());
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

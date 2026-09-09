@@ -25,17 +25,12 @@ import logisticspipes.utils.item.ItemIdentifier;
 public record ItemSinkImportRequestMessage(ModuleTarget target) implements CustomPacketPayload {
 
     public static final Type<ItemSinkImportRequestMessage> TYPE =
-            new Type<>(LPConstants.rl("item_sink_import_request"));
+        new Type<>(LPConstants.rl("item_sink_import_request"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemSinkImportRequestMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, ItemSinkImportRequestMessage::target,
-                    ItemSinkImportRequestMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, ItemSinkImportRequestMessage::target,
+            ItemSinkImportRequestMessage::new);
 
     public static void handle(ItemSinkImportRequestMessage message, IPayloadContext context) {
         final ModuleItemSink module = message.target.resolve(context.player(), ModuleItemSink.class);
@@ -43,8 +38,13 @@ public record ItemSinkImportRequestMessage(ModuleTarget target) implements Custo
             return;
         }
         final List<ItemIdentifier> items = module.getAdjacentInventoriesItems()
-                .limit(module.filterInventory.getContainerSize())
-                .toList();
+            .limit(module.filterInventory.getContainerSize())
+            .toList();
         PacketDistributor.sendToPlayer(player, new ItemSinkImportedItemsMessage(items));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

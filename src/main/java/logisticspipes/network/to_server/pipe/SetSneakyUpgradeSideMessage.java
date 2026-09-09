@@ -26,18 +26,13 @@ import logisticspipes.utils.gui.UpgradeSlot;
 public record SetSneakyUpgradeSideMessage(int slot, Optional<Direction> side) implements CustomPacketPayload {
 
     public static final Type<SetSneakyUpgradeSideMessage> TYPE =
-            new Type<>(LPConstants.rl("set_sneaky_upgrade_side"));
+        new Type<>(LPConstants.rl("set_sneaky_upgrade_side"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetSneakyUpgradeSideMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT, SetSneakyUpgradeSideMessage::slot,
-                    ByteBufCodecs.optional(Direction.STREAM_CODEC), SetSneakyUpgradeSideMessage::side,
-                    SetSneakyUpgradeSideMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SetSneakyUpgradeSideMessage::slot,
+            ByteBufCodecs.optional(Direction.STREAM_CODEC), SetSneakyUpgradeSideMessage::side,
+            SetSneakyUpgradeSideMessage::new);
 
     public static void handle(SetSneakyUpgradeSideMessage message, IPayloadContext context) {
         final UpgradeSlot slot = TargetLookup.slotIn(context.player(), message.slot, UpgradeSlot.class);
@@ -51,9 +46,14 @@ public record SetSneakyUpgradeSideMessage(int slot, Optional<Direction> side) im
         stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, customData -> {
             final var tag = customData.copyTag();
             tag.putString(SneakyUpgradeConfig.SIDE_KEY,
-                    SneakyUpgradeConfig.Sides.getNameForDirection(message.side.orElse(null)));
+                SneakyUpgradeConfig.Sides.getNameForDirection(message.side.orElse(null)));
             return CustomData.of(tag);
         });
         slot.set(stack);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

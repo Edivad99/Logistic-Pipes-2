@@ -1,4 +1,6 @@
-/** Messages a screen sends when the player uses it. Sent client to server. */
+/**
+ * Messages a screen sends when the player uses it. Sent client to server.
+ */
 @NullMarked
 package logisticspipes.network.to_server.gui;
 

@@ -34,25 +34,22 @@ import network.rs485.logisticspipes.property.PropertyHolder;
  * acknowledgement, which is what lets the GUI send only what changed.
  */
 public record SetModulePropertiesMessage(ModuleTarget target, CompoundTag properties)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SetModulePropertiesMessage> TYPE =
-            new Type<>(LPConstants.rl("set_module_properties"));
+        new Type<>(LPConstants.rl("set_module_properties"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetModulePropertiesMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SetModulePropertiesMessage::target,
-                    ByteBufCodecs.COMPOUND_TAG, SetModulePropertiesMessage::properties,
-                    SetModulePropertiesMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SetModulePropertiesMessage::target,
+            ByteBufCodecs.COMPOUND_TAG, SetModulePropertiesMessage::properties,
+            SetModulePropertiesMessage::new);
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
-
-    /** What the holder has, for the GUI to send on close: normally only the properties it changed. */
+    /**
+     * What the holder has, for the GUI to send on close: normally only the properties it changed.
+     */
     public static SetModulePropertiesMessage of(ModuleTarget target, PropertyHolder holder,
-            HolderLookup.Provider registries) {
+        HolderLookup.Provider registries) {
         final TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
         PropertyHolder.serialize(output, holder);
         return new SetModulePropertiesMessage(target, output.buildResult());
@@ -68,9 +65,14 @@ public record SetModulePropertiesMessage(ModuleTarget target, CompoundTag proper
         if (message.target.slot().filter(ModulePositionType::isInWorld).isEmpty()) {
             // A module held in hand lives in the item stack, so its properties have to go back into it.
             ItemModuleInformationManager.saveInformation(player.level(),
-                    player.getInventory().getItem(message.target.positionInt()), module, registries);
+                player.getInventory().getItem(message.target.positionInt()), module, registries);
             player.getInventory().setChanged();
         }
         PacketDistributor.sendToPlayer(player, ModulePropertiesMessage.of(message.target, module, registries));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

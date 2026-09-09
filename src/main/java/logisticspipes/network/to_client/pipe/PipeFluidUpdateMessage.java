@@ -29,21 +29,16 @@ public record PipeFluidUpdateMessage(BlockPos pos, List<FluidStack> sides) imple
     public static final Type<PipeFluidUpdateMessage> TYPE = new Type<>(LPConstants.rl("pipe_fluid_update"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipeFluidUpdateMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeFluidUpdateMessage::pos,
-                    FluidStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), PipeFluidUpdateMessage::sides,
-                    PipeFluidUpdateMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeFluidUpdateMessage::pos,
+            FluidStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), PipeFluidUpdateMessage::sides,
+            PipeFluidUpdateMessage::new);
 
     public static void handle(PipeFluidUpdateMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null || be.pipe == null
-                || !(be.pipe.transport instanceof PipeFluidTransportLogistics transport)) {
+            || !(be.pipe.transport instanceof PipeFluidTransportLogistics transport)) {
             return;
         }
         final FluidStack[] sides = new FluidStack[Direction.values().length];
@@ -53,5 +48,10 @@ public record PipeFluidUpdateMessage(BlockPos pos, List<FluidStack> sides) imple
             sides[i] = side.isEmpty() ? null : side;
         }
         transport.renderCache = sides;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

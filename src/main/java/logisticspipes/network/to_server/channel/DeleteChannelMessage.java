@@ -12,23 +12,25 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import logisticspipes.LPConstants;
 import logisticspipes.proxy.SimpleServiceLocator;
 
-/** The player removed a channel in the channel manager. */
+/**
+ * The player removed a channel in the channel manager.
+ */
 public record DeleteChannelMessage(UUID channel) implements CustomPacketPayload {
 
     public static final Type<DeleteChannelMessage> TYPE = new Type<>(LPConstants.rl("delete_channel"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DeleteChannelMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    UUIDUtil.STREAM_CODEC, DeleteChannelMessage::channel,
-                    DeleteChannelMessage::new);
+        StreamCodec.composite(
+            UUIDUtil.STREAM_CODEC, DeleteChannelMessage::channel,
+            DeleteChannelMessage::new);
+
+    public static void handle(DeleteChannelMessage message, IPayloadContext context) {
+        SimpleServiceLocator.channelManagerProvider.getChannelManager(context.player().level())
+            .removeChannel(message.channel);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(DeleteChannelMessage message, IPayloadContext context) {
-        SimpleServiceLocator.channelManagerProvider.getChannelManager(context.player().level())
-                .removeChannel(message.channel);
     }
 }

@@ -20,21 +20,21 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 public record RunningCraftingTasksMessage(List<ItemIdentifierStack> tasks) implements CustomPacketPayload {
 
     public static final Type<RunningCraftingTasksMessage> TYPE =
-            new Type<>(LPConstants.rl("running_crafting_tasks"));
+        new Type<>(LPConstants.rl("running_crafting_tasks"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RunningCraftingTasksMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    RunningCraftingTasksMessage::tasks,
-                    RunningCraftingTasksMessage::new);
+        StreamCodec.composite(
+            ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            RunningCraftingTasksMessage::tasks,
+            RunningCraftingTasksMessage::new);
+
+    public static void handle(RunningCraftingTasksMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(RunningCraftingTasksMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

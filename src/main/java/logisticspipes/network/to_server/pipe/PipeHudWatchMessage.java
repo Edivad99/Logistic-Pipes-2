@@ -25,19 +25,14 @@ public record PipeHudWatchMessage(BlockPos pos, boolean watching) implements Cus
     public static final Type<PipeHudWatchMessage> TYPE = new Type<>(LPConstants.rl("pipe_hud_watch"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipeHudWatchMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeHudWatchMessage::pos,
-                    ByteBufCodecs.BOOL, PipeHudWatchMessage::watching,
-                    PipeHudWatchMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeHudWatchMessage::pos,
+            ByteBufCodecs.BOOL, PipeHudWatchMessage::watching,
+            PipeHudWatchMessage::new);
 
     public static void handle(PipeHudWatchMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsTileGenericPipe.class);
+            context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null || !(be.pipe instanceof IWatchingHandler handler)) {
             return;
         }
@@ -46,5 +41,10 @@ public record PipeHudWatchMessage(BlockPos pos, boolean watching) implements Cus
         } else {
             handler.playerStopWatching(context.player(), WatchMode.HUD);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

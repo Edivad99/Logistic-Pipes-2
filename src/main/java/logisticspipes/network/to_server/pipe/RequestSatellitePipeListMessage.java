@@ -35,31 +35,26 @@ import logisticspipes.routing.ExitRoute;
 public record RequestSatellitePipeListMessage(BlockPos pos, boolean fluid) implements CustomPacketPayload {
 
     public static final Type<RequestSatellitePipeListMessage> TYPE =
-            new Type<>(LPConstants.rl("request_satellite_pipe_list"));
+        new Type<>(LPConstants.rl("request_satellite_pipe_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestSatellitePipeListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestSatellitePipeListMessage::pos,
-                    ByteBufCodecs.BOOL, RequestSatellitePipeListMessage::fluid,
-                    RequestSatellitePipeListMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestSatellitePipeListMessage::pos,
+            ByteBufCodecs.BOOL, RequestSatellitePipeListMessage::fluid,
+            RequestSatellitePipeListMessage::new);
 
     public static void handle(RequestSatellitePipeListMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (container == null
-                || !(container.pipe instanceof CoreRoutedPipe pipe)
-                || pipe.getRouter() == null
-                || pipe.getRouter().getRouteTable() == null) {
+            || !(container.pipe instanceof CoreRoutedPipe pipe)
+            || pipe.getRouter() == null
+            || pipe.getRouter().getRouteTable() == null) {
             return;
         }
         final List<SatelliteEntry> satellites = message.fluid
-                ? reachableFrom(pipe, PipeFluidSatellite.AllSatellites)
-                : reachableFrom(pipe, PipeItemsSatelliteLogistics.AllSatellites);
+            ? reachableFrom(pipe, PipeFluidSatellite.AllSatellites)
+            : reachableFrom(pipe, PipeItemsSatelliteLogistics.AllSatellites);
         if (context.player() instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new SatellitePipeListMessage(satellites));
         }
@@ -72,29 +67,34 @@ public record RequestSatellitePipeListMessage(BlockPos pos, boolean fluid) imple
      * twice over, differing only in which set they read.
      */
     private static <T extends CoreRoutedPipe & SatellitePipe> List<SatelliteEntry> reachableFrom(
-            CoreRoutedPipe from,
-            Collection<T> satellites
+        CoreRoutedPipe from,
+        Collection<T> satellites
     ) {
         final List<List<ExitRoute>> routeTable = from.getRouter().getRouteTable();
         return satellites.stream()
-                .filter(Objects::nonNull)
-                .filter(satellite -> satellite.getRouter() != null)
-                .filter(satellite -> routesTo(routeTable, satellite.getRouterId()))
-                .sorted(Comparator.comparingDouble(satellite -> nearestHop(routeTable, satellite.getRouterId())))
-                .map(satellite -> new SatelliteEntry(satellite.getSatellitePipeName(), satellite.getRouter().getId()))
-                .toList();
+            .filter(Objects::nonNull)
+            .filter(satellite -> satellite.getRouter() != null)
+            .filter(satellite -> routesTo(routeTable, satellite.getRouterId()))
+            .sorted(Comparator.comparingDouble(satellite -> nearestHop(routeTable, satellite.getRouterId())))
+            .map(satellite -> new SatelliteEntry(satellite.getSatellitePipeName(), satellite.getRouter().getId()))
+            .toList();
     }
 
     private static boolean routesTo(List<List<ExitRoute>> routeTable, int routerId) {
         return routeTable.size() > routerId
-                && routeTable.get(routerId) != null
-                && !routeTable.get(routerId).isEmpty();
+            && routeTable.get(routerId) != null
+            && !routeTable.get(routerId).isEmpty();
     }
 
     private static double nearestHop(List<List<ExitRoute>> routeTable, int routerId) {
         return routeTable.get(routerId).stream()
-                .mapToDouble(route -> route.distanceToDestination)
-                .min()
-                .orElse(Double.MAX_VALUE);
+            .mapToDouble(route -> route.distanceToDestination)
+            .min()
+            .orElse(Double.MAX_VALUE);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

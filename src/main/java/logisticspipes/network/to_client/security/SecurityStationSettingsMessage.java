@@ -17,24 +17,24 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity.Secu
  * One player's security settings, for the station GUI that asked to edit them.
  */
 public record SecurityStationSettingsMessage(String playerName, SecurityPermissions permissions)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SecurityStationSettingsMessage> TYPE =
-            new Type<>(LPConstants.rl("security_station_settings"));
+        new Type<>(LPConstants.rl("security_station_settings"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SecurityStationSettingsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.STRING_UTF8, SecurityStationSettingsMessage::playerName,
-                    SecurityPermissions.STREAM_CODEC, SecurityStationSettingsMessage::permissions,
-                    SecurityStationSettingsMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, SecurityStationSettingsMessage::playerName,
+            SecurityPermissions.STREAM_CODEC, SecurityStationSettingsMessage::permissions,
+            SecurityStationSettingsMessage::new);
+
+    public static void handle(SecurityStationSettingsMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SecurityStationSettingsMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

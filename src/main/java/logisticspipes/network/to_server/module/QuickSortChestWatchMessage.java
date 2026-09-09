@@ -29,22 +29,17 @@ import network.rs485.logisticspipes.module.AsyncQuicksortModule;
 public record QuickSortChestWatchMessage(boolean watching) implements CustomPacketPayload {
 
     public static final Type<QuickSortChestWatchMessage> TYPE =
-            new Type<>(LPConstants.rl("quick_sort_chest_watch"));
+        new Type<>(LPConstants.rl("quick_sort_chest_watch"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuickSortChestWatchMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.BOOL, QuickSortChestWatchMessage::watching,
-                    QuickSortChestWatchMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ByteBufCodecs.BOOL, QuickSortChestWatchMessage::watching,
+            QuickSortChestWatchMessage::new);
 
     public static void handle(QuickSortChestWatchMessage message, IPayloadContext context) {
         final Player player = context.player();
         final List<WeakReference<AsyncQuicksortModule>> sorters =
-                LogisticsEventListener.chestQuickSortConnection.get(player);
+            LogisticsEventListener.chestQuickSortConnection.get(player);
         if (sorters == null || sorters.isEmpty()) {
             return;
         }
@@ -65,5 +60,10 @@ public record QuickSortChestWatchMessage(boolean watching) implements CustomPack
         if (!message.watching) {
             LogisticsEventListener.chestQuickSortConnection.remove(player);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

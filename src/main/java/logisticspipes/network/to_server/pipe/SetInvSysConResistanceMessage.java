@@ -22,25 +22,25 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record SetInvSysConResistanceMessage(BlockPos pos, int resistance) implements CustomPacketPayload {
 
     public static final Type<SetInvSysConResistanceMessage> TYPE =
-            new Type<>(LPConstants.rl("set_inv_sys_con_resistance"));
+        new Type<>(LPConstants.rl("set_inv_sys_con_resistance"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetInvSysConResistanceMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetInvSysConResistanceMessage::pos,
-                    ByteBufCodecs.VAR_INT, SetInvSysConResistanceMessage::resistance,
-                    SetInvSysConResistanceMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SetInvSysConResistanceMessage::pos,
+            ByteBufCodecs.VAR_INT, SetInvSysConResistanceMessage::resistance,
+            SetInvSysConResistanceMessage::new);
 
     public static void handle(SetInvSysConResistanceMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be != null && be.pipe instanceof PipeItemsInvSysConnector pipe) {
             pipe.resistance = message.resistance;
             pipe.getRouter().update(true, pipe);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

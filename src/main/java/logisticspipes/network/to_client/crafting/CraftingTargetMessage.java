@@ -25,28 +25,28 @@ import logisticspipes.utils.item.ItemIdentifier;
  * item identifier.
  */
 public record CraftingTargetMessage(BlockPos pos, Optional<ItemIdentifier> target)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<CraftingTargetMessage> TYPE =
-            new Type<>(LPConstants.rl("crafting_target"));
+        new Type<>(LPConstants.rl("crafting_target"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingTargetMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, CraftingTargetMessage::pos,
-                    ByteBufCodecs.optional(ItemIdentifier.STREAM_CODEC), CraftingTargetMessage::target,
-                    CraftingTargetMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, CraftingTargetMessage::pos,
+            ByteBufCodecs.optional(ItemIdentifier.STREAM_CODEC), CraftingTargetMessage::target,
+            CraftingTargetMessage::new);
 
     public static void handle(CraftingTargetMessage message, IPayloadContext context) {
         final ICraftingRecipeGrid grid =
-                TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
+            TargetLookup.blockEntityOrPipeAt(context.player(), message.pos, ICraftingRecipeGrid.class);
         if (grid != null) {
             grid.setTargetType(message.target.orElse(null));
             grid.cacheRecipe();
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -21,20 +21,20 @@ import logisticspipes.proxy.SimpleServiceLocator;
 public record SecurityAuthorizedListMessage(List<String> authorized) implements CustomPacketPayload {
 
     public static final Type<SecurityAuthorizedListMessage> TYPE =
-            new Type<>(LPConstants.rl("security_authorized_list"));
+        new Type<>(LPConstants.rl("security_authorized_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SecurityAuthorizedListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
-                    SecurityAuthorizedListMessage::authorized,
-                    SecurityAuthorizedListMessage::new);
+        StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
+            SecurityAuthorizedListMessage::authorized,
+            SecurityAuthorizedListMessage::new);
+
+    public static void handle(SecurityAuthorizedListMessage message, IPayloadContext context) {
+        SimpleServiceLocator.securityStationManager.setClientAuthorizationList(message.authorized);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SecurityAuthorizedListMessage message, IPayloadContext context) {
-        SimpleServiceLocator.securityStationManager.setClientAuthorizationList(message.authorized);
     }
 }

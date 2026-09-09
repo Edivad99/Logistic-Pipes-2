@@ -20,22 +20,22 @@ import logisticspipes.request.RequestHandler;
 public record RequestFluidOrdererRefreshMessage(RemotePipeTarget target) implements CustomPacketPayload {
 
     public static final Type<RequestFluidOrdererRefreshMessage> TYPE =
-            new Type<>(LPConstants.rl("request_fluid_orderer_refresh"));
+        new Type<>(LPConstants.rl("request_fluid_orderer_refresh"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestFluidOrdererRefreshMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    RemotePipeTarget.STREAM_CODEC, RequestFluidOrdererRefreshMessage::target,
-                    RequestFluidOrdererRefreshMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            RemotePipeTarget.STREAM_CODEC, RequestFluidOrdererRefreshMessage::target,
+            RequestFluidOrdererRefreshMessage::new);
 
     public static void handle(RequestFluidOrdererRefreshMessage message, IPayloadContext context) {
         final CoreRoutedPipe pipe = message.target.resolve();
         if (pipe != null) {
             RequestHandler.refreshFluid(context.player(), pipe);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

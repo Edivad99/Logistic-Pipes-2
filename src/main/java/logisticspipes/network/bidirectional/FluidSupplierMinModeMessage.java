@@ -23,24 +23,24 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record FluidSupplierMinModeMessage(BlockPos pos, MinMode mode) implements CustomPacketPayload {
 
     public static final Type<FluidSupplierMinModeMessage> TYPE =
-            new Type<>(LPConstants.rl("fluid_supplier_min_mode"));
+        new Type<>(LPConstants.rl("fluid_supplier_min_mode"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidSupplierMinModeMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, FluidSupplierMinModeMessage::pos,
-                    NeoForgeStreamCodecs.enumCodec(MinMode.class), FluidSupplierMinModeMessage::mode,
-                    FluidSupplierMinModeMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, FluidSupplierMinModeMessage::pos,
+            NeoForgeStreamCodecs.enumCodec(MinMode.class), FluidSupplierMinModeMessage::mode,
+            FluidSupplierMinModeMessage::new);
+
+    public static void handle(FluidSupplierMinModeMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof PipeFluidSupplierMk2 pipe) {
+            pipe.setMinMode(message.mode);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(FluidSupplierMinModeMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof PipeFluidSupplierMk2 pipe) {
-            pipe.setMinMode(message.mode);
-        }
     }
 }

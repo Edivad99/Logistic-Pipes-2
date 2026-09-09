@@ -23,28 +23,28 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
  *                         of its own to count
  */
 public record PipeStatsMessage(BlockPos pos, TrafficCounts session, TrafficCounts lifetime, int routingTableSize)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<PipeStatsMessage> TYPE = new Type<>(LPConstants.rl("pipe_stats"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PipeStatsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PipeStatsMessage::pos,
-                    TrafficCounts.STREAM_CODEC, PipeStatsMessage::session,
-                    TrafficCounts.STREAM_CODEC, PipeStatsMessage::lifetime,
-                    ByteBufCodecs.VAR_INT, PipeStatsMessage::routingTableSize,
-                    PipeStatsMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PipeStatsMessage::pos,
+            TrafficCounts.STREAM_CODEC, PipeStatsMessage::session,
+            TrafficCounts.STREAM_CODEC, PipeStatsMessage::lifetime,
+            ByteBufCodecs.VAR_INT, PipeStatsMessage::routingTableSize,
+            PipeStatsMessage::new);
+
+    public static void handle(PipeStatsMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be != null && be.pipe instanceof CoreRoutedPipe pipe) {
+            pipe.applyStats(message.session, message.lifetime, message.routingTableSize);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(PipeStatsMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be != null && be.pipe instanceof CoreRoutedPipe pipe) {
-            pipe.applyStats(message.session, message.lifetime, message.routingTableSize);
-        }
     }
 }

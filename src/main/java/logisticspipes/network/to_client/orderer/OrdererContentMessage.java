@@ -25,18 +25,18 @@ public record OrdererContentMessage(List<ItemIdentifierStack> available) impleme
     public static final Type<OrdererContentMessage> TYPE = new Type<>(LPConstants.rl("orderer_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OrdererContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    OrdererContentMessage::available,
-                    OrdererContentMessage::new);
+        StreamCodec.composite(
+            ItemIdentifierStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            OrdererContentMessage::available,
+            OrdererContentMessage::new);
+
+    public static void handle(OrdererContentMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(OrdererContentMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

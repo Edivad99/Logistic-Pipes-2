@@ -18,24 +18,24 @@ import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity
 public record PowerJunctionLevelMessage(BlockPos pos, int stored) implements CustomPacketPayload {
 
     public static final Type<PowerJunctionLevelMessage> TYPE =
-            new Type<>(LPConstants.rl("power_junction_level"));
+        new Type<>(LPConstants.rl("power_junction_level"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PowerJunctionLevelMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PowerJunctionLevelMessage::pos,
-                    ByteBufCodecs.VAR_INT, PowerJunctionLevelMessage::stored,
-                    PowerJunctionLevelMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PowerJunctionLevelMessage::pos,
+            ByteBufCodecs.VAR_INT, PowerJunctionLevelMessage::stored,
+            PowerJunctionLevelMessage::new);
+
+    public static void handle(PowerJunctionLevelMessage message, IPayloadContext context) {
+        final LogisticsPowerJunctionBlockEntity be = TargetLookup.blockEntityAt(
+            context.player(), message.pos, LogisticsPowerJunctionBlockEntity.class);
+        if (be != null) {
+            be.handlePowerPacket(message.stored);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(PowerJunctionLevelMessage message, IPayloadContext context) {
-        final LogisticsPowerJunctionBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsPowerJunctionBlockEntity.class);
-        if (be != null) {
-            be.handlePowerPacket(message.stored);
-        }
     }
 }

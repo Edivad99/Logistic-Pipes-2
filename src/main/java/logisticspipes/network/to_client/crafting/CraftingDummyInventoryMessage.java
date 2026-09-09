@@ -22,22 +22,17 @@ import logisticspipes.network.ModuleTarget;
  * type plus a count and cannot express an empty slot.
  */
 public record CraftingDummyInventoryMessage(ModuleTarget target, List<ItemStack> slots)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<CraftingDummyInventoryMessage> TYPE =
-            new Type<>(LPConstants.rl("crafting_dummy_inventory"));
+        new Type<>(LPConstants.rl("crafting_dummy_inventory"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingDummyInventoryMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, CraftingDummyInventoryMessage::target,
-                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    CraftingDummyInventoryMessage::slots,
-                    CraftingDummyInventoryMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, CraftingDummyInventoryMessage::target,
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()),
+            CraftingDummyInventoryMessage::slots,
+            CraftingDummyInventoryMessage::new);
 
     public static void handle(CraftingDummyInventoryMessage message, IPayloadContext context) {
         final ModuleCrafter module = message.target.resolve(context.player(), ModuleCrafter.class);
@@ -47,5 +42,10 @@ public record CraftingDummyInventoryMessage(ModuleTarget target, List<ItemStack>
         for (int slot = 0; slot < message.slots.size() && slot < module.dummyInventory.getContainerSize(); slot++) {
             module.dummyInventory.setItem(slot, message.slots.get(slot));
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

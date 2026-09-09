@@ -34,19 +34,14 @@ public record RequestDiskMacroMessage(BlockPos pos, int macro) implements Custom
     public static final Type<RequestDiskMacroMessage> TYPE = new Type<>(LPConstants.rl("request_disk_macro"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestDiskMacroMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, RequestDiskMacroMessage::pos,
-                    ByteBufCodecs.VAR_INT, RequestDiskMacroMessage::macro,
-                    RequestDiskMacroMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, RequestDiskMacroMessage::pos,
+            ByteBufCodecs.VAR_INT, RequestDiskMacroMessage::macro,
+            RequestDiskMacroMessage::new);
 
     public static void handle(RequestDiskMacroMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (be == null || !(be.pipe instanceof PipeItemsRequestLogistics requester)) {
             return;
         }
@@ -57,13 +52,20 @@ public record RequestDiskMacroMessage(BlockPos pos, int macro) implements Custom
         RequestHandler.requestMacrolist(macros.getCompoundOrEmpty(message.macro), requester, context.player());
     }
 
-    /** The macros saved on a disk, or an empty list when the stack is not a disk or holds none. */
+    /**
+     * The macros saved on a disk, or an empty list when the stack is not a disk or holds none.
+     */
     private static ListTag macroList(ItemStack disk) {
         if (disk.isEmpty() || !disk.getItem().equals(LPItems.DISK.get())
-                || !disk.has(DataComponents.CUSTOM_DATA)) {
+            || !disk.has(DataComponents.CUSTOM_DATA)) {
             return new ListTag();
         }
         final CompoundTag data = Objects.requireNonNull(disk.get(DataComponents.CUSTOM_DATA)).copyTag();
         return data.getListOrEmpty("macroList");
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

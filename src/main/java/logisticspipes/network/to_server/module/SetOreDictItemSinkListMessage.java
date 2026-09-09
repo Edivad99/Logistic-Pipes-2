@@ -23,26 +23,21 @@ import logisticspipes.network.ModuleTarget;
  * {@code deserialize}.
  */
 public record SetOreDictItemSinkListMessage(ModuleTarget target, List<String> oreNames)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SetOreDictItemSinkListMessage> TYPE =
-            new Type<>(LPConstants.rl("set_ore_dict_item_sink_list"));
+        new Type<>(LPConstants.rl("set_ore_dict_item_sink_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetOreDictItemSinkListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SetOreDictItemSinkListMessage::target,
-                    ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
-                    SetOreDictItemSinkListMessage::oreNames,
-                    SetOreDictItemSinkListMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SetOreDictItemSinkListMessage::target,
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
+            SetOreDictItemSinkListMessage::oreNames,
+            SetOreDictItemSinkListMessage::new);
 
     public static void handle(SetOreDictItemSinkListMessage message, IPayloadContext context) {
         final ModuleOreDictItemSink module =
-                message.target.resolve(context.player(), ModuleOreDictItemSink.class);
+            message.target.resolve(context.player(), ModuleOreDictItemSink.class);
         if (module == null) {
             return;
         }
@@ -51,5 +46,10 @@ public record SetOreDictItemSinkListMessage(ModuleTarget target, List<String> or
         if (message.target.slot().filter(ModulePositionType::isInWorld).isPresent()) {
             module.oreListChanged(context.player().level());
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

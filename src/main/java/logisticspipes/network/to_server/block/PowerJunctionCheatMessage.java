@@ -17,28 +17,26 @@ import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity
  */
 public record PowerJunctionCheatMessage(BlockPos pos) implements CustomPacketPayload {
 
-    private static final int ENERGY = 100_000;
-
     public static final Type<PowerJunctionCheatMessage> TYPE = new Type<>(LPConstants.rl("power_junction_cheat"));
-
     public static final StreamCodec<RegistryFriendlyByteBuf, PowerJunctionCheatMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, PowerJunctionCheatMessage::pos,
-                    PowerJunctionCheatMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, PowerJunctionCheatMessage::pos,
+            PowerJunctionCheatMessage::new);
+    private static final int ENERGY = 100_000;
 
     public static void handle(PowerJunctionCheatMessage message, IPayloadContext context) {
         if (!LogisticsPipes.isDEBUG()) {
             return;
         }
         final LogisticsPowerJunctionBlockEntity be = TargetLookup.blockEntityAt(
-                context.player(), message.pos, LogisticsPowerJunctionBlockEntity.class);
+            context.player(), message.pos, LogisticsPowerJunctionBlockEntity.class);
         if (be != null) {
             be.addEnergy(ENERGY);
         }
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

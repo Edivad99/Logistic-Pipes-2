@@ -21,32 +21,32 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
  * opening, or either one being ticked. They used to be a packet each, sent one after the other.
  */
 public record SecurityStationFlagsMessage(BlockPos pos, boolean allowCC, boolean autoDestroy)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SecurityStationFlagsMessage> TYPE =
-            new Type<>(LPConstants.rl("security_station_flags"));
+        new Type<>(LPConstants.rl("security_station_flags"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SecurityStationFlagsMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SecurityStationFlagsMessage::pos,
-                    ByteBufCodecs.BOOL, SecurityStationFlagsMessage::allowCC,
-                    ByteBufCodecs.BOOL, SecurityStationFlagsMessage::autoDestroy,
-                    SecurityStationFlagsMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SecurityStationFlagsMessage::pos,
+            ByteBufCodecs.BOOL, SecurityStationFlagsMessage::allowCC,
+            ByteBufCodecs.BOOL, SecurityStationFlagsMessage::autoDestroy,
+            SecurityStationFlagsMessage::new);
+
+    public static void handle(SecurityStationFlagsMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public static void handle(SecurityStationFlagsMessage message, IPayloadContext context) {
-        Client.handle(message, context);
-    }
-
     private static final class Client {
 
         static void handle(SecurityStationFlagsMessage message, IPayloadContext context) {
             final LogisticsSecurityBlockEntity be = TargetLookup.blockEntityAt(
-                    context.player(), message.pos, LogisticsSecurityBlockEntity.class);
+                context.player(), message.pos, LogisticsSecurityBlockEntity.class);
             if (be == null) {
                 return;
             }

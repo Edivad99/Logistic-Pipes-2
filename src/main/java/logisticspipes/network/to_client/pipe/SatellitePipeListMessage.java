@@ -23,18 +23,18 @@ public record SatellitePipeListMessage(List<SatelliteEntry> satellites) implemen
     public static final Type<SatellitePipeListMessage> TYPE = new Type<>(LPConstants.rl("satellite_pipe_list"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SatellitePipeListMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    SatelliteEntry.STREAM_CODEC.apply(ByteBufCodecs.list()),
-                    SatellitePipeListMessage::satellites,
-                    SatellitePipeListMessage::new);
+        StreamCodec.composite(
+            SatelliteEntry.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            SatellitePipeListMessage::satellites,
+            SatellitePipeListMessage::new);
+
+    public static void handle(SatellitePipeListMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SatellitePipeListMessage message, IPayloadContext context) {
-        Client.handle(message, context);
     }
 
     private static final class Client {

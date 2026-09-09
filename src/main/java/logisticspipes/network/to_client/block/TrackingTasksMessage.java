@@ -29,25 +29,25 @@ public record TrackingTasksMessage(BlockPos pos, List<TrackingTask> tasks) imple
     public static final Type<TrackingTasksMessage> TYPE = new Type<>(LPConstants.rl("tracking_tasks"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TrackingTasksMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, TrackingTasksMessage::pos,
-                    TrackingTask.STREAM_CODEC.apply(ByteBufCodecs.list()), TrackingTasksMessage::tasks,
-                    TrackingTasksMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, TrackingTasksMessage::pos,
+            TrackingTask.STREAM_CODEC.apply(ByteBufCodecs.list()), TrackingTasksMessage::tasks,
+            TrackingTasksMessage::new);
+
+    public static void handle(TrackingTasksMessage message, IPayloadContext context) {
+        Client.handle(message, context);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public static void handle(TrackingTasksMessage message, IPayloadContext context) {
-        Client.handle(message, context);
-    }
-
     private static final class Client {
 
         static void handle(TrackingTasksMessage message, IPayloadContext context) {
             final LogisticsStatisticsBlockEntity be = TargetLookup.blockEntityAt(
-                    context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
+                context.player(), message.pos, LogisticsStatisticsBlockEntity.class);
             if (be == null) {
                 return;
             }

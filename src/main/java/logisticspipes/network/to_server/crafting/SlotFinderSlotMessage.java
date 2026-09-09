@@ -24,25 +24,25 @@ import logisticspipes.network.SlotFinder;
  * @param slot          the index in the module's slot assignment pattern being filled in
  */
 public record SlotFinderSlotMessage(ModuleTarget target, BlockPos inventoryPos, int menuSlotIndex, int slot)
-        implements CustomPacketPayload {
+    implements CustomPacketPayload {
 
     public static final Type<SlotFinderSlotMessage> TYPE = new Type<>(LPConstants.rl("slot_finder_slot"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SlotFinderSlotMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    ModuleTarget.STREAM_CODEC, SlotFinderSlotMessage::target,
-                    BlockPos.STREAM_CODEC, SlotFinderSlotMessage::inventoryPos,
-                    ByteBufCodecs.VAR_INT, SlotFinderSlotMessage::menuSlotIndex,
-                    ByteBufCodecs.VAR_INT, SlotFinderSlotMessage::slot,
-                    SlotFinderSlotMessage::new);
+        StreamCodec.composite(
+            ModuleTarget.STREAM_CODEC, SlotFinderSlotMessage::target,
+            BlockPos.STREAM_CODEC, SlotFinderSlotMessage::inventoryPos,
+            ByteBufCodecs.VAR_INT, SlotFinderSlotMessage::menuSlotIndex,
+            ByteBufCodecs.VAR_INT, SlotFinderSlotMessage::slot,
+            SlotFinderSlotMessage::new);
+
+    public static void handle(SlotFinderSlotMessage message, IPayloadContext context) {
+        SlotFinder.assignSlot(context.player(), message.target, message.inventoryPos,
+            message.menuSlotIndex, message.slot);
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SlotFinderSlotMessage message, IPayloadContext context) {
-        SlotFinder.assignSlot(context.player(), message.target, message.inventoryPos,
-                message.menuSlotIndex, message.slot);
     }
 }

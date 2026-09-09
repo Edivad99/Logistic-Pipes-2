@@ -24,21 +24,21 @@ public record SatelliteNameMessage(BlockPos pos, String name) implements CustomP
     public static final Type<SatelliteNameMessage> TYPE = new Type<>(LPConstants.rl("satellite_name"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SatelliteNameMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SatelliteNameMessage::pos,
-                    ByteBufCodecs.STRING_UTF8, SatelliteNameMessage::name,
-                    SatelliteNameMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SatelliteNameMessage::pos,
+            ByteBufCodecs.STRING_UTF8, SatelliteNameMessage::name,
+            SatelliteNameMessage::new);
+
+    public static void handle(SatelliteNameMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe container =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (container != null && container.pipe instanceof SatellitePipe satellite) {
+            satellite.setSatellitePipeName(message.name);
+        }
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
-    }
-
-    public static void handle(SatelliteNameMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (container != null && container.pipe instanceof SatellitePipe satellite) {
-            satellite.setSatellitePipeName(message.name);
-        }
     }
 }

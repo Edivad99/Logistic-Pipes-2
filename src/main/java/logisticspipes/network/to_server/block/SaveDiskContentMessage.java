@@ -28,22 +28,17 @@ import logisticspipes.world.item.LPItems;
 public record SaveDiskContentMessage(BlockPos pos, ItemStack disk) implements CustomPacketPayload {
 
     public static final Type<SaveDiskContentMessage> TYPE =
-            new Type<>(LPConstants.rl("save_disk_content"));
+        new Type<>(LPConstants.rl("save_disk_content"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SaveDiskContentMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SaveDiskContentMessage::pos,
-                    ItemStack.OPTIONAL_STREAM_CODEC, SaveDiskContentMessage::disk,
-                    SaveDiskContentMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SaveDiskContentMessage::pos,
+            ItemStack.OPTIONAL_STREAM_CODEC, SaveDiskContentMessage::disk,
+            SaveDiskContentMessage::new);
 
     public static void handle(SaveDiskContentMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (container == null) {
             return;
         }
@@ -54,7 +49,9 @@ public record SaveDiskContentMessage(BlockPos pos, ItemStack disk) implements Cu
         }
     }
 
-    /** Copies what the sent disk remembers onto the one in the pipe, if both really are disks. */
+    /**
+     * Copies what the sent disk remembers onto the one in the pipe, if both really are disks.
+     */
     private static void copyDiskData(ItemStack sent, ItemStack inPipe) {
         if (inPipe.isEmpty() || !inPipe.getItem().equals(LPItems.DISK.get())) {
             return;
@@ -63,6 +60,11 @@ public record SaveDiskContentMessage(BlockPos pos, ItemStack disk) implements Cu
             return;
         }
         inPipe.set(DataComponents.CUSTOM_DATA,
-                CustomData.of(Objects.requireNonNull(sent.get(DataComponents.CUSTOM_DATA)).copyTag()));
+            CustomData.of(Objects.requireNonNull(sent.get(DataComponents.CUSTOM_DATA)).copyTag()));
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

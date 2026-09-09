@@ -25,49 +25,50 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
  * @param output the side it is heading for, empty while the pipe has not decided
  */
 public record TravellingItemPositionMessage(
-        BlockPos pos,
-        int travelId,
-        Motion motion,
-        Optional<Direction> input,
-        Optional<Direction> output
+    BlockPos pos,
+    int travelId,
+    Motion motion,
+    Optional<Direction> input,
+    Optional<Direction> output
 ) implements CustomPacketPayload {
 
-    /** How the item is moving: where along the pipe it is, how fast, and which way it faces. */
-    public record Motion(float position, float speed, float yaw) {
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, Motion> STREAM_CODEC =
-                StreamCodec.composite(
-                        ByteBufCodecs.FLOAT, Motion::position,
-                        ByteBufCodecs.FLOAT, Motion::speed,
-                        ByteBufCodecs.FLOAT, Motion::yaw,
-                        Motion::new);
-    }
-
     public static final Type<TravellingItemPositionMessage> TYPE =
-            new Type<>(LPConstants.rl("travelling_item_position"));
-
+        new Type<>(LPConstants.rl("travelling_item_position"));
     public static final StreamCodec<RegistryFriendlyByteBuf, TravellingItemPositionMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, TravellingItemPositionMessage::pos,
-                    ByteBufCodecs.VAR_INT, TravellingItemPositionMessage::travelId,
-                    Motion.STREAM_CODEC, TravellingItemPositionMessage::motion,
-                    ByteBufCodecs.optional(Direction.STREAM_CODEC), TravellingItemPositionMessage::input,
-                    ByteBufCodecs.optional(Direction.STREAM_CODEC), TravellingItemPositionMessage::output,
-                    TravellingItemPositionMessage::new);
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, TravellingItemPositionMessage::pos,
+            ByteBufCodecs.VAR_INT, TravellingItemPositionMessage::travelId,
+            Motion.STREAM_CODEC, TravellingItemPositionMessage::motion,
+            ByteBufCodecs.optional(Direction.STREAM_CODEC), TravellingItemPositionMessage::input,
+            ByteBufCodecs.optional(Direction.STREAM_CODEC), TravellingItemPositionMessage::output,
+            TravellingItemPositionMessage::new);
+
+    public static void handle(TravellingItemPositionMessage message, IPayloadContext context) {
+        final LogisticsTileGenericPipe be =
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+        if (be == null || be.pipe == null || be.pipe.transport == null) {
+            return;
+        }
+        be.pipe.transport.handleItemPositionPacket(message.travelId, message.input.orElse(null),
+            message.output.orElse(null), message.motion.speed(), message.motion.position(),
+            message.motion.yaw());
+    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public static void handle(TravellingItemPositionMessage message, IPayloadContext context) {
-        final LogisticsTileGenericPipe be =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (be == null || be.pipe == null || be.pipe.transport == null) {
-            return;
-        }
-        be.pipe.transport.handleItemPositionPacket(message.travelId, message.input.orElse(null),
-                message.output.orElse(null), message.motion.speed(), message.motion.position(),
-                message.motion.yaw());
+    /**
+     * How the item is moving: where along the pipe it is, how fast, and which way it faces.
+     */
+    public record Motion(float position, float speed, float yaw) {
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, Motion> STREAM_CODEC =
+            StreamCodec.composite(
+                ByteBufCodecs.FLOAT, Motion::position,
+                ByteBufCodecs.FLOAT, Motion::speed,
+                ByteBufCodecs.FLOAT, Motion::yaw,
+                Motion::new);
     }
 }
