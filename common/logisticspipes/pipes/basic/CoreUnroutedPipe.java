@@ -22,7 +22,6 @@ import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConfigs;
-import logisticspipes.api.ILPPipe;
 import logisticspipes.interfaces.IPipeUpgradeManager;
 import logisticspipes.pipes.basic.debug.DebugLogController;
 import logisticspipes.pipes.basic.debug.StatusEntry;
@@ -35,7 +34,7 @@ import logisticspipes.transport.LPTravelingItem;
 import logisticspipes.transport.PipeTransportLogistics;
 import logisticspipes.utils.item.ItemIdentifier;
 
-public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
+public abstract class CoreUnroutedPipe implements ILPCCTypeHolder {
 
 	/**
 	 * What this pipe keeps client side, beyond what every pipe has.
@@ -200,7 +199,7 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 		return false;
 	}
 
-	@Override
+	/** Whether this pipe takes part in routing, as opposed to only carrying what is pushed into it. */
 	public boolean isRoutedPipe() {
 		return false;
 	}

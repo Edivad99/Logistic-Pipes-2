@@ -38,8 +38,6 @@ import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConstants;
 import logisticspipes.LogisticsPipes;
-import logisticspipes.api.ILPPipe;
-import logisticspipes.api.ILPPipeTile;
 import logisticspipes.asm.ModDependentField;
 import logisticspipes.asm.ModDependentMethod;
 import logisticspipes.asm.te.ILPTEInformation;
@@ -72,7 +70,7 @@ import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
 import network.rs485.logisticspipes.connection.ConnectionType;
 import network.rs485.logisticspipes.connection.PipeInventoryConnectionChecker;
 
-public class LogisticsTileGenericPipe extends BlockEntity implements ILPPipeTile, IPipeInformationProvider,
+public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInformationProvider,
     ILogicControllerTile, ILPTEInformation {
 
 	// ILPTEInformation — previously injected by ASM, now implemented directly
@@ -901,11 +899,6 @@ public class LogisticsTileGenericPipe extends BlockEntity implements ILPPipeTile
 	@Override
 	public LogicController getLogicController() {
 		return logicController;
-	}
-
-	@Override
-	public ILPPipe getLPPipe() {
-		return pipe;
 	}
 
 	@Override
