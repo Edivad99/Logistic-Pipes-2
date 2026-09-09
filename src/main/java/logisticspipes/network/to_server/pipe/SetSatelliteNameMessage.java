@@ -28,22 +28,17 @@ import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 public record SetSatelliteNameMessage(BlockPos pos, String name) implements CustomPacketPayload {
 
     public static final Type<SetSatelliteNameMessage> TYPE =
-            new Type<>(LPConstants.rl("set_satellite_name"));
+        new Type<>(LPConstants.rl("set_satellite_name"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetSatelliteNameMessage> STREAM_CODEC =
-            StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetSatelliteNameMessage::pos,
-                    ByteBufCodecs.STRING_UTF8, SetSatelliteNameMessage::name,
-                    SetSatelliteNameMessage::new);
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+        StreamCodec.composite(
+            BlockPos.STREAM_CODEC, SetSatelliteNameMessage::pos,
+            ByteBufCodecs.STRING_UTF8, SetSatelliteNameMessage::name,
+            SetSatelliteNameMessage::new);
 
     public static void handle(SetSatelliteNameMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe container =
-                TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
+            TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
         if (container == null) {
             return;
         }
@@ -55,7 +50,9 @@ public record SetSatelliteNameMessage(BlockPos pos, String name) implements Cust
         }
     }
 
-    /** The outcome to report back, or null when the target is not a satellite at all. */
+    /**
+     * The outcome to report back, or null when the target is not a satellite at all.
+     */
     private static @Nullable SatelliteNamingResult rename(LogisticsTileGenericPipe container, String name) {
         if (name.trim().isEmpty()) {
             return SatelliteNamingResult.BLANK_NAME;
@@ -69,6 +66,12 @@ public record SetSatelliteNameMessage(BlockPos pos, String name) implements Cust
         satellite.setSatellitePipeName(name);
         satellite.updateWatchers();
         satellite.ensureAllSatelliteStatus();
+        container.setChanged();
         return SatelliteNamingResult.SUCCESS;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }
