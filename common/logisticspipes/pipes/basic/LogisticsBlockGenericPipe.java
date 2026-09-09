@@ -29,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -60,7 +61,6 @@ import logisticspipes.LogisticsPipes;
 import logisticspipes.interfaces.IRotationProvider;
 import logisticspipes.interfaces.ITubeOrientation;
 import logisticspipes.network.TargetLookup;
-import logisticspipes.pipes.basic.ltgpmodcompat.LPMicroblockBlock;
 import logisticspipes.ticks.QueuedTasks;
 import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.util.DoubleCoordinatesType;
@@ -73,7 +73,7 @@ import logisticspipes.world.level.block.LPBlocks;
 // Particle/ParticleEngine/TextureAtlasSprite imports removed — rendering deferred (see addHitEffects/addDestroyEffects TODOs)
 // ClientConfiguration import removed — used only in deferred rendering methods
 
-public class LogisticsBlockGenericPipe extends LPMicroblockBlock {
+public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 
 	public static boolean ignoreSideRayTrace = false;
 	public static Map<Item, Function<Item, ? extends CoreUnroutedPipe>> pipes = new HashMap<>();

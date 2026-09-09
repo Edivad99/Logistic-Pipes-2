@@ -407,9 +407,6 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 		return getWorld();
 	}
 
-	public boolean isMultipartAllowedInPipe() {
-		return true;
-	}
 
 	@Override
 	public Object[] getTypeHolder() {

@@ -26,7 +26,7 @@ public interface IPipeInformationProvider {
 
 	int getZ();
 
-	@Nullable Level getWorld();
+	@Nullable Level getLevel();
 
 	boolean isRouterInitialized();
 

@@ -78,7 +78,7 @@ public final class PipeGeometryKey {
      * block states.
      */
     public static PipeGeometryKey of(LogisticsTileGenericPipe tile, CoreUnroutedPipe pipe, PipeRenderState state) {
-        BlockGetter level = tile.getWorld();
+        BlockGetter level = tile.getLevel();
         BlockPos pos = tile.getBlockPos();
 
         int specialEnd = 0;

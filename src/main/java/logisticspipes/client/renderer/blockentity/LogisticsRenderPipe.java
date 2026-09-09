@@ -340,7 +340,7 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
             double itemYawForPitch = lPipe.getItemRenderYaw(fPos, item);
 
             ItemStack stack = item.getItemIdentifierStack().makeNormalStack();
-            doRenderItem(stack, pipe.container.getWorld(), lX + pos.getXCoord(), lY + pos.getYCoord(),
+            doRenderItem(stack, pipe.container.getLevel(), lX + pos.getXCoord(), lY + pos.getYCoord(),
                 lZ + pos.getZCoord(), light, 0.75F, boxScale, itemYaw, itemPitch, itemYawForPitch, partialTickTime,
                 poseStack, collector, packedLight, packedOverlay);
             count++;
@@ -357,7 +357,7 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
                 continue;
             }
             ItemStack stack = item.getValue1().makeNormalStack();
-            doRenderItem(stack, pipe.container.getWorld(), x + pos.getXCoord(), y + pos.getYCoord(),
+            doRenderItem(stack, pipe.container.getLevel(), x + pos.getXCoord(), y + pos.getYCoord(),
                 z + pos.getZCoord(), light, 0.25F, 0, 0, 0, 0, partialTickTime, poseStack, collector, packedLight,
                 packedOverlay);
             count++;

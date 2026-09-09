@@ -64,7 +64,7 @@ public class LogisticsTileRenderController {
 
 		public LaserBeamDataClient(float length, int timeout, boolean reverse, Direction dir, int color) {
 			super(length, timeout, reverse);
-			entity = new PipeFXLaserPowerBeam((ClientLevel) pipe.getWorld(), new DoubleCoordinates((BlockEntity) pipe), length, dir, color, pipe).setReverse(reverse);
+			entity = new PipeFXLaserPowerBeam((ClientLevel) pipe.getLevel(), new DoubleCoordinates((BlockEntity) pipe), length, dir, color, pipe).setReverse(reverse);
 			Minecraft.getInstance().particleEngine.add(entity);
 
 		}
@@ -119,7 +119,7 @@ public class LogisticsTileRenderController {
 
 		public LaserBallDataClient(float length, int timeout, int color) {
 			super(length, timeout);
-			entity = new PipeFXLaserPowerBall((ClientLevel) pipe.getWorld(), new DoubleCoordinates((BlockEntity) pipe), color, pipe);
+			entity = new PipeFXLaserPowerBall((ClientLevel) pipe.getLevel(), new DoubleCoordinates((BlockEntity) pipe), color, pipe);
 			Minecraft.getInstance().particleEngine.add(entity);
 		}
 
@@ -194,7 +194,7 @@ public class LogisticsTileRenderController {
 		if (powerLasersBeam.containsKey(new LaserKey(dir, color))) {
 			powerLasersBeam.get(new LaserKey(dir, color)).timeout = LASER_TIMEOUT_TICKS;
 		} else {
-			if (pipe.getWorld().isClientSide()) {
+			if (pipe.getLevel().isClientSide()) {
 				powerLasersBeam.put(new LaserKey(dir, color), new LaserBeamDataClient(length, LASER_TIMEOUT_TICKS, reverse, dir, color));
 			} else {
 				powerLasersBeam.put(new LaserKey(dir, color), new LaserBeamData(length, LASER_TIMEOUT_TICKS, reverse));
@@ -205,7 +205,7 @@ public class LogisticsTileRenderController {
 			if (powerLasersBall.containsKey(color)) {
 				powerLasersBall.get(color).timeout = LASER_TIMEOUT_TICKS;
 			} else {
-				if (pipe.getWorld().isClientSide()) {
+				if (pipe.getLevel().isClientSide()) {
 					powerLasersBall.put(color, new LaserBallDataClient(length, LASER_TIMEOUT_TICKS, color));
 				} else {
 					powerLasersBall.put(color, new LaserBallData(length, LASER_TIMEOUT_TICKS));
@@ -220,7 +220,7 @@ public class LogisticsTileRenderController {
 	}
 
 	public void removeLaser(Direction dir, int color, boolean isBall) {
-		if (!pipe.getWorld().isClientSide()) {
+		if (!pipe.getLevel().isClientSide()) {
 			return;
 		}
 		if (!isBall) {
@@ -228,7 +228,7 @@ public class LogisticsTileRenderController {
 			LaserBeamData beam = powerLasersBeam.get(key);
 			if (beam != null) {
 				beam.timeout = -1;
-				if (pipe.getWorld().isClientSide()) {
+				if (pipe.getLevel().isClientSide()) {
 					((LaserBeamDataClient) beam).entity.remove();
 				}
 				powerLasersBeam.remove(key);
@@ -237,7 +237,7 @@ public class LogisticsTileRenderController {
 			LaserBallData ball = powerLasersBall.get(color);
 			if (ball != null) {
 				ball.timeout = -1;
-				if (pipe.getWorld().isClientSide()) {
+				if (pipe.getLevel().isClientSide()) {
 					((LaserBallDataClient) ball).entity.remove();
 				}
 				powerLasersBall.remove(color);

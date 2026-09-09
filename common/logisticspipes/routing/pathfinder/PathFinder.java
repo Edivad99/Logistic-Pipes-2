@@ -76,7 +76,7 @@ public class PathFinder {
 		DoubleCoordinates p = new DoubleCoordinates(startProvider);
 		newSearch.setVisited.add(p);
 		CoordinateUtils.add(p, startOrientation);
-		BlockEntity entity = p.getTileEntity(startProvider.getWorld());
+		BlockEntity entity = p.getTileEntity(startProvider.getLevel());
 		IPipeInformationProvider provider = SimpleServiceLocator.pipeInformationManager.getInformationProviderFor(entity);
 		if (provider == null) {
 			return new HashMap<>();
@@ -364,7 +364,7 @@ public class PathFinder {
 					}
 				}
 				if (foundPipes.size() > beforeRecurseCount && pathPainter != null) {
-					pathPainter.addLaser(startPipe.getWorld(), new LaserData(new BlockPos(startPipe.getX(), startPipe.getY(), startPipe.getZ()), direction, connectionFlags));
+					pathPainter.addLaser(startPipe.getLevel(), new LaserData(new BlockPos(startPipe.getX(), startPipe.getY(), startPipe.getZ()), direction, connectionFlags));
 				}
 			}
 		}

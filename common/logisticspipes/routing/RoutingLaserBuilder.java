@@ -83,7 +83,7 @@ public class RoutingLaserBuilder {
                     LPConfigs.COMMON.LOGISTICS_DETECTION_COUNT.getAsInt(),
                     LPConfigs.COMMON.LOGISTICS_DETECTION_LENGTH.getAsInt(),
                     (world, laser) -> {
-                        if (pipe.getWorld() == world) {
+                        if (pipe.getLevel() == world) {
                             lasers.add(laser);
                         }
                     },

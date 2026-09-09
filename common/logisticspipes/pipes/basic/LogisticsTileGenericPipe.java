@@ -55,7 +55,6 @@ import logisticspipes.network.UpdateTagPayload;
 import logisticspipes.network.to_client.pipe.PipeRenderUpdateMessage;
 import logisticspipes.network.to_client.pipe.PipeStateMessage;
 import logisticspipes.pipes.PipeItemsFirewall;
-import logisticspipes.pipes.basic.ltgpmodcompat.LPMicroblockTileEntity;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.renderer.IIconProvider;
 import logisticspipes.renderer.LogisticsTileRenderController;
@@ -75,10 +74,8 @@ import logisticspipes.world.level.block.entity.LogisticsSolidBlockEntity;
 import network.rs485.logisticspipes.connection.ConnectionType;
 import network.rs485.logisticspipes.connection.PipeInventoryConnectionChecker;
 
-public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
-		implements ILPPipeTile, IPipeInformationProvider, /*IItemDuct,*/
-		// ManagedPeripheral, Environment, SidedEnvironment — added at runtime by @ModDependentInterface ASM when OC is present
-		ILogicControllerTile, ILPTEInformation {
+public class LogisticsTileGenericPipe extends BlockEntity implements ILPPipeTile, IPipeInformationProvider,
+    ILogicControllerTile, ILPTEInformation {
 
 	// ILPTEInformation — previously injected by ASM, now implemented directly
     @Nullable
@@ -296,10 +293,6 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		renderState.textureMatrix.refreshStates(pipe);
 	}
 
-	@Override
-	public boolean isMultipartAllowedInPipe() {
-		return !isMultiBlock() && (pipe == null || pipe.isMultipartAllowedInPipe());
-	}
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
@@ -547,8 +540,8 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 
 	@Override
 	public IFilter getFirewallFilter() {
-		if (pipe instanceof PipeItemsFirewall) {
-			return ((PipeItemsFirewall) pipe).getFilter();
+		if (pipe instanceof PipeItemsFirewall firewall) {
+			return firewall.getFilter();
 		}
 		throw new RuntimeException("This is no firewall pipe");
 	}
@@ -957,17 +950,13 @@ public class LogisticsTileGenericPipe extends LPMicroblockTileEntity
 		}
 	}
 
-	public boolean nonNull() {
-		return Objects.nonNull(pipe);
-	}
-
 	@Override
 	public boolean isMultiBlock() {
-		return nonNull() && pipe.isMultiBlock();
+		return pipe != null && pipe.isMultiBlock();
 	}
 
 	public boolean isPipeBlock() {
-		return nonNull() && pipe.isPipeBlock();
+		return pipe != null && pipe.isPipeBlock();
 	}
 
 	@Override
