@@ -333,7 +333,7 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
                 }
             }
 
-            DoubleCoordinates pos = lPipe.getItemRenderPos(fPos, item);
+            Vec3 pos = lPipe.getItemRenderPos(fPos, item);
             if (pos == null) {
                 continue;
             }
@@ -343,38 +343,38 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
             double itemYawForPitch = lPipe.getItemRenderYaw(fPos, item);
 
             ItemStack stack = item.getItemIdentifierStack().makeNormalStack();
-            doRenderItem(stack, pipe.getContainer().getLevel(), lX + pos.getXCoord(), lY + pos.getYCoord(),
-                lZ + pos.getZCoord(), light, 0.75F, boxScale, itemYaw, itemPitch, itemYawForPitch, partialTickTime,
+            doRenderItem(stack, pipe.getContainer().getLevel(), lX + pos.x, lY + pos.y,
+                lZ + pos.z, light, 0.75F, boxScale, itemYaw, itemPitch, itemYawForPitch, partialTickTime,
                 poseStack, collector, packedLight, packedOverlay);
             count++;
         }
 
         count = 0;
         double dist = 0.135;
-        DoubleCoordinates pos = new DoubleCoordinates(0.5, 0.5, 0.5);
-        CoordinateUtils.add(pos, Direction.SOUTH, dist);
-        CoordinateUtils.add(pos, Direction.EAST, dist);
-        CoordinateUtils.add(pos, Direction.UP, dist);
+        Vec3 pos = new Vec3(0.5, 0.5, 0.5)
+            .relative(Direction.SOUTH, dist)
+            .relative(Direction.EAST, dist)
+            .relative(Direction.UP, dist);
         for (Pair<ItemIdentifierStack, Pair<Integer, Integer>> item : pipe.transport.itemBuffer) {
             if (item == null || item.getValue1() == null) {
                 continue;
             }
             ItemStack stack = item.getValue1().makeNormalStack();
-            doRenderItem(stack, pipe.getContainer().getLevel(), x + pos.getXCoord(), y + pos.getYCoord(),
-                z + pos.getZCoord(), light, 0.25F, 0, 0, 0, 0, partialTickTime, poseStack, collector, packedLight,
+            doRenderItem(stack, pipe.getContainer().getLevel(), x + pos.x, y + pos.y,
+                z + pos.z, light, 0.25F, 0, 0, 0, 0, partialTickTime, poseStack, collector, packedLight,
                 packedOverlay);
             count++;
             if (count >= 27) {
                 break;
             } else if (count % 9 == 0) {
-                CoordinateUtils.add(pos, Direction.SOUTH, dist * 2.0);
-                CoordinateUtils.add(pos, Direction.EAST, dist * 2.0);
-                CoordinateUtils.add(pos, Direction.DOWN, dist);
+                pos = pos.relative(Direction.SOUTH, dist * 2.0)
+                    .relative(Direction.EAST, dist * 2.0)
+                    .relative(Direction.DOWN, dist);
             } else if (count % 3 == 0) {
-                CoordinateUtils.add(pos, Direction.SOUTH, dist * 2.0);
-                CoordinateUtils.add(pos, Direction.WEST, dist);
+                pos = pos.relative(Direction.SOUTH, dist * 2.0)
+                    .relative(Direction.WEST, dist);
             } else {
-                CoordinateUtils.add(pos, Direction.NORTH, dist);
+                pos = pos.relative(Direction.NORTH, dist);
             }
         }
 

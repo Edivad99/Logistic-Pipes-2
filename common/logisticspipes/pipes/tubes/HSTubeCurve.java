@@ -1,5 +1,6 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.utils.PositionRotation;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -227,11 +229,10 @@ public class HSTubeCurve extends CoreMultiBlockPipe {
 			return getContainer().getTile(output);
 		}
 		if (ori.dir1 == output) {
-			DoubleCoordinates pos = new DoubleCoordinates(-2, 0, 2);
-			LPPositionSet<DoubleCoordinates> set = new LPPositionSet<>(DoubleCoordinates.class);
-			set.add(pos);
-			orientation.rotatePositions(set);
-			BlockEntity subTile = pos.add(getLPPosition()).getTileEntity(getWorld());
+			PositionRotation rotation = new PositionRotation();
+			orientation.rotatePositions(rotation);
+			BlockPos offset = rotation.apply(new BlockPos(-2, 0, 2));
+			BlockEntity subTile = getWorld().getBlockEntity(getPos().offset(offset));
 			if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
 				return ((LogisticsTileGenericSubMultiBlock) subTile).getTile(output);
 			}
@@ -245,7 +246,7 @@ public class HSTubeCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public @Nullable DoubleCoordinates getItemRenderPos(float fPos, LPTravelingItem travelItem) {
+	public @Nullable Vec3 getItemRenderPos(float fPos, LPTravelingItem travelItem) {
 		if (orientation.getRenderOrientation().getDir1().getOpposite() != travelItem.input) {
 			fPos = transport.getPipeLength() - fPos;
 		}
@@ -273,7 +274,7 @@ public class HSTubeCurve extends CoreMultiBlockPipe {
 		double zOne = z;
 		xOne += (2.5) * Math.sin(angle + (2 * Math.PI / 4 / transport.getPipeLength() * fPos));
 		zOne += (2.5) * Math.cos(angle + (2 * Math.PI / 4 / transport.getPipeLength() * fPos));
-		return new DoubleCoordinates(xOne, yMin, zOne);
+		return new Vec3(xOne, yMin, zOne);
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
@@ -338,8 +339,8 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 	}
 
     @Nullable
-	public DoubleCoordinates getItemRenderPos(float fPos, LPTravelingItem travelItem) {
-		DoubleCoordinates pos = new DoubleCoordinates(0.5, 0.5, 0.5);
+	public Vec3 getItemRenderPos(float fPos, LPTravelingItem travelItem) {
+		Vec3 pos = new Vec3(0.5, 0.5, 0.5);
 		if (fPos < 0.5) {
 			if (travelItem.input == null) {
 				return null;
@@ -347,7 +348,7 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 			if (!container.renderState.pipeConnectionMatrix.isConnected(travelItem.input.getOpposite())) {
 				return null;
 			}
-			CoordinateUtils.add(pos, travelItem.input.getOpposite(), 0.5 - fPos);
+			pos = pos.relative(travelItem.input.getOpposite(), 0.5 - fPos);
 		} else {
 			if (travelItem.output == null) {
 				return null;
@@ -355,7 +356,7 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 			if (!container.renderState.pipeConnectionMatrix.isConnected(travelItem.output)) {
 				return null;
 			}
-			CoordinateUtils.add(pos, travelItem.output, fPos - 0.5);
+			pos = pos.relative(travelItem.output, fPos - 0.5);
 		}
 		return pos;
 	}

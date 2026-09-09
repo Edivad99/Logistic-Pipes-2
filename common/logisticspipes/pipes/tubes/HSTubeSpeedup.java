@@ -1,5 +1,7 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.utils.PositionRotation;
+import net.minecraft.core.BlockPos;
 import java.util.List;
 
 import net.minecraft.core.Direction;
@@ -10,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -103,10 +106,10 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	@Override
 	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
 		DoubleCoordinates pos = getLPPosition();
-		DoubleCoordinates posMin = new DoubleCoordinates(LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS);
-		DoubleCoordinates posMax = new DoubleCoordinates(LPConstants.PIPE_MAX_POS, LPConstants.PIPE_MAX_POS, -3);
-		orientation.rotatePositions(posMin);
-		orientation.rotatePositions(posMax);
+		PositionRotation rotation = new PositionRotation();
+		orientation.rotatePositions(rotation);
+		Vec3 posMin = rotation.apply(new Vec3(LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS, LPConstants.PIPE_MIN_POS));
+		Vec3 posMax = rotation.apply(new Vec3(LPConstants.PIPE_MAX_POS, LPConstants.PIPE_MAX_POS, -3));
 		if (orientation == SpeedupDirection.EAST) {
 			pos.add(new DoubleCoordinates(1, 0, 0));
 		} else if (orientation == SpeedupDirection.SOUTH) {
@@ -114,12 +117,8 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 		} else if (orientation == SpeedupDirection.WEST) {
 			pos.add(new DoubleCoordinates(0, 0, 1));
 		}
-		posMin.add(pos);
-		posMax.add(pos);
-		LPPositionSet<DoubleCoordinates> set = new LPPositionSet<>(DoubleCoordinates.class);
-		set.add(posMin);
-		set.add(posMax);
-		AABB box = set.toABB();
+		AABB box = new AABB(posMin.x + pos.getXCoord(), posMin.y + pos.getYCoord(), posMin.z + pos.getZCoord(),
+				posMax.x + pos.getXCoord(), posMax.y + pos.getYCoord(), posMax.z + pos.getZCoord());
 		if (box != null && (axisalignedbb == null || axisalignedbb.intersects(box))) {
 			arraylist.add(box);
 		}
@@ -184,11 +183,10 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	@Override
 	public BlockEntity getConnectedEndTile(Direction output) {
 		if (orientation.dir1 == output) {
-			DoubleCoordinates pos = new DoubleCoordinates(0, 0, -3);
-			LPPositionSet<DoubleCoordinates> set = new LPPositionSet<>(DoubleCoordinates.class);
-			set.add(pos);
-			orientation.rotatePositions(set);
-			BlockEntity subTile = pos.add(getLPPosition()).getTileEntity(getWorld());
+			PositionRotation rotation = new PositionRotation();
+			orientation.rotatePositions(rotation);
+			BlockPos offset = rotation.apply(new BlockPos(0, 0, -3));
+			BlockEntity subTile = getWorld().getBlockEntity(getPos().offset(offset));
 			if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
 				return ((LogisticsTileGenericSubMultiBlock) subTile).getTile(output);
 			}
@@ -219,11 +217,11 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public @Nullable DoubleCoordinates getItemRenderPos(float fPos, LPTravelingItem travelItem) {
-		DoubleCoordinates pos = new DoubleCoordinates(0.5D, 0.5D, 0.5D);
+	public @Nullable Vec3 getItemRenderPos(float fPos, LPTravelingItem travelItem) {
+		Vec3 pos = new Vec3(0.5D, 0.5D, 0.5D);
 		float pPos = fPos;
 		if (travelItem.input.getOpposite() == orientation.dir1) {
-			CoordinateUtils.add(pos, orientation.dir1, 3);
+			pos = pos.relative(orientation.dir1, 3);
 			pPos = this.getPipeLength() - fPos;
 		}
 		if (pPos < 0.5) {
@@ -233,12 +231,12 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 			if (!getContainer().renderState.pipeConnectionMatrix.isConnected(travelItem.input.getOpposite())) {
 				return null;
 			}
-			CoordinateUtils.add(pos, travelItem.input.getOpposite(), 0.5 - fPos);
+			pos = pos.relative(travelItem.input.getOpposite(), 0.5 - fPos);
 		} else {
 			if (travelItem.output == null) {
 				return null;
 			}
-			CoordinateUtils.add(pos, travelItem.output, fPos - 0.5);
+			pos = pos.relative(travelItem.output, fPos - 0.5);
 		}
 		return pos;
 	}

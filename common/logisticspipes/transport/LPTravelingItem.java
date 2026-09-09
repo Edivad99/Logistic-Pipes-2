@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -238,35 +239,24 @@ public abstract class LPTravelingItem {
 					exitdirection = input;
 				}
 
-				DoubleCoordinates position = new DoubleCoordinates(container).add(new DoubleCoordinates(0.5, 0.375, 0.5));
+				Vec3 position = Vec3.atLowerCornerOf(container.getBlockPos()).add(0.5, 0.375, 0.5);
 
-				switch (exitdirection) {
-					case DOWN:
-						CoordinateUtils.add(position, exitdirection, 0.5);
-						break;
-					case UP:
-						CoordinateUtils.add(position, exitdirection, 0.75);
-						break;
-					case NORTH:
-					case SOUTH:
-					case WEST:
-					case EAST:
-						CoordinateUtils.add(position, exitdirection, 0.625);
-						break;
-                    case null, default:
-						break;
-				}
+				position = switch (exitdirection) {
+					case DOWN -> position.relative(exitdirection, 0.5);
+					case UP -> position.relative(exitdirection, 0.75);
+					case NORTH, SOUTH, WEST, EAST -> position.relative(exitdirection, 0.625);
+					case null, default -> position;
+				};
 
-				DoubleCoordinates motion = new DoubleCoordinates(0, 0, 0);
-				CoordinateUtils.add(motion, exitdirection, getSpeed() * 2.0);
+				Vec3 motion = Vec3.ZERO.relative(exitdirection, getSpeed() * 2.0);
 
-				ItemEntity entityitem = new ItemEntity(level, position.getXCoord(), position.getYCoord(), position.getZCoord(), getItemIdentifierStack().makeNormalStack());
+				ItemEntity entityitem = new ItemEntity(level, position.x, position.y, position.z, getItemIdentifierStack().makeNormalStack());
 
 				//uniformly distributed in -0.005 .. 0.01 to increase bias toward smaller values
 				float f3 = level.getRandom().nextFloat() * 0.015F - 0.005F;
-				double motionX = level.getRandom().nextGaussian() * f3 + motion.getXCoord();
-				double motionY = level.getRandom().nextGaussian() * f3 + motion.getYCoord();
-				double motionZ = level.getRandom().nextGaussian() * f3 + motion.getZCoord();
+				double motionX = level.getRandom().nextGaussian() * f3 + motion.x;
+				double motionY = level.getRandom().nextGaussian() * f3 + motion.y;
+				double motionZ = level.getRandom().nextGaussian() * f3 + motion.z;
 				entityitem.setDeltaMovement(motionX, motionY, motionZ);
 				itemWasLost();
 

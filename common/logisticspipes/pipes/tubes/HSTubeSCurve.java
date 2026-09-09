@@ -1,5 +1,6 @@
 package logisticspipes.pipes.tubes;
 
+import logisticspipes.utils.PositionRotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -116,11 +118,9 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
                     new AABB(Math.min(xOne, xTwo), Math.min(yOne, yTwo), Math.min(zOne, zTwo), Math.max(xOne, xTwo), Math.max(yOne, yTwo),
 						Math.max(zOne, zTwo)).move(-x, -y, -z));
 				if (box != null) {
-					LPPositionSet<DoubleCoordinates> lpBox = new LPPositionSet<>(DoubleCoordinates.class);
-					lpBox.addFrom(box);
-					DoubleCoordinates center = lpBox.getCenter();
-					box = new AABB(center.getXCoord() - 0.3D, center.getYCoord() - 0.3D, center.getZCoord() - 0.3D, center.getXCoord() + 0.3D,
-							center.getYCoord() + 0.3D, center.getZCoord() + 0.3D);
+					Vec3 center = box.getCenter();
+					box = new AABB(center.x - 0.3D, center.y - 0.3D, center.z - 0.3D, center.x + 0.3D,
+							center.y + 0.3D, center.z + 0.3D);
 					AABB cBox = getCompleteBox();
 					double minX = Math.max(box.minX, cBox.minX);
 					double minY = Math.max(box.minY, cBox.minY);
@@ -248,11 +248,10 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 		if (useOwn) {
 			return getContainer().getTile(output);
 		} else {
-			DoubleCoordinates pos = new DoubleCoordinates(1, 0, -3);
-			LPPositionSet<DoubleCoordinates> set = new LPPositionSet<>(DoubleCoordinates.class);
-			set.add(pos);
-			orientation.rotatePositions(set);
-			BlockEntity subTile = pos.add(getLPPosition()).getTileEntity(getWorld());
+			PositionRotation rotation = new PositionRotation();
+			orientation.rotatePositions(rotation);
+			BlockPos offset = rotation.apply(new BlockPos(1, 0, -3));
+			BlockEntity subTile = getWorld().getBlockEntity(getPos().offset(offset));
 			if (subTile instanceof LogisticsTileGenericSubMultiBlock) {
 				return ((LogisticsTileGenericSubMultiBlock) subTile).getTile(output);
 			}
@@ -266,7 +265,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
-	public @Nullable DoubleCoordinates getItemRenderPos(float fPos, LPTravelingItem travelItem) {
+	public @Nullable Vec3 getItemRenderPos(float fPos, LPTravelingItem travelItem) {
 		if ((orientation.getDir().getOpposite() == travelItem.input) == (orientation.getOffset().getLength() != 0)) {
 			fPos = transport.getPipeLength() - fPos;
 		}
@@ -307,7 +306,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 					.pow(a, 2) - 0.074807924321475 * a + 0.000099653425518;
 			z += b * transport.getPipeLength() / 3;
 		}
-		return new DoubleCoordinates(x, y, z);
+		return new Vec3(x, y, z);
 	}
 
 	@Override
