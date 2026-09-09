@@ -26,6 +26,6 @@ public class HUDItemSink implements IHUDModuleRenderer {
 
 	@Override
 	public List<IHUDButton> getButtons() {
-		return null;
+		return List.of();
 	}
 }

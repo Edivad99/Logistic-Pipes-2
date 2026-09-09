@@ -180,12 +180,9 @@ public class LogisticsManager implements ILogisticsManager {
 		List<ExitRoute> validDestinations = new ArrayList<>(); // get the routing table
 		for (int i = routersIndex.nextSetBit(0); i >= 0; i = routersIndex.nextSetBit(i + 1)) {
 			IRouter r = SimpleServiceLocator.routerManager.getServerRouter(i);
-			List<ExitRoute> exits = sourceRouter.getDistanceTo(r);
-			if (exits != null) {
-				validDestinations
-						.addAll(exits.stream().filter(e -> e.containsFlag(PipeRoutingConnectionType.canRouteTo))
-								.collect(Collectors.toList()));
-			}
+			validDestinations.addAll(sourceRouter.getDistanceTo(r).stream()
+					.filter(e -> e.containsFlag(PipeRoutingConnectionType.canRouteTo))
+					.collect(Collectors.toList()));
 		}
 		Collections.sort(validDestinations);
 		final ItemStack stack = itemIdStack.makeNormalStack();

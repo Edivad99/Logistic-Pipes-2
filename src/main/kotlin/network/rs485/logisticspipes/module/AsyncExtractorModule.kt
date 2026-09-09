@@ -273,7 +273,7 @@ class AsyncExtractorModule(
         mutableListOf("Extraction: ${getSneakyDirection()?.name ?: "DEFAULT"}")
 
 
-    override fun getHUDRenderer(): IHUDModuleRenderer = hudRenderer
+    override fun getHUDRenderer(): IHUDModuleRenderer? = hudRenderer
 
 
     override fun startWatching(player: Player) {

@@ -148,7 +148,7 @@ public class ModulePassiveSupplier extends LogisticsModule
 	}
 
 	@Override
-	public IHUDModuleRenderer getHUDRenderer() {
+	public @Nullable IHUDModuleRenderer getHUDRenderer() {
 		return HUD;
 	}
 

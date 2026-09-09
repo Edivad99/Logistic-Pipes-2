@@ -410,7 +410,7 @@ public class ModuleProvider extends LogisticsModule implements SneakyDirection, 
 	}
 
 	@Override
-	public IHUDModuleRenderer getHUDRenderer() {
+	public @Nullable IHUDModuleRenderer getHUDRenderer() {
 		return HUD;
 	}
 

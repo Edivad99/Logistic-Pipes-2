@@ -98,10 +98,7 @@ public class RequestTreeNode {
 				continue; //Skip Routers without a valid pipe
 			}
 
-			List<ExitRoute> e = destination.getDistanceTo(r);
-			if (e != null) {
-				validSources.addAll(e);
-			}
+			validSources.addAll(destination.getDistanceTo(r));
 		}
 		// closer providers are good
 		validSources.sort(new workWeightedSorter(1.0));
@@ -402,10 +399,7 @@ public class RequestTreeNode {
 				continue; //Skip Routers without a valid pipe
 			}
 
-			List<ExitRoute> e = getRequestType().getRouter().getDistanceTo(r);
-			if (e != null) {
-				validSources.addAll(e);
-			}
+			validSources.addAll(getRequestType().getRouter().getDistanceTo(r));
 		}
 		workWeightedSorter wSorter = new workWeightedSorter(0); // distance doesn't matter, because ingredients have to be delivered to the crafter, and we can't tell how long that will take.
 		Collections.sort(validSources, wSorter);

@@ -140,7 +140,7 @@ public class ClientRouter implements IRouter {
 
 	@Override
 	public List<Pair<ILogisticsPowerProvider, List<IFilter>>> getPowerProvider() {
-		return null;
+		return List.of();
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class ClientRouter implements IRouter {
 
 	@Override
 	public List<ExitRoute> getDistanceTo(IRouter r) {
-		return null;
+		return List.of();
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class ClientRouter implements IRouter {
 
 	@Override
 	public List<Pair<ISubSystemPowerProvider, List<IFilter>>> getSubSystemPowerProvider() {
-		return null;
+		return List.of();
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class ClientRouter implements IRouter {
 
 	@Override
 	public List<ExitRoute> getRoutersOnSide(Direction exitOrientation) {
-		return null;
+		return List.of();
 	}
 
 	@Override

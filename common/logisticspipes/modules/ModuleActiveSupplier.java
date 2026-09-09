@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.common.collect.ImmutableList;
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IClientInformationProvider;
 import logisticspipes.interfaces.IHUDModuleHandler;
@@ -130,7 +131,7 @@ public class ModuleActiveSupplier extends LogisticsModule
 	}
 
 	@Override
-	public IHUDModuleRenderer getHUDRenderer() {
+	public @Nullable IHUDModuleRenderer getHUDRenderer() {
 		return null;
 		//return HUD;
 	}

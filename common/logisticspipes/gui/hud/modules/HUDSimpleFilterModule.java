@@ -27,6 +27,6 @@ public class HUDSimpleFilterModule implements IHUDModuleRenderer {
 
     @Override
     public List<IHUDButton> getButtons() {
-        return null;
+        return List.of();
     }
 }

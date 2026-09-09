@@ -102,35 +102,33 @@ public class HudChassisPipe extends BasicHUDGui {
 		super.renderHeadUpDisplay(context, distance, day, shifted, minecraft, config);
 		int textColor = day ? 0xFF404040 : 0xff7f7f7f;
 		if (selected != -1) {
-			LogisticsModule selectedmodule = pipe.getSubModule(selected);
-			if (selectedmodule == null) {
+			LogisticsModule selectedModule = pipe.getSubModule(selected);
+			if (selectedModule == null) {
 				return;
 			}
 
 			LPGuiGraphics.drawGuiBackGround(context, MODULE_PANEL_LEFT, MODULE_PANEL_TOP, MODULE_PANEL_RIGHT,
 					MODULE_PANEL_BOTTOM, 0, false);
 
-			if (selectedmodule instanceof IHUDModuleHandler && ((IHUDModuleHandler) selectedmodule).getHUDRenderer() != null) {
-				((IHUDModuleHandler) selectedmodule).getHUDRenderer().renderContent(context, shifted);
-				if (((IHUDModuleHandler) selectedmodule).getHUDRenderer().getButtons() != null) {
-					for (IHUDButton button : ((IHUDModuleHandler) selectedmodule).getHUDRenderer().getButtons()) {
-						button.renderAlways(context, shifted);
-						if (button.shouldRenderButton()) {
-							button.renderButton(context, button.isFocused(), button.isblockFocused(), shifted);
+			if (selectedModule instanceof IHUDModuleHandler moduleHandler && moduleHandler.getHUDRenderer() != null) {
+				moduleHandler.getHUDRenderer().renderContent(context, shifted);
+				for (IHUDButton button : moduleHandler.getHUDRenderer().getButtons()) {
+					button.renderAlways(context, shifted);
+					if (button.shouldRenderButton()) {
+						button.renderButton(context, button.isFocused(), button.isblockFocused(), shifted);
+					}
+					if (!button.buttonEnabled() || !button.shouldRenderButton()) {
+						continue;
+					}
+					if ((button.getX() - 1 < (xCursor - 11) && (xCursor - 11) < (button.getX() + button.sizeX() + 1)) && (button.getY() - 1 < (yCursor - 5) && (yCursor - 5) < (button.getY() + button.sizeY() + 1))) {
+						if (!button.isFocused() && !button.isblockFocused()) {
+							button.setFocused();
+						} else if (button.focusedTime() > 400 && !button.isblockFocused()) {
+							button.clicked();
+							button.blockFocused();
 						}
-						if (!button.buttonEnabled() || !button.shouldRenderButton()) {
-							continue;
-						}
-						if ((button.getX() - 1 < (xCursor - 11) && (xCursor - 11) < (button.getX() + button.sizeX() + 1)) && (button.getY() - 1 < (yCursor - 5) && (yCursor - 5) < (button.getY() + button.sizeY() + 1))) {
-							if (!button.isFocused() && !button.isblockFocused()) {
-								button.setFocused();
-							} else if (button.focusedTime() > 400 && !button.isblockFocused()) {
-								button.clicked();
-								button.blockFocused();
-							}
-						} else if (button.isFocused() || button.isblockFocused()) {
-							button.clearFocused();
-						}
+					} else if (button.isFocused() || button.isblockFocused()) {
+						button.clearFocused();
 					}
 				}
 			} else {
@@ -171,18 +169,16 @@ public class HudChassisPipe extends BasicHUDGui {
 	private void moduleClicked(int number) {
 		selected = number;
 		if (selected != -1) {
-			LogisticsModule selectedmodule = pipe.getSubModule(selected);
-			if (selectedmodule instanceof IHUDModuleHandler) {
-				((IHUDModuleHandler) selectedmodule).startHUDWatching();
+			if (pipe.getSubModule(selected) instanceof IHUDModuleHandler moduleHandler) {
+                moduleHandler.startHUDWatching();
 			}
 		}
 	}
 
 	private void resetSelection() {
 		if (selected != -1) {
-			LogisticsModule selectedmodule = pipe.getSubModule(selected);
-			if (selectedmodule instanceof IHUDModuleHandler) {
-				((IHUDModuleHandler) selectedmodule).stopHUDWatching();
+			if (pipe.getSubModule(selected) instanceof IHUDModuleHandler moduleHandler) {
+				moduleHandler.stopHUDWatching();
 			}
 		}
 		selected = -1;
@@ -206,8 +202,8 @@ public class HudChassisPipe extends BasicHUDGui {
 
 	private class ItemButton extends BasicHUDButton {
 
-		private ItemIdentifierInventory inv;
-		private int position;
+		private final ItemIdentifierInventory inv;
+		private final int position;
 
 		public ItemButton(ItemIdentifierInventory inv, int position, int x, int y, int width, int height) {
 			super("item." + position, x, y, width, height);

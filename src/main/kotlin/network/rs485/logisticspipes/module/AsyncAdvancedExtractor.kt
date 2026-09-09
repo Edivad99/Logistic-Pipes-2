@@ -193,7 +193,7 @@ class AsyncAdvancedExtractor : AsyncModule<ExtractorJob, Unit>(), SimpleFilter, 
     override fun stopWatching(player: Player) = extractor.stopWatching(player)
 
 
-    override fun getHUDRenderer(): IHUDModuleRenderer = hud
+    override fun getHUDRenderer(): IHUDModuleRenderer? = hud
 
 
 }

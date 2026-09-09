@@ -65,6 +65,11 @@ public interface IRouter {
 	/* Automated Disconnection */
 	boolean isSideDisconnected(Direction dir);
 
+	/**
+	 * The routes to {@code r}, empty when there are none. Never null: a client router has no
+	 * routing table at all and answers with an empty list like any other router with nothing to
+	 * offer, so callers can iterate without checking.
+	 */
 	List<ExitRoute> getDistanceTo(IRouter r);
 
 	void clearInterests();
