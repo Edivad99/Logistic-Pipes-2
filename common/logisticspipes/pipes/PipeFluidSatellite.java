@@ -107,7 +107,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	@Override
 	public void enabledUpdateEntity() {
 		super.enabledUpdateEntity();
-		if (isNthTick(20) && localModeWatchers.size() > 0) {
+		if (isNthTick(20) && !localModeWatchers.isEmpty()) {
 			updateInv(false);
 		}
 	}
@@ -177,9 +177,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	@Override
 	public void deserialize(ValueInput input) {
 		super.deserialize(input);
-        satellitePipeName = input.getInt("satelliteid")
-            .map(integer -> Integer.toString(integer))
-            .orElseGet(() -> input.getStringOr("satellitePipeName", ""));
+		satellitePipeName = input.getStringOr("satellitePipeName", "");
 		final Level level = getWorld();
 		if (level != null && !level.isClientSide()) {
 			ensureAllSatelliteStatus();
@@ -190,6 +188,15 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	public void serialize(ValueOutput output) {
 		output.putString("satellitePipeName", satellitePipeName);
 		super.serialize(output);
+	}
+
+	@Override
+	public void initialize() {
+		super.initialize();
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
+			ensureAllSatelliteStatus();
+		}
 	}
 
 	public void ensureAllSatelliteStatus() {

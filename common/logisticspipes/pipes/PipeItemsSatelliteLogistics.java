@@ -91,7 +91,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	@Override
 	public void enabledUpdateEntity() {
 		super.enabledUpdateEntity();
-		if (isNthTick(20) && localModeWatchers.size() > 0) {
+		if (isNthTick(20) && !localModeWatchers.isEmpty()) {
 			updateInv(false);
 		}
 	}
@@ -130,11 +130,14 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 		ArrayList<ItemIdentifierStack> oldList = new ArrayList<>(itemList);
 		itemList.clear();
 		itemList.addAll(
-				getAvailableAdjacent().inventories().stream()
-						.map(LPNeighborTileEntityKt::getInventoryUtil)
-						.filter(Objects::nonNull)
-						.flatMap(invUtil -> invUtil.getItemsAndCount().entrySet().stream().map(itemIdentifierAndCount -> new ItemIdentifierStack(itemIdentifierAndCount.getKey(), itemIdentifierAndCount.getValue())))
-						.collect(Collectors.toList())
+            getAvailableAdjacent().inventories().stream()
+                .map(LPNeighborTileEntityKt::getInventoryUtil)
+                .filter(Objects::nonNull)
+                .flatMap(invUtil -> invUtil.getItemsAndCount().entrySet()
+                    .stream()
+                    .map(itemIdentifierAndCount -> new ItemIdentifierStack(itemIdentifierAndCount.getKey(), itemIdentifierAndCount.getValue()))
+                )
+                .toList()
 		);
 		if (!oldList.equals(itemList) || force) {
 			localModeWatchers.send(new ChestContentMessage(getPos(), List.copyOf(itemList)));
@@ -180,9 +183,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	@Override
 	public void deserialize(ValueInput input) {
 		super.deserialize(input);
-        satellitePipeName = input.getInt("satelliteid")
-            .map(integer -> Integer.toString(integer))
-            .orElseGet(() -> input.getStringOr("satellitePipeName", ""));
+		satellitePipeName = input.getStringOr("satellitePipeName", "");
 		final Level level = getWorld();
 		if (level != null && !level.isClientSide()) {
 			ensureAllSatelliteStatus();
@@ -193,6 +194,15 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	public void serialize(ValueOutput output) {
 		output.putString("satellitePipeName", satellitePipeName);
 		super.serialize(output);
+	}
+
+	@Override
+	public void initialize() {
+		super.initialize();
+		final Level level = getWorld();
+		if (level != null && !level.isClientSide()) {
+			ensureAllSatelliteStatus();
+		}
 	}
 
 	public void ensureAllSatelliteStatus() {
