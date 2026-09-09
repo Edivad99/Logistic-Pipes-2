@@ -48,9 +48,9 @@ import logisticspipes.client.renderer.LPRenderTypes;
 import logisticspipes.client.renderer.pip.SideConfigSceneState;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.textures.Textures;
-import logisticspipes.utils.Color;
 import logisticspipes.util.CoordinateUtils;
 import logisticspipes.util.DoubleCoordinates;
+import logisticspipes.utils.Color;
 import logisticspipes.utils.LPPositionSet;
 
 public abstract class SideConfigDisplay {

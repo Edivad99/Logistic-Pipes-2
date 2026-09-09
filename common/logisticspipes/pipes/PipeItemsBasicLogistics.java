@@ -12,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import logisticspipes.modules.LogisticsModule.ModulePositionType;
 import logisticspipes.modules.ModuleItemSink;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
@@ -23,6 +22,7 @@ import logisticspipes.utils.OrientationsUtil;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsProgramCompilerBlockEntity;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 public class PipeItemsBasicLogistics extends CoreRoutedPipe {
 

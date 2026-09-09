@@ -23,7 +23,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import logisticspipes.LPConstants;
-import logisticspipes.util.TrackingTask;
 import logisticspipes.interfaces.IFreqCardHolder;
 import logisticspipes.interfaces.IStringBasedModule;
 import logisticspipes.interfaces.SatellitePipe;
@@ -52,6 +51,7 @@ import logisticspipes.pipes.PipeItemsRequestLogisticsMk2;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 import logisticspipes.pipes.basic.fluid.FluidSinkPipe;
+import logisticspipes.util.TrackingTask;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.world.level.block.entity.LogisticsCraftingTableBlockEntity;
 import logisticspipes.world.level.block.entity.LogisticsPowerJunctionBlockEntity;

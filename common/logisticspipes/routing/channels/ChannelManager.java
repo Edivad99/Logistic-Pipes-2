@@ -20,12 +20,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import logisticspipes.LPConstants;
-import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import logisticspipes.interfaces.routing.IChannelManager;
 import logisticspipes.network.to_client.channel.ChannelInformationMessage;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.security.SecuritySettings;
 import logisticspipes.utils.PlayerIdentifier;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 public class ChannelManager implements IChannelManager {
 

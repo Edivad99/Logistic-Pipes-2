@@ -1,6 +1,5 @@
 package logisticspipes.interfaces;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 import org.jspecify.annotations.Nullable;

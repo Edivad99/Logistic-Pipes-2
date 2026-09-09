@@ -15,9 +15,9 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
-import logisticspipes.util.TrackingTask;
 import logisticspipes.network.to_server.block.RequestTrackableItemsMessage;
 import logisticspipes.network.to_server.block.TrackItemMessage;
+import logisticspipes.util.TrackingTask;
 import logisticspipes.utils.gui.IItemSearch;
 import logisticspipes.utils.gui.InputBar;
 import logisticspipes.utils.gui.ItemDisplay;

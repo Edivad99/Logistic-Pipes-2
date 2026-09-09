@@ -17,8 +17,8 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -27,12 +27,11 @@ import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.util.TrackingTask;
 import logisticspipes.client.gui.popup.GuiAddTracking;
 import logisticspipes.network.to_server.block.RequestRunningCraftingTasksMessage;
 import logisticspipes.network.to_server.block.RequestTrackableItemsMessage;
 import logisticspipes.network.to_server.block.TrackItemMessage;
-import logisticspipes.world.item.LPItems;
+import logisticspipes.util.TrackingTask;
 import logisticspipes.utils.Color;
 import logisticspipes.utils.gui.ItemDisplay;
 import logisticspipes.utils.gui.LPGuiGraphics;

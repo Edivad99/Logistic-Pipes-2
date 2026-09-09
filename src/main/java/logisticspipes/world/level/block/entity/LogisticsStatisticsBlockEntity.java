@@ -16,12 +16,12 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.util.TrackingTask;
 import logisticspipes.interfaces.IBlockEntityMenuProvider;
 import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.network.to_client.block.TrackingTasksMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
+import logisticspipes.util.TrackingTask;
 import logisticspipes.utils.PlayerCollectionList;
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.world.inventory.StatisticsMenu;

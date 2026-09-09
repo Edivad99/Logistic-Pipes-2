@@ -30,12 +30,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LogisticsPipes;
-import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 import logisticspipes.interfaces.ISecurityStationManager;
 import logisticspipes.interfaces.routing.IChannelConnectionManager;
 import logisticspipes.network.to_client.security.SecurityAuthorizedListMessage;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.routing.channels.ChannelConnection;
+import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 public class RouterManager implements IChannelConnectionManager, ISecurityStationManager {
 

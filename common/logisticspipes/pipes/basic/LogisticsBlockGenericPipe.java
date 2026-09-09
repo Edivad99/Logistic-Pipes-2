@@ -66,8 +66,8 @@ import logisticspipes.util.DoubleCoordinates;
 import logisticspipes.util.DoubleCoordinatesType;
 import logisticspipes.utils.LPPositionSet;
 import logisticspipes.world.item.ItemLogisticsPipe;
-import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 import logisticspipes.world.level.block.LPBlocks;
+import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 
 // BlockStateContainer removed — use StateDefinition.Builder in createBlockStateDefinition()
 // Particle/ParticleEngine/TextureAtlasSprite imports removed — rendering deferred (see addHitEffects/addDestroyEffects TODOs)

@@ -11,11 +11,11 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-import logisticspipes.world.level.block.entity.LogisticsPowerProviderBlockEntity;
 import logisticspipes.interfaces.ISubSystemPowerProvider;
 import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.proxy.SimpleServiceLocator;
 import logisticspipes.utils.tuples.Pair;
+import logisticspipes.world.level.block.entity.LogisticsPowerProviderBlockEntity;
 import network.rs485.logisticspipes.connection.LPNeighborTileEntity;
 import network.rs485.logisticspipes.connection.NeighborTileEntity;
 import network.rs485.logisticspipes.world.WorldCoordinatesWrapper;

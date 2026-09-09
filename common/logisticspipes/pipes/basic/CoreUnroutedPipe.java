@@ -1,7 +1,7 @@
 package logisticspipes.pipes.basic;
 
-import java.util.Objects;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
