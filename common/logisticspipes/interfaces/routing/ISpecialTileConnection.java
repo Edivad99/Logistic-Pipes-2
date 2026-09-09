@@ -8,8 +8,6 @@ import logisticspipes.logisticspipes.IRoutedItem;
 
 public interface ISpecialTileConnection {
 
-	boolean init();
-
 	boolean isType(BlockEntity tile);
 
 	Collection<BlockEntity> getConnections(BlockEntity tile);

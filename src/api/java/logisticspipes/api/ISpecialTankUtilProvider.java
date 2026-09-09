@@ -12,10 +12,10 @@ import org.jspecify.annotations.Nullable;
  * <p>Providers are asked before the capability lookup, so claiming a block means owning it: the
  * fallback no longer runs for it, and the provider has to serve every operation, not only the reads
  * it cares about.
- * */
+ *
+ * <p>Register through {@code RegisterTankHandlersEvent}.
+ */
 public interface ISpecialTankUtilProvider {
-
-    boolean init();
 
     /** Whether this provider claims the storage reachable at {@code dir} of {@code blockEntity}. */
     boolean isType(BlockEntity blockEntity, @Nullable Direction dir);

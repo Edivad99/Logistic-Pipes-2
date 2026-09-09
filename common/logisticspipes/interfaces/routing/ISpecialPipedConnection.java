@@ -11,8 +11,6 @@ import logisticspipes.routing.pathfinder.IPipeInformationProvider;
 
 public interface ISpecialPipedConnection {
 
-	boolean init();
-
 	boolean isType(IPipeInformationProvider startPipe);
 
 	List<ConnectionInformation> getConnections(IPipeInformationProvider startPipe, EnumSet<PipeRoutingConnectionType> connection, Direction side);

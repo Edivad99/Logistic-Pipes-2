@@ -1,6 +1,5 @@
 package logisticspipes.proxy.specialtankhandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.Direction;
@@ -9,27 +8,24 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import com.google.common.collect.Lists;
 import org.jspecify.annotations.Nullable;
 
-import logisticspipes.LogisticsPipes;
 import logisticspipes.api.ISpecialTankHandler;
+import logisticspipes.api.event.RegisterTankHandlersEvent;
 import logisticspipes.api.ISpecialTankUtilProvider;
 import logisticspipes.api.ITankUtil;
 
 public class SpecialTankHandler {
 
-    private final List<ISpecialTankUtilProvider> tankUtilProviders = new ArrayList<>();
-    private final List<ISpecialTankHandler> handlers = new ArrayList<>();
+    private final List<ISpecialTankUtilProvider> tankUtilProviders;
+    private final List<ISpecialTankHandler> handlers;
 
-    public void registerProvider(ISpecialTankUtilProvider provider) {
-        try {
-            if (provider.init()) {
-                tankUtilProviders.add(provider);
-                LogisticsPipes.LOG.info("Loaded ISpecialTankUtilProvider: {}", provider.getClass().getName());
-            } else {
-                LogisticsPipes.LOG.warn("Didn't load ISpecialTankUtilProvider: {}", provider.getClass().getName());
-            }
-        } catch (Exception e) {
-            LogisticsPipes.LOG.error("Failed to register ISpecialTankUtilProvider", e);
-        }
+    private SpecialTankHandler(List<ISpecialTankUtilProvider> tankUtilProviders, List<ISpecialTankHandler> handlers) {
+        this.tankUtilProviders = tankUtilProviders;
+        this.handlers = handlers;
+    }
+
+    /** Collects everything registered on {@code event}, which is closed from here on. */
+    public static SpecialTankHandler from(RegisterTankHandlersEvent event) {
+        return new SpecialTankHandler(event.registeredProviders(), event.registeredHandlers());
     }
 
     /**
@@ -67,19 +63,6 @@ public class SpecialTankHandler {
             }
         }
         return false;
-    }
-
-    public void registerHandler(ISpecialTankHandler handler) {
-        try {
-            if (handler.init()) {
-                handlers.add(handler);
-                LogisticsPipes.LOG.info("Loaded SpecialTankHandler: {}", handler.getClass().getName());
-            } else {
-                LogisticsPipes.LOG.warn("Didn't load SpecialTankHandler: {}", handler.getClass().getName());
-            }
-        } catch (Exception e) {
-            LogisticsPipes.LOG.error("Failed to register SpecialTankHandler", e);
-        }
     }
 
     public List<BlockEntity> getBaseTileFor(BlockEntity blockEntity) {

@@ -1,6 +1,5 @@
 package logisticspipes.proxy.specialconnection;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -15,12 +14,15 @@ import logisticspipes.routing.pathfinder.IPipeInformationProvider;
 
 public class SpecialPipeConnection {
 
-	private List<ISpecialPipedConnection> handler = new ArrayList<>();
+	private final List<ISpecialPipedConnection> handler;
 
-	public void registerHandler(ISpecialPipedConnection connectionHandler) {
-		if (connectionHandler.init()) {
-			handler.add(connectionHandler);
-		}
+	private SpecialPipeConnection(List<ISpecialPipedConnection> handler) {
+		this.handler = handler;
+	}
+
+	/** Collects everything registered on {@code event}, which is closed from here on. */
+	public static SpecialPipeConnection from(RegisterSpecialConnectionsEvent event) {
+		return new SpecialPipeConnection(event.registeredPipedConnections());
 	}
 
 	public List<ConnectionInformation> getConnectedPipes(IPipeInformationProvider startPipe, EnumSet<PipeRoutingConnectionType> connection, Direction side) {
@@ -29,7 +31,7 @@ public class SpecialPipeConnection {
 				return connectionHandler.getConnections(startPipe, connection, side);
 			}
 		}
-		return new ArrayList<>();
+		return List.of();
 	}
 
 	@Data

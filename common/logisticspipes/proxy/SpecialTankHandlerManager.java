@@ -7,15 +7,17 @@ import appeng.api.ids.AEConstants;
 import logisticspipes.LPConstants;
 import logisticspipes.integrations.ae2.AENetworkTankHandler;
 import logisticspipes.integrations.refinedstorage.RSNetworkTankHandler;
+import logisticspipes.api.event.RegisterTankHandlersEvent;
 
+/** The tank handlers Logistics Pipes ships itself, for the storage mods it knows about. */
 public class SpecialTankHandlerManager {
 
-    public static void load() {
+    public static void register(RegisterTankHandlersEvent event) {
         if (ModList.get().isLoaded(AEConstants.MOD_ID)) {
-            SimpleServiceLocator.specialTankHandler.registerProvider(new AENetworkTankHandler());
+            event.register(new AENetworkTankHandler());
         }
         if (ModList.get().isLoaded(LPConstants.RS_MOD_ID)) {
-            SimpleServiceLocator.specialTankHandler.registerProvider(new RSNetworkTankHandler());
+            event.register(new RSNetworkTankHandler());
         }
     }
 }

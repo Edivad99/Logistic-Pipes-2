@@ -1,6 +1,5 @@
 package logisticspipes.proxy.specialconnection;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,12 +10,15 @@ import logisticspipes.logisticspipes.IRoutedItem;
 
 public class SpecialTileConnection {
 
-	private List<ISpecialTileConnection> handler = new ArrayList<>();
+	private final List<ISpecialTileConnection> handler;
 
-	public void registerHandler(ISpecialTileConnection connectionHandler) {
-		if (connectionHandler.init()) {
-			handler.add(connectionHandler);
-		}
+	private SpecialTileConnection(List<ISpecialTileConnection> handler) {
+		this.handler = handler;
+	}
+
+	/** Collects everything registered on {@code event}, which is closed from here on. */
+	public static SpecialTileConnection from(RegisterSpecialConnectionsEvent event) {
+		return new SpecialTileConnection(event.registeredTileConnections());
 	}
 
 	public Collection<BlockEntity> getConnectedPipes(BlockEntity tile) {
@@ -25,7 +27,7 @@ public class SpecialTileConnection {
 				return connectionHandler.getConnections(tile);
 			}
 		}
-		return new ArrayList<>();
+		return List.of();
 	}
 
 	public boolean needsInformationTransition(BlockEntity tile) {

@@ -25,10 +25,6 @@ import logisticspipes.utils.NetworkTankUtil;
  */
 public class AENetworkTankHandler implements ISpecialTankUtilProvider {
 
-    @Override
-    public boolean init() {
-        return true;
-    }
 
     @Override
     public boolean isType(BlockEntity blockEntity, @Nullable Direction dir) {

@@ -9,10 +9,10 @@ import org.jspecify.annotations.Nullable;
 /**
  * Splits one block into the several that actually hold the fluid -- a multiblock tank, where the
  * block a pipe touches is a wall of a structure stored elsewhere.
- * */
+ *
+ * <p>Register through {@code RegisterTankHandlersEvent}.
+ */
 public interface ISpecialTankHandler {
-
-    boolean init();
 
     /** Whether this handler understands {@code blockEntity}. */
     boolean isType(@Nullable BlockEntity blockEntity);

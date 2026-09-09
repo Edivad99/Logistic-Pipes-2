@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
 import logisticspipes.api.event.RegisterProgressProvidersEvent;
+import logisticspipes.api.event.RegisterTankHandlersEvent;
 import logisticspipes.client.ClientManager;
 import logisticspipes.commands.Confirmations;
 import logisticspipes.commands.LogisticsPipesCommand;
@@ -49,6 +50,7 @@ import logisticspipes.proxy.SpecialTankHandlerManager;
 import logisticspipes.proxy.progressprovider.FurnaceProgressProvider;
 import logisticspipes.proxy.progressprovider.MachineProgressProvider;
 import logisticspipes.proxy.recipeproviders.LogisticsCraftingTable;
+import logisticspipes.proxy.specialconnection.RegisterSpecialConnectionsEvent;
 import logisticspipes.proxy.specialconnection.SpecialPipeConnection;
 import logisticspipes.proxy.specialconnection.SpecialTileConnection;
 import logisticspipes.proxy.specialtankhandler.SpecialTankHandler;
@@ -169,10 +171,17 @@ public class LogisticsPipes {
             ModLoader.postEvent(progressProviders);
             SimpleServiceLocator.setMachineProgressProvider(
                 new MachineProgressProvider(progressProviders.registered()));
+
+            RegisterTankHandlersEvent tankHandlers = new RegisterTankHandlersEvent();
+            SpecialTankHandlerManager.register(tankHandlers);
+            ModLoader.postEvent(tankHandlers);
+            SimpleServiceLocator.setSpecialTankHandler(SpecialTankHandler.from(tankHandlers));
+
+            RegisterSpecialConnectionsEvent connections = new RegisterSpecialConnectionsEvent();
+            ModLoader.postEvent(connections);
+            SimpleServiceLocator.setSpecialConnectionHandler(SpecialPipeConnection.from(connections));
+            SimpleServiceLocator.setSpecialConnectionHandler(SpecialTileConnection.from(connections));
         });
-        SimpleServiceLocator.setSpecialConnectionHandler(new SpecialPipeConnection());
-        SimpleServiceLocator.setSpecialConnectionHandler(new SpecialTileConnection());
-        SimpleServiceLocator.setSpecialTankHandler(new SpecialTankHandler());
 
         SimpleServiceLocator.setRoutedItemHelper(new RoutedItemHelper());
         SimpleServiceLocator.setChannelManagerProvider(new ChannelManagerProvider());
@@ -216,7 +225,6 @@ public class LogisticsPipes {
 
     private void handleLoadComplete(FMLLoadCompleteEvent event) {
         SpecialInventoryHandlerManager.load();
-        SpecialTankHandlerManager.load();
 
         // Dead-mod integrations removed (BuildCraft, Thermal Dynamics/Expansion, IC2, EnderCore,
         // MCMultiPart) — none of these mods exist on 1.20.1.
