@@ -69,8 +69,8 @@ public class PipeItemsBasicLogistics extends CoreRoutedPipe {
 	}
 
 	private boolean isPowerJunction(Direction ori) {
-		BlockEntity tilePipe = container.getTile(ori);
-		if (tilePipe == null || !container.canPipeConnect(tilePipe, ori)) {
+		BlockEntity tilePipe = getContainer().getTile(ori);
+		if (tilePipe == null || !getContainer().canPipeConnect(tilePipe, ori)) {
 			return false;
 		}
 
@@ -78,8 +78,8 @@ public class PipeItemsBasicLogistics extends CoreRoutedPipe {
 	}
 
 	private boolean isSecurityProvider(Direction ori) {
-		BlockEntity tilePipe = container.getTile(ori);
-		if (tilePipe == null || !container.canPipeConnect(tilePipe, ori)) {
+		BlockEntity tilePipe = getContainer().getTile(ori);
+		if (tilePipe == null || !getContainer().canPipeConnect(tilePipe, ori)) {
 			return false;
 		}
 		return tilePipe instanceof LogisticsSecurityBlockEntity;

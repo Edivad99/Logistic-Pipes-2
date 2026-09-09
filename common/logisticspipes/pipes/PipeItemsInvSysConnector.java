@@ -138,7 +138,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 					.anyMatch(neighbor -> {
 						final IInventoryUtil invUtil = LPNeighborTileEntityKt.getInventoryUtil(neighbor);
 						return invUtil != null &&
-								container.canPipeConnect(neighbor.getTileEntity(), neighbor.getDirection()) &&
+								getContainer().canPipeConnect(neighbor.getTileEntity(), neighbor.getDirection()) &&
 								checkOneConnectedInv(invUtil, neighbor.getDirection());
 					});
 
@@ -175,7 +175,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 							if (inv instanceof ITransactor) {
 								((ITransactor) inv).add(toSend, dir.getOpposite(), true);
 							} else {
-								container.getLevel().addFreshEntity(ItemIdentifierStack.getFromStack(toSend).makeEntityItem(getWorld(), container.getX(), container.getY(), container.getZ()));
+								getContainer().getLevel().addFreshEntity(ItemIdentifierStack.getFromStack(toSend).makeEntityItem(getWorld(), getContainer().getPos()));
 							}
 							new UnsupportedOperationException("The extracted amount didn't match the requested one. (" + inv + ")").printStackTrace();
 							return contentChanged;
@@ -291,11 +291,11 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 	}
 
 	private boolean isInventoryConnected(@Nullable BlockEntity tileEntityFilter) {
-		return new WorldCoordinatesWrapper(this.container)
+		return new WorldCoordinatesWrapper(this.getContainer())
 				.allNeighborTileEntities().stream()
 				.anyMatch(neighbor -> (tileEntityFilter == null || neighbor.getTileEntity() == tileEntityFilter) &&
 						neighbor.canHandleItems() &&
-						this.container.canPipeConnect(neighbor.getTileEntity(), neighbor.getDirection()));
+						this.getContainer().canPipeConnect(neighbor.getTileEntity(), neighbor.getDirection()));
 	}
 
 	@Override
@@ -389,7 +389,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 	}
 
 	@Override
-	public Level getLevelForHUD() {
+	public @Nullable Level getLevelForHUD() {
 		return getWorld();
 	}
 

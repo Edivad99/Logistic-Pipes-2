@@ -268,7 +268,7 @@ public class PathFinder {
 					startPipe.canConnect(tile, direction, false)) {
 				if (SimpleServiceLocator.connectionManager.hasChannelConnection(startPipe.getRoutingPipe().getRouter())) {
 					List<CoreRoutedPipe> connectedPipes = SimpleServiceLocator.connectionManager.getConnectedPipes(startPipe.getRoutingPipe().getRouter());
-					connections.addAll(connectedPipes.stream().map(pipe -> new Quartet<>((BlockEntity) pipe.container, direction, ((IChannelRoutingConnection) startPipe.getRoutingPipe()).getConnectionResistance(), true)).collect(Collectors.toList()));
+					connections.addAll(connectedPipes.stream().map(pipe -> new Quartet<>((BlockEntity) pipe.getContainer(), direction, ((IChannelRoutingConnection) startPipe.getRoutingPipe()).getConnectionResistance(), true)).collect(Collectors.toList()));
 					if (!connectedPipes.isEmpty()) {
 						continue;
 					}
@@ -364,7 +364,7 @@ public class PathFinder {
 					}
 				}
 				if (foundPipes.size() > beforeRecurseCount && pathPainter != null) {
-					pathPainter.addLaser(startPipe.getLevel(), new LaserData(new BlockPos(startPipe.getX(), startPipe.getY(), startPipe.getZ()), direction, connectionFlags));
+					pathPainter.addLaser(startPipe.getLevel(), new LaserData(startPipe.getPos(), direction, connectionFlags));
 				}
 			}
 		}

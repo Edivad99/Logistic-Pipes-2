@@ -193,7 +193,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 				return ((LogisticsTileGenericSubMultiBlock) subTile).getTile(output);
 			}
 		} else if (orientation.dir1.getOpposite() == output) {
-			return container.getTile(output);
+			return getContainer().getTile(output);
 		}
 		return null;
 	}
@@ -230,7 +230,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 			if (travelItem.input == null) {
 				return null;
 			}
-			if (!container.renderState.pipeConnectionMatrix.isConnected(travelItem.input.getOpposite())) {
+			if (!getContainer().renderState.pipeConnectionMatrix.isConnected(travelItem.input.getOpposite())) {
 				return null;
 			}
 			CoordinateUtils.add(pos, travelItem.input.getOpposite(), 0.5 - fPos);

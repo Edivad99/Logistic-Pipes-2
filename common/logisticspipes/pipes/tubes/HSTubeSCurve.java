@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -85,9 +86,10 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
 		if (boxes == null || boxes.isEmpty()) {
 			boxes = new ArrayList<>();
-			double x = getX();
-			double y = getY();
-			double z = getZ();
+			final BlockPos tubePos = getPos();
+			double x = tubePos.getX();
+			double y = tubePos.getY();
+			double z = tubePos.getZ();
 			for (int i = -1; i < 54; i++) {
 				double xOne = x;
 				double yOne = y;
@@ -244,7 +246,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 			}
 		}
 		if (useOwn) {
-			return container.getTile(output);
+			return getContainer().getTile(output);
 		} else {
 			DoubleCoordinates pos = new DoubleCoordinates(1, 0, -3);
 			LPPositionSet<DoubleCoordinates> set = new LPPositionSet<>(DoubleCoordinates.class);

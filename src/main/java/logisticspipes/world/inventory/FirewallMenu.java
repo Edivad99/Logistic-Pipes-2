@@ -15,7 +15,7 @@ public class FirewallMenu extends DummyMenu {
     private final PipeItemsFirewall pipe;
 
     public FirewallMenu(int containerId, Inventory inventory, PipeItemsFirewall pipe) {
-        super(LPMenuTypes.FIREWALL.get(), containerId, inventory.player, pipe.container);
+        super(LPMenuTypes.FIREWALL.get(), containerId, inventory.player, pipe.getContainer());
         this.pipe = pipe;
         addNormalSlotsForPlayerInventory(inventory, 33, 175);
         for (int x = 0; x < 6; x++) {

@@ -135,7 +135,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	}
 
 	@Override
-	public Level getLevelForHUD() {
+	public @Nullable Level getLevelForHUD() {
 		return getWorld();
 	}
 

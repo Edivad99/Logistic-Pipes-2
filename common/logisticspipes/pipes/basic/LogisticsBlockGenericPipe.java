@@ -175,7 +175,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 			LogisticsBlockGenericPipe.cacheTileToPreventRemoval(pipe);
 		}
 
-		Level level = pipe.container.getLevel();
+		Level level = pipe.getContainer().getLevel();
 
 		if (LogisticsBlockGenericPipe.lastRemovedDate != level.getGameTime()) {
 			LogisticsBlockGenericPipe.lastRemovedDate = level.getGameTime();
@@ -189,7 +189,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 			}
 			LPPositionSet<DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare>> list = ((CoreMultiBlockPipe) pipe).getRotatedSubBlocks();
 			list.forEach(pos -> pos.add(new DoubleCoordinates(pipe)));
-			for (DoubleCoordinates pos : pipe.container.subMultiBlock) {
+			for (DoubleCoordinates pos : pipe.getContainer().subMultiBlock) {
 				BlockEntity tile = pos.getTileEntity(level);
 				if (tile instanceof LogisticsTileGenericSubMultiBlock) {
 					DoubleCoordinatesType<CoreMultiBlockPipe.SubBlockTypeForShare> equ = list.findClosest(pos);
@@ -200,7 +200,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 						LogisticsBlockGenericSubMultiBlock.redirectedToMainPipe = true;
 						pos.setBlockToAir(level);
 						LogisticsBlockGenericSubMultiBlock.redirectedToMainPipe = false;
-						LogisticsBlockGenericPipe.pipeSubMultiRemoved.put(new DoubleCoordinates(pos), pipe.container.getBlockPos());
+						LogisticsBlockGenericPipe.pipeSubMultiRemoved.put(new DoubleCoordinates(pos), pipe.getContainer().getBlockPos());
 					} else {
 						TargetLookup.sendToChunkWatchers(tile, ((LogisticsTileGenericSubMultiBlock) tile).getDescriptionMessage());
 					}
@@ -208,7 +208,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 			}
 		}
 
-		BlockPos pos = pipe.container.getBlockPos();
+		BlockPos pos = pipe.getContainer().getBlockPos();
 		LogisticsBlockGenericPipe.pipeRemoved.put(new DoubleCoordinates(pos), pipe);
 		level.removeBlockEntity(pos);
 	}
@@ -319,7 +319,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 	}
 
 	public static boolean isFullyDefined(@Nullable CoreUnroutedPipe pipe) {
-		return pipe != null && pipe.transport != null && pipe.container != null;
+		return pipe != null && pipe.transport != null && pipe.getContainer() != null;
 	}
 
 	public static boolean isValid(@Nullable CoreUnroutedPipe pipe) {
@@ -329,7 +329,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 	private static void cacheTileToPreventRemoval(CoreUnroutedPipe pipe) {
 		final Level worldCache = pipe.getWorld();
 		final BlockPos posCache = pipe.getPos();
-		final BlockEntity tileCache = pipe.container;
+		final BlockEntity tileCache = pipe.getContainer();
 		final CoreUnroutedPipe fPipe = pipe;
 		fPipe.setPreventRemove(true);
 		QueuedTasks.queueTask(() -> {
@@ -767,7 +767,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 		CoreUnroutedPipe pipe = LogisticsBlockGenericPipe.getPipe(worldIn, pos);
 
 		if (LogisticsBlockGenericPipe.isValid(pipe)) {
-			pipe.container.scheduleNeighborChange();
+			pipe.getContainer().scheduleNeighborChange();
 		}
 	}
 

@@ -82,7 +82,7 @@ public class PipeItemsSystemEntranceLogistics extends CoreRoutedPipe implements 
 		if (inv.getItem(0) == null) {
 			return;
 		}
-		ItemEntity item = new ItemEntity(getWorld(), getX(), getY(), getZ(), inv.getItem(0));
+		ItemEntity item = new ItemEntity(getWorld(), getPos().getX(), getPos().getY(), getPos().getZ(), inv.getItem(0));
 		getWorld().addFreshEntity(item);
 		inv.clearInventorySlotContents(0);
 	}

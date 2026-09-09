@@ -241,8 +241,8 @@ public class UpgradeManager
 			final Level level = pipe.getWorld();
 			if (level != null && !level.isClientSide()) {
 				pipe.connectionUpdate();
-				if (pipe.container != null) {
-					pipe.container.sendUpdateToClient();
+				if (pipe.getContainer() != null) {
+					pipe.getContainer().sendUpdateToClient();
 				}
 			}
 		}

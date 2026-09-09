@@ -72,11 +72,11 @@ public class DoubleCoordinates implements IPositionRotateble, ICoordinates {
     }
 
     public DoubleCoordinates(CoreUnroutedPipe pipe) {
-        this(pipe.getX(), pipe.getY(), pipe.getZ());
+        this(pipe.getPos());
     }
 
     public DoubleCoordinates(IPipeInformationProvider pipe) {
-        this(pipe.getX(), pipe.getY(), pipe.getZ());
+        this(pipe.getPos());
     }
 
     public DoubleCoordinates(Entity entity) {

@@ -29,7 +29,7 @@ public class TransportInvConnection extends PipeTransportLogistics {
 			return;
 		}
 
-		final Direction orientationOfTilewithTile = OrientationsUtil.getOrientationOfTilewithTile(getPipe().container, tile);
+		final Direction orientationOfTilewithTile = OrientationsUtil.getOrientationOfTilewithTile(getPipe().getContainer(), tile);
 		Objects.requireNonNull(orientationOfTilewithTile, "Could not get direction from pipe and tile entity");
 
 		var level = tile.getLevel();

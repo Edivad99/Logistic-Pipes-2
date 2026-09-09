@@ -17,7 +17,7 @@ public class ItemAmountSignMenu extends DummyMenu {
     private final ItemAmountPipeSign sign;
 
     public ItemAmountSignMenu(int containerId, Inventory inventory, CoreRoutedPipe pipe, Direction side) {
-        super(LPMenuTypes.ITEM_AMOUNT_SIGN.get(), containerId, inventory.player, pipe.container);
+        super(LPMenuTypes.ITEM_AMOUNT_SIGN.get(), containerId, inventory.player, pipe.getContainer());
         if (!(pipe.getPipeSign(side) instanceof ItemAmountPipeSign amountSign)) {
             throw new IllegalStateException("No item amount sign on side %s of [%s]".formatted(side, pipe.getPos()));
         }

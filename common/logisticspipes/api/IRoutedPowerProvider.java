@@ -1,6 +1,9 @@
 package logisticspipes.api;
 
 import java.util.List;
+
+import net.minecraft.core.BlockPos;
+
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -27,9 +30,5 @@ public interface IRoutedPowerProvider {
 
 	boolean canUseEnergy(int amount, @Nullable List<Object> providersToIgnore);
 
-	int getX(); // the coordinates of the associated tile (typically "this.xCoords"). needed for sending packets.
-
-	int getY();
-
-	int getZ();
+	BlockPos getPos();
 }

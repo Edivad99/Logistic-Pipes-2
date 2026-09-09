@@ -3,6 +3,7 @@ package logisticspipes.routing.pathfinder;
 import java.util.List;
 import java.util.stream.Stream;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,11 +21,7 @@ public interface IPipeInformationProvider {
 
 	boolean isCorrect(ConnectionType type);
 
-	int getX();
-
-	int getY();
-
-	int getZ();
+    BlockPos getPos();
 
 	@Nullable Level getLevel();
 

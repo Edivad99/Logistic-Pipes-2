@@ -333,7 +333,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 				}
 			}
 			updateModuleInventory(getWorld().registryAccess());
-			moduleInventory.dropContents(getWorld(), getX(), getY(), getZ());
+			moduleInventory.dropContents(getWorld(), getPos());
 
 			for (int i = 0; i < getChassisSize(); i++) {
 				getModuleUpgradeManager(i).dropUpgrades();
@@ -484,7 +484,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 		if (player.isCrouching() && PipeConfigTools.canConfigure(item)) {
 			if (!player.level().isClientSide()) {
 				if (settings == null || settings.openGui) {
-					((PipeLogisticsChassis) container.pipe).nextOrientation();
+					((PipeLogisticsChassis) getContainer().pipe).nextOrientation();
 				} else {
                     player.sendSystemMessage(Component.translatable("lp.chat.permissiondenied"));
 				}
@@ -565,7 +565,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@Override
-	public Level getLevelForHUD() {
+	public @Nullable Level getLevelForHUD() {
 		return getWorld();
 	}
 

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
@@ -197,7 +198,8 @@ public class PipeTransportLogistics {
 		Iterator<Triplet<ItemIdentifierStack, Pair<Integer, Integer>, LPTravelingItemServer>> iterator = itemBuffer.iterator();
 		while (iterator.hasNext()) {
 			ItemIdentifierStack next = iterator.next().getValue1();
-			getWorld().addFreshEntity(new ItemEntity(getWorld(), getPipe().getX(), getPipe().getY(), getPipe().getZ(),
+            BlockPos pos = getPipe().getPos();
+			getWorld().addFreshEntity(new ItemEntity(getWorld(), pos.getX(), pos.getY(), pos.getZ(),
 					next.makeNormalStack()));
 			iterator.remove();
 		}

@@ -265,7 +265,7 @@ public class PipeControllerScreen extends LogisticsBaseTabGuiScreen<PipeControll
         public void buttonClicked(AbstractButton button) {
             if (button == editButton) {
                 ClientPacketDistributor.sendToServer(
-                    new OpenLogicControllerMessage(pipe.container.getBlockPos()));
+                    new OpenLogicControllerMessage(pipe.getContainer().getBlockPos()));
             }
         }
 
@@ -278,7 +278,7 @@ public class PipeControllerScreen extends LogisticsBaseTabGuiScreen<PipeControll
         @Override
         public void checkButton(AbstractButton button, boolean isTabActive) {
             if (isTabActive) {
-                button.active = pipe.container.logicController.diskInv.getItem(0) != null;
+                button.active = pipe.getContainer().logicController.diskInv.getItem(0) != null;
             }
             super.checkButton(button, isTabActive);
         }

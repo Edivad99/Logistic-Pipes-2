@@ -251,7 +251,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public void markTileDirty() {
-		if (container != null) container.setChanged();
+		if (getContainer() != null) getContainer().setChanged();
 	}
 
 	public RouteLayer getRouteLayer() {
@@ -580,8 +580,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		sb.append("++++++++++CONNECTIONS+++++++++++++++\n");
 		sb.append(Arrays.toString(Direction.values())).append('\n');
 		sb.append(Arrays.toString(router.sideDisconnected)).append('\n');
-		if (container != null) {
-			sb.append(Arrays.toString(container.pipeConnectionsBuffer)).append('\n');
+		if (getContainer() != null) {
+			sb.append(Arrays.toString(getContainer().pipeConnectionsBuffer)).append('\n');
 		}
 		sb.append("+++++++++++++ADJACENT+++++++++++++++\n");
 		sb.append(adjacent).append('\n');
@@ -613,7 +613,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
             transport.dropBuffer();
             getOriginalUpgradeManager().dropUpgrades();
 		} catch (Exception e) {
-			LogisticsPipes.LOG.error("Exception during pipe teardown at ({}, {}, {})", getX(), getY(), getZ(), e);
+			LogisticsPipes.LOG.error("Exception during pipe teardown at ({})", getPos(), e);
 		}
 	}
 
@@ -723,7 +723,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
                 if (this.queuedParticles[i] > 0) {
                     var amount = this.queuedParticles[i];
                     serverLevel.sendParticles(Particles.values()[i].getSparkleFXParticleOptions(amount),
-                        getX(), getY(), getZ(), amount, 0, 0, 0, 1);
+                        getPos().getX(), getPos().getY(), getPos().getZ(), amount, 0, 0, 0, 1);
                 }
             }
         } else if (getWorld() instanceof ClientLevel) {
@@ -731,7 +731,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
                 for (int i = 0; i < queuedParticles.length; i++) {
                     if (this.queuedParticles[i] > 0) {
                         PipeFXRenderHandler.spawnGenericParticle(Particles.values()[i],
-                            getX(), getY(), getZ(), queuedParticles[i]);
+                            getPos().getX(), getPos().getY(), getPos().getZ(), queuedParticles[i]);
                     }
                 }
             }
@@ -742,8 +742,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	protected boolean isPowerProvider(@Nullable Direction direction) {
 		if (direction == null) return false;
-		BlockEntity tilePipe = container.getTile(direction);
-		if (tilePipe == null || !container.canPipeConnect(tilePipe, direction)) {
+		BlockEntity tilePipe = getContainer().getTile(direction);
+		if (tilePipe == null || !getContainer().canPipeConnect(tilePipe, direction)) {
 			return false;
 		}
 
@@ -850,7 +850,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	@Override
     public IRouter getRouter() {
 		if (stillNeedReplace) {
-			LogisticsPipes.LOG.debug("Pipe not ready at ({}, {}, {}, '{}')", this.getX(), this.getY(), this.getZ(),
+			LogisticsPipes.LOG.debug("Pipe not ready at ({}, '{}')", this.getPos(),
 					getWorld() != null ? getWorld().dimension().identifier().toString() : "unknown");
 		}
 		if (router == null) {
@@ -873,7 +873,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public final boolean blockActivated(Player player) {
-		if (container == null) {
+		if (getContainer() == null) {
             return super.blockActivated(player);
         }
 		SecuritySettings settings = null;
@@ -964,14 +964,14 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	public void refreshRender(boolean spawnPart) {
-		container.scheduleRenderUpdate();
+		getContainer().scheduleRenderUpdate();
 		if (spawnPart) {
 			spawnParticle(Particles.GREEN_SPARKLE, 3);
 		}
 	}
 
 	public void refreshConnectionAndRender(boolean spawnPart) {
-		container.scheduleNeighborChange();
+		getContainer().scheduleNeighborChange();
 		if (spawnPart) {
 			spawnParticle(Particles.GREEN_SPARKLE, 3);
 		}
@@ -1087,7 +1087,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public final boolean canPipeConnect(BlockEntity tile, Direction dir, boolean ignoreSystemDisconnection) {
-		Direction side = OrientationsUtil.getOrientationOfTilewithTile(container, tile);
+		Direction side = OrientationsUtil.getOrientationOfTilewithTile(getContainer(), tile);
 		if (isSideBlocked(side, ignoreSystemDisconnection)) {
 			return false;
 		}
@@ -1103,9 +1103,9 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	public void connectionUpdate() {
-		if (container != null && !stillNeedReplace) {
+		if (getContainer() != null && !stillNeedReplace) {
 			if (getWorld().isClientSide()) throw new IllegalStateException("Wont do connectionUpdate on client-side");
-			container.scheduleNeighborChange();
+			getContainer().scheduleNeighborChange();
 			BlockState state = getWorld().getBlockState(getPos());
 			getWorld().updateNeighborsAt(getPos(), state.getBlock());
 		}
@@ -1229,8 +1229,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@Override
 	public void queueEvent(String event, Object[] arguments) {
-		if (container != null) {
-			container.queueEvent(event, arguments);
+		if (getContainer() != null) {
+			getContainer().queueEvent(event, arguments);
 		}
 	}
 
@@ -1293,8 +1293,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		ISecurityProvider sec = getSecurityProvider();
 		if (sec != null) {
 			int id = -1;
-			if (container != null) {
-				id = container.getLastCCID();
+			if (getContainer() != null) {
+				id = getContainer().getLastCCID();
 			}
 			if (!sec.getAllowCC(id)) {
 				throw new PermissionException();
@@ -1416,8 +1416,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	@CCCommand(description = "Returns the TurtleConnect targeted for this Turtle on this LogisticsPipe")
 	@CCDirectCall
 	public boolean getTurtleConnect() {
-		if (container != null) {
-			return container.getTurtleConnect();
+		if (getContainer() != null) {
+			return getContainer().getTurtleConnect();
 		}
 		return false;
 	}
@@ -1425,8 +1425,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	@CCCommand(description = "Sets the TurtleConnect targeted for this Turtle on this LogisticsPipe")
 	@CCDirectCall
 	public void setTurtleConnect(Boolean flag) {
-		if (container != null) {
-			container.setTurtleConnect(flag);
+		if (getContainer() != null) {
+			getContainer().setTurtleConnect(flag);
 		}
 	}
 
@@ -1435,8 +1435,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		ISecurityProvider sec = getSecurityProvider();
 		if (sec != null) {
 			int id = -1;
-			if (container != null) {
-				id = container.getLastCCID();
+			if (getContainer() != null) {
+				id = getContainer().getLastCCID();
 			}
 			return sec.getAllowCC(id);
 		}
@@ -1447,8 +1447,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	@CCDirectCall
 	public void sendMessage(final Double computerId, final Object message) {
 		int sourceId = -1;
-		if (container != null) {
-			sourceId = container.getLastCCID(); // always 0 — ComputerCraft not available on 1.20.1
+		if (getContainer() != null) {
+			sourceId = getContainer().getLastCCID(); // always 0 — ComputerCraft not available on 1.20.1
 		}
 		final int fSourceId = sourceId;
 		BitSet set = new BitSet(ServerRouter.getBiggestSimpleID());
@@ -1464,8 +1464,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	@CCDirectCall
 	public void sendBroadcast(final String message) {
 		int sourceId = -1;
-		if (container != null) {
-			sourceId = container.getLastCCID(); // always 0 — ComputerCraft not available on 1.20.1
+		if (getContainer() != null) {
+			sourceId = getContainer().getLastCCID(); // always 0 — ComputerCraft not available on 1.20.1
 		}
 		final int fSourceId = sourceId;
 		BitSet set = new BitSet(ServerRouter.getBiggestSimpleID());
@@ -1505,8 +1505,8 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	private void handleMesssage(int computerId, Object message, int sourceId) {
-		if (container != null) {
-			container.handleMesssage(computerId, message, sourceId);
+		if (getContainer() != null) {
+			getContainer().handleMesssage(computerId, message, sourceId);
 		}
 	}
 
@@ -1570,7 +1570,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 				signItem[dir.ordinal()] = type;
 				signItem[dir.ordinal()].init(this, dir);
 			}
-			if (container != null) {
+			if (getContainer() != null) {
 				sendSignData(player, true);
 				refreshRender(false);
 			}
@@ -1594,7 +1594,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		}
 		final PipeSignTypesMessage message = new PipeSignTypesMessage(getPos(), types);
 		if (sendToAll) {
-			TargetLookup.sendToChunkWatchers(container, message);
+			TargetLookup.sendToChunkWatchers(getContainer(), message);
 		} else if (player instanceof ServerPlayer serverPlayer) {
 			PacketDistributor.sendToPlayer(serverPlayer, message);
 		}
@@ -1602,7 +1602,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 			if (signItem[i] != null) {
 				final CustomPacketPayload signPayload = signItem[i].getPacket();
 				if (signPayload != null) {
-					TargetLookup.sendToChunkWatchers(container, signPayload);
+					TargetLookup.sendToChunkWatchers(getContainer(), signPayload);
 					if (player instanceof ServerPlayer serverPlayer) {
 						PacketDistributor.sendToPlayer(serverPlayer, signPayload);
 					}
@@ -1743,7 +1743,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	@Override
 	public CacheHolder getCacheHolder() {
 		if (cacheHolder == null) {
-			if (container instanceof ILPTEInformation containerInfo && containerInfo.getLPTileEntityObject() != null) {
+			if (getContainer() instanceof ILPTEInformation containerInfo && containerInfo.getLPTileEntityObject() != null) {
 				cacheHolder = containerInfo.getLPTileEntityObject().getCacheHolder();
 			} else {
 				cacheHolder = new CacheHolder();

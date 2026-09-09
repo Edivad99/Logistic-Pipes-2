@@ -22,6 +22,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.gui.hud.HUDPowerLevel;
 import logisticspipes.interfaces.IBlockEntityMenuProvider;
 import logisticspipes.interfaces.IBlockWatchingHandler;
@@ -135,7 +137,7 @@ public abstract class LogisticsPowerProviderBlockEntity extends LogisticsSolidBl
                         .ifPresent(neighborToSource -> {
                             CoreRoutedPipe sourcePipe = getPipe.apply(neighborToSource.getValue1());
                             if (sourcePipe.isInitialized()) {
-                                sourcePipe.container.addLaser(neighborToSource.getValue1().getOurDirection(), 1,
+                                sourcePipe.getContainer().addLaser(neighborToSource.getValue1().getOurDirection(), 1,
                                     getLaserColor(), true, true);
                             }
                             sendPowerLaserPackets(sourcePipe.getRouter(), destinationToPower.getValue1(),
@@ -171,7 +173,7 @@ public abstract class LogisticsPowerProviderBlockEntity extends LogisticsSolidBl
                     int distance = part.getValue1().getDistanceToNextPowerPipe(exit.exitOrientation);
                     CoreRoutedPipe pipe = part.getValue1().getPipe();
                     if (pipe != null && pipe.isInitialized()) {
-                        pipe.container.addLaser(exit.exitOrientation, distance, getLaserColor(), false,
+                        pipe.getContainer().addLaser(exit.exitOrientation, distance, getLaserColor(), false,
                             part.getValue3());
                     }
                     IRouter nextRouter = exit.destination; // Use new sourceRouter
@@ -273,23 +275,13 @@ public abstract class LogisticsPowerProviderBlockEntity extends LogisticsSolidBl
     }
 
     @Override
-    public Level getLevelForHUD() {
+    public @Nullable Level getLevelForHUD() {
         return level;
     }
 
     @Override
-    public int getX() {
-        return getBlockPos().getX();
-    }
-
-    @Override
-    public int getY() {
-        return getBlockPos().getY();
-    }
-
-    @Override
-    public int getZ() {
-        return getBlockPos().getZ();
+    public BlockPos getPos() {
+        return getBlockPos();
     }
 
     @Override

@@ -414,7 +414,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		HashMap<CoreRoutedPipe, ExitRoute> adjacent;
 		List<Pair<ILogisticsPowerProvider, List<IFilter>>> power;
 		List<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower;
-		PathFinder finder = new PathFinder(thisPipe.container, LPConfigs.COMMON.LOGISTICS_DETECTION_COUNT.getAsInt(), LPConfigs.COMMON.LOGISTICS_DETECTION_LENGTH.getAsInt(), localChangeListener);
+		PathFinder finder = new PathFinder(thisPipe.getContainer(), LPConfigs.COMMON.LOGISTICS_DETECTION_COUNT.getAsInt(), LPConfigs.COMMON.LOGISTICS_DETECTION_LENGTH.getAsInt(), localChangeListener);
 		power = finder.powerNodes;
 		subSystemPower = finder.subPowerProvider;
 		adjacent = finder.result;
@@ -1074,9 +1074,9 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	}
 
 	private void ensureChangeListenerAttachedToPipe(CoreRoutedPipe pipe) {
-		if (pipe.container != null && pipe.container.getLPTileEntityObject() != null) {
-			if (!pipe.container.getLPTileEntityObject().changeListeners.contains(localChangeListener)) {
-				pipe.container.getLPTileEntityObject().changeListeners.add(localChangeListener);
+		if (pipe.getContainer() != null && pipe.getContainer().getLPTileEntityObject() != null) {
+			if (!pipe.getContainer().getLPTileEntityObject().changeListeners.contains(localChangeListener)) {
+				pipe.getContainer().getLPTileEntityObject().changeListeners.add(localChangeListener);
 			}
 		}
 	}

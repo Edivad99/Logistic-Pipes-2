@@ -15,7 +15,7 @@ public class FluidSupplierMenu extends DummyMenu {
     private final PipeItemsFluidSupplier pipe;
 
     public FluidSupplierMenu(int containerId, Inventory inventory, PipeItemsFluidSupplier pipe) {
-        super(LPMenuTypes.FLUID_SUPPLIER.get(), containerId, inventory.player, pipe.container);
+        super(LPMenuTypes.FLUID_SUPPLIER.get(), containerId, inventory.player, pipe.getContainer());
         this.pipe = pipe;
         addNormalSlotsForPlayerInventory(inventory, 18, 97);
         for (int row = 0; row < 3; row++) {

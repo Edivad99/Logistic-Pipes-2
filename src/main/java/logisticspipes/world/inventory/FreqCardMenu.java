@@ -17,7 +17,7 @@ public class FreqCardMenu extends DummyMenu {
     private final IFreqCardHolder pipe;
 
     public FreqCardMenu(int containerId, Inventory inventory, IFreqCardHolder pipe) {
-        super(LPMenuTypes.FREQ_CARD.get(), containerId, inventory.player, ((CoreUnroutedPipe) pipe).container);
+        super(LPMenuTypes.FREQ_CARD.get(), containerId, inventory.player, ((CoreUnroutedPipe) pipe).getContainer());
         this.pipe = pipe;
         addRestrictedSlot(0, pipe.getFreqCardInventory(), 82, 15, LPItems.ITEM_CARD.get());
         addNormalSlotsForPlayerInventory(inventory, 10, 45);

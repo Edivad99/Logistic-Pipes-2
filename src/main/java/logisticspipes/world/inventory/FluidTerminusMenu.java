@@ -15,7 +15,7 @@ public class FluidTerminusMenu extends DummyMenu {
     private final PipeFluidTerminus pipe;
 
     public FluidTerminusMenu(int containerId, Inventory inventory, PipeFluidTerminus pipe) {
-        super(LPMenuTypes.FLUID_TERMINUS.get(), containerId, inventory.player, pipe.container);
+        super(LPMenuTypes.FLUID_TERMINUS.get(), containerId, inventory.player, pipe.getContainer());
         this.pipe = pipe;
         for (int slot = 0; slot < pipe.getSinkInv().getContainerSize(); slot++) {
             addFluidSlot(slot, pipe.getSinkInv(), 10 + slot * 18, 19);

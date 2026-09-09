@@ -2,6 +2,7 @@ package logisticspipes.transport;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -172,9 +173,10 @@ public class PipeMultiBlockTransportLogistics extends PipeTransportLogistics {
 	 */
 	private void spawnMisroutedItemExplosionEffect() {
 		Level level = this.getWorld();
-		double x = this.getPipe().getX();
-		double y = this.getPipe().getY();
-		double z = this.getPipe().getZ();
+		final BlockPos pipePos = this.getPipe().getPos();
+		double x = pipePos.getX();
+		double y = pipePos.getY();
+		double z = pipePos.getZ();
 		if (level.isClientSide()) {
 			level.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F,
 				(1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F, false);

@@ -117,13 +117,13 @@ public class ItemIdentifierInventory
 		dropItems(level, stack, pos.getX(), pos.getY(), pos.getZ());
 	}
 
-	public static void dropItems(Level level, ItemStack stack, int i, int j, int k) {
+	public static void dropItems(Level level, ItemStack stack, int x, int y, int z) {
 		if (stack.isEmpty()) return;
 		float f1 = 0.7F;
 		double d = (level.getRandom().nextFloat() * f1) + (1.0F - f1) * 0.5D;
 		double d1 = (level.getRandom().nextFloat() * f1) + (1.0F - f1) * 0.5D;
 		double d2 = (level.getRandom().nextFloat() * f1) + (1.0F - f1) * 0.5D;
-		ItemEntity entityitem = new ItemEntity(level, i + d, j + d1, k + d2, stack);
+		ItemEntity entityitem = new ItemEntity(level, x + d, y + d1, z + d2, stack);
 		entityitem.setPickUpDelay(10);
 		level.addFreshEntity(entityitem);
 	}

@@ -58,7 +58,7 @@ public class PowerSupplierHandler implements ValueIOSerializable {
 	private boolean requestRFPower() {
 		//Use Buffer
 
-		final List<LPNeighborTileEntity<BlockEntity>> adjacentTileEntities = new WorldCoordinatesWrapper(pipe.container).allNeighborTileEntities();
+		final List<LPNeighborTileEntity<BlockEntity>> adjacentTileEntities = new WorldCoordinatesWrapper(pipe.getContainer()).allNeighborTileEntities();
 
 		double globalNeed = 0;
 		double[] need = new double[adjacentTileEntities.size()];
@@ -98,7 +98,7 @@ public class PowerSupplierHandler implements ValueIOSerializable {
 							transaction.commit();
 						}
 						if (used > 0) {
-							pipe.container.addLaser(adjacent.getDirection(), 0.5F, LogisticsPowerProviderBlockEntity.RF_COLOR, false, true);
+							pipe.getContainer().addLaser(adjacent.getDirection(), 0.5F, LogisticsPowerProviderBlockEntity.RF_COLOR, false, true);
 							internalBufferRF -= used;
 						}
 						if (internalBufferRF < 0) {

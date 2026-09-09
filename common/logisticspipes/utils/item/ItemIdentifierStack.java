@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -165,8 +166,8 @@ public final class ItemIdentifierStack implements Comparable<ItemIdentifierStack
         return item.makeNormalStack(stackSize);
     }
 
-    public ItemEntity makeEntityItem(Level level, double x, double y, double z) {
-        return item.makeEntityItem(stackSize, level, x, y, z);
+    public ItemEntity makeEntityItem(Level level, BlockPos pos) {
+        return item.makeEntityItem(stackSize, level, pos);
     }
 
     @Override

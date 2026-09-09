@@ -40,7 +40,7 @@ public class ChassisMenu extends DummyMenu {
 
     public ChassisMenu(int containerId, Inventory inventory, PipeLogisticsChassis pipe,
         boolean hasUpgradeModuleUpgrade) {
-        super(LPMenuTypes.CHASSIS.get(), containerId, inventory.player, pipe.container);
+        super(LPMenuTypes.CHASSIS.get(), containerId, inventory.player, pipe.getContainer());
         this.pipe = pipe;
         this.hasUpgradeModuleUpgrade = hasUpgradeModuleUpgrade;
         this.moduleInventory = pipe.getModuleInventory(inventory.player.registryAccess());

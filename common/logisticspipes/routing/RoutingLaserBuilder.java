@@ -58,7 +58,7 @@ public class RoutingLaserBuilder {
             if (entry.getKey() == null) {
                 continue;
             }
-            walk(pipe.container, entry.getKey(), entry.getValue(),
+            walk(pipe.getContainer(), entry.getKey(), entry.getValue(),
                     EnumSet.allOf(PipeRoutingConnectionType.class), entry.getKey().name());
         }
         return compress();
@@ -104,7 +104,7 @@ public class RoutingLaserBuilder {
                     if (exit.getKey() == null) {
                         continue;
                     }
-                    worklist.add(new WorkItem(hop.getKey().container, exit.getKey(), exit.getValue(),
+                    worklist.add(new WorkItem(hop.getKey().getContainer(), exit.getKey(), exit.getValue(),
                             reachable.get(hop.getKey()).connectionDetails,
                             item.logPrefix + ": " + exit.getKey().name()));
                 }

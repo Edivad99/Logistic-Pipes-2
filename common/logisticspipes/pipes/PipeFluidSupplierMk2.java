@@ -111,7 +111,7 @@ public class PipeFluidSupplierMk2 extends FluidRoutedPipe implements IRequestFlu
 		if (!isEnabled()) {
 			return;
 		}
-		if (Objects.requireNonNull(container).getLevel().isClientSide()) {
+		if (Objects.requireNonNull(getContainer()).getLevel().isClientSide()) {
 			return;
 		}
 		super.throttledUpdateEntity();
@@ -307,7 +307,7 @@ public class PipeFluidSupplierMk2 extends FluidRoutedPipe implements IRequestFlu
 	}
 
 	public void setAmount(int amount) {
-		if (Objects.requireNonNull(container).getLevel().isClientSide()) {
+		if (Objects.requireNonNull(getContainer()).getLevel().isClientSide()) {
 			this.amount = amount;
 		}
 	}

@@ -397,7 +397,7 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
 
     public void refreshItems() {
         ClientPacketDistributor.sendToServer(new RequestOrdererRefreshMessage(
-            new RemotePipeTarget(dimension, table.container.getBlockPos()), displayOptions));
+            new RemotePipeTarget(dimension, table.getContainer().getBlockPos()), displayOptions));
     }
 
     private SmallGuiButton wire(SmallGuiButton btn, int id) {
@@ -410,7 +410,7 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
             final ItemIdentifierStack stack = itemDisplay.getSelectedItem().getItem()
                 .makeStack(itemDisplay.getRequestCount());
             ClientPacketDistributor.sendToServer(new SubmitRequestMessage(
-                new RemotePipeTarget(dimension, table.container.getBlockPos()), stack));
+                new RemotePipeTarget(dimension, table.getContainer().getBlockPos()), stack));
             refreshItems();
         } else if (id == 1) {
             itemDisplay.nextPage();
@@ -438,7 +438,7 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
             final ItemIdentifierStack stack = itemDisplay.getSelectedItem().getItem()
                 .makeStack(itemDisplay.getRequestCount());
             ClientPacketDistributor.sendToServer(new SimulateRequestMessage(
-                new RemotePipeTarget(dimension, table.container.getBlockPos()), stack));
+                new RemotePipeTarget(dimension, table.getContainer().getBlockPos()), stack));
         } else if (id == 9) {
             String displayString = "";
             switch (displayOptions) {
@@ -498,9 +498,9 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
             itemDisplay.cycle();
         } else if (id == 21 || id == 22) {
             ClientPacketDistributor.sendToServer(
-                new CycleCraftingRecipeMessage(table.container.getBlockPos(), id == 22));
+                new CycleCraftingRecipeMessage(table.getContainer().getBlockPos(), id == 22));
         } else if (id == 30) {
-            ClientPacketDistributor.sendToServer(new ClearCraftingGridMessage(table.container.getBlockPos()));
+            ClientPacketDistributor.sendToServer(new ClearCraftingGridMessage(table.getContainer().getBlockPos()));
             table.cacheRecipe();
         } else if (id == 31) {
             ArrayList<ItemIdentifierStack> list = new ArrayList<>(9);

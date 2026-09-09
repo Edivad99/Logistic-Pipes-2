@@ -1,5 +1,6 @@
 package logisticspipes.pipes.basic;
 
+import java.util.Objects;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConfigs;
@@ -49,8 +51,10 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 	}
 
 	private final Object[] ccTypeHolder = new Object[1];
+	/** Set once by {@link #setTile}; null only on the dummy instance an item keeps for type queries. */
+	@Getter
 	@Nullable
-	public LogisticsTileGenericPipe container;
+	private LogisticsTileGenericPipe container;
 	public final PipeTransportLogistics transport;
 	public final Item item;
 	public DebugLogController debug = new DebugLogController(this);
@@ -145,11 +149,6 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 
 	public void onBlockRemoval() {}
 
-	@Nullable
-	public LogisticsTileGenericPipe getContainer() {
-		return container;
-	}
-
 	public NonNullList<ItemStack> dropContents() {
 		return transport.dropContents();
 	}
@@ -183,24 +182,9 @@ public abstract class CoreUnroutedPipe implements ILPPipe, ILPCCTypeHolder {
 		return false;
 	}
 
-	public final int getX() {
-		return getPos().getX();
-	}
-
-	public final int getY() {
-		return getPos().getY();
-	}
-
-	public final int getZ() {
-		return getPos().getZ();
-	}
-
-    @Nullable
-	public final BlockPos getPos() {
-        if (container == null) {
-            return null;
-        }
-		return container.getBlockPos();
+    public final BlockPos getPos() {
+		return Objects.requireNonNull(container, "pipe has no container; setTile must run first")
+            .getBlockPos();
 	}
 
 	public boolean canBeDestroyed() {

@@ -2,6 +2,7 @@ package logisticspipes.pipes.tubes;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -82,9 +83,10 @@ public class HSTubeCurve extends CoreMultiBlockPipe {
 
 	@Override
 	public void addCollisionBoxesToList(List<AABB> arraylist, @Nullable AABB axisalignedbb) {
-		double x = getX();
-		double y = getY();
-		double z = getZ();
+		final BlockPos tubePos = getPos();
+		double x = tubePos.getX();
+		double y = tubePos.getY();
+		double z = tubePos.getZ();
 		double angle = 0;
 		double addOne = 0;
 		double addTwo = 0;
@@ -222,7 +224,7 @@ public class HSTubeCurve extends CoreMultiBlockPipe {
 	public BlockEntity getConnectedEndTile(Direction output) {
 		TurnDirection ori = orientation.getRenderOrientation();
 		if (ori.dir2 == output) {
-			return container.getTile(output);
+			return getContainer().getTile(output);
 		}
 		if (ori.dir1 == output) {
 			DoubleCoordinates pos = new DoubleCoordinates(-2, 0, 2);

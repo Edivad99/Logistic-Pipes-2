@@ -47,7 +47,7 @@ public class DisconnectionConfigurationPopup extends SubGuiScreen {
         configDisplay.renderNeighbours = true;
 
         // Unlike the sneaky upgrade this one holds a set of sides, all of them on the pipe itself.
-        BlockPos pipePos = new BlockPos(pipe.getX(), pipe.getY(), pipe.getZ());
+        BlockPos pipePos = pipe.getPos();
         ConnectionUpgradeConfig.getSides(pos.getItem())
             .forEach(side -> configDisplay.highlight(pipePos, side));
 

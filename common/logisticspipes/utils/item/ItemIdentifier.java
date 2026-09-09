@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
@@ -489,8 +490,8 @@ public final class ItemIdentifier implements Comparable<ItemIdentifier>, ILPCCTy
         return new ItemStack(item.builtInRegistryHolder(), stackSize, components);
     }
 
-    public ItemEntity makeEntityItem(int stackSize, Level level, double x, double y, double z) {
-        return new ItemEntity(level, x, y, z, makeNormalStack(stackSize));
+    public ItemEntity makeEntityItem(int stackSize, Level level, BlockPos pos) {
+        return new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), makeNormalStack(stackSize));
     }
 
     public int getMaxStackSize() {

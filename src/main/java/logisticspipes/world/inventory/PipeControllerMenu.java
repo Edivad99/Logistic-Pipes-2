@@ -68,7 +68,7 @@ public class PipeControllerMenu extends DummyMenu {
         securitySlot = addStaticRestrictedSlot(0, upgrades.secInv, 10, 42,
             PipeControllerMenu::isAuthorizedCard, 1);
         // Kept but hidden; it may be used again once the logic controller tab comes back.
-        diskSlot = addRestrictedSlot(0, pipe.container.logicController.diskInv, 14, 36, LPItems.DISK.get());
+        diskSlot = addRestrictedSlot(0, pipe.getContainer().logicController.diskInv, 14, 36, LPItems.DISK.get());
 
         if (inventory.player instanceof ServerPlayer) {
             upgrades.getGuiController().screenOpenedByPlayer(inventory.player);

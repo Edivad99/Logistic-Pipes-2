@@ -145,7 +145,7 @@ public class PipeItemsFirewall extends CoreRoutedPipe implements IPipeMenuProvid
 
 				@Override
 				public String toString() {
-					return super.toString() + " (" + PipeItemsFirewall.this.getX() + ", " + PipeItemsFirewall.this.getY() + ", " + PipeItemsFirewall.this.getZ() + ")";
+					return super.toString() + " (" + PipeItemsFirewall.this.getPos() + ")";
 				}
 
 				@Override

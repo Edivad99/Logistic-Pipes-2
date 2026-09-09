@@ -5,8 +5,10 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -62,7 +64,7 @@ public class LogisticsHUDRenderer {
 	public void add(IHeadUpDisplayBlockRendererProvider provider) {
 		IHeadUpDisplayBlockRendererProvider toRemove = null;
 		for (IHeadUpDisplayBlockRendererProvider listedProvider : providers) {
-			if (listedProvider.getX() == provider.getX() && listedProvider.getY() == provider.getY() && listedProvider.getZ() == provider.getZ()) {
+			if (listedProvider.getPos() != null && Objects.equals(listedProvider.getPos(), provider.getPos())) {
 				toRemove = listedProvider;
 				break;
 			}
@@ -100,7 +102,9 @@ public class LogisticsHUDRenderer {
 				continue;
 			}
 			if (pipe.getWorld() == Minecraft.getInstance().level) {
-				double dis = Math.hypot(pipe.getX() - x + 0.5, Math.hypot(pipe.getY() - y + 0.5, pipe.getZ() - z + 0.5));
+				final BlockPos pipePos = pipe.getPos();
+				double dis = Math.hypot(pipePos.getX() - x + 0.5,
+						Math.hypot(pipePos.getY() - y + 0.5, pipePos.getZ() - z + 0.5));
 				if (dis < LPConfigs.COMMON.LOGISTICS_HUD_RENDER_DISTANCE.getAsInt() && dis > 0.75) {
 					newList.add(new Pair<>(dis, (IHeadUpDisplayRendererProvider) pipe));
 					if (!list.contains(pipe)) {
@@ -111,23 +115,26 @@ public class LogisticsHUDRenderer {
 		}
 
 		List<IHeadUpDisplayBlockRendererProvider> remove = new ArrayList<>();
-		providers.stream().filter(provider -> provider.getLevelForHUD() == Minecraft.getInstance().level)
-				.forEach(provider -> {
-					double dis = Math.hypot(provider.getX() - x + 0.5, Math.hypot(provider.getY() - y + 0.5, provider.getZ() - z + 0.5));
-					if (dis < LPConfigs.COMMON.LOGISTICS_HUD_RENDER_DISTANCE.getAsInt() && dis > 0.75 && !provider.isHUDInvalid() && provider.isHUDExistent()) {
-						newList.add(new Pair<>(dis, provider));
-						if (!list.contains(provider)) {
-							provider.startWatching();
-						}
-					} else if (provider.isHUDInvalid() || !provider.isHUDExistent()) {
-						remove.add(provider);
-					}
-				});
+		providers.stream()
+            .filter(provider -> provider.getLevelForHUD() == Minecraft.getInstance().level)
+            .forEach(provider -> {
+                final BlockPos providerPos = provider.getPos();
+                double dis = Math.hypot(providerPos.getX() - x + 0.5,
+                    Math.hypot(providerPos.getY() - y + 0.5, providerPos.getZ() - z + 0.5));
+                if (dis < LPConfigs.COMMON.LOGISTICS_HUD_RENDER_DISTANCE.getAsInt() && dis > 0.75 && !provider.isHUDInvalid() && provider.isHUDExistent()) {
+                    newList.add(new Pair<>(dis, provider));
+                    if (!list.contains(provider)) {
+                        provider.startWatching();
+                    }
+                } else if (provider.isHUDInvalid() || !provider.isHUDExistent()) {
+                    remove.add(provider);
+                }
+            });
 		for (IHeadUpDisplayBlockRendererProvider provider : remove) {
 			providers.remove(provider);
 		}
 
-		if (newList.size() < 1) {
+		if (newList.isEmpty()) {
 			clearList(true);
 			return;
 		}
@@ -280,12 +287,13 @@ public class LogisticsHUDRenderer {
 			if (renderer.getRenderer() == null) {
 				continue;
 			}
+			final BlockPos rendererPos = renderer.getPos();
 			if (renderer.getRenderer().display(config)) {
 				poseStack.pushPose();
 				if (!cursorHandled) {
-					double x = renderer.getX() + 0.5 - player.getX();
-					double y = renderer.getY() + 0.5 - player.getY();
-					double z = renderer.getZ() + 0.5 - player.getZ();
+					double x = rendererPos.getX() + 0.5 - player.getX();
+					double y = rendererPos.getY() + 0.5 - player.getY();
+					double z = rendererPos.getZ() + 0.5 - player.getZ();
 					if (Math.hypot(x, Math.hypot(y, z)) < 0.75 || (renderer instanceof IHeadUpDisplayBlockRendererProvider && (((IHeadUpDisplayBlockRendererProvider) renderer).isHUDInvalid() || !((IHeadUpDisplayBlockRendererProvider) renderer).isHUDExistent()))) {
 						refreshList(player.getX(), player.getY(), player.getZ());
 						poseStack.popPose();
@@ -428,9 +436,10 @@ public class LogisticsHUDRenderer {
 		Minecraft mc = Minecraft.getInstance();
 		// The level-stage pose origin is the interpolated camera, not the player's feet as in 1.12.
 		Vec3 cam = mc.gameRenderer.getMainCamera().position();
-		double x = renderer.getX() + 0.5 - cam.x;
-		double y = renderer.getY() + 0.5 - cam.y;
-		double z = renderer.getZ() + 0.5 - cam.z;
+		final BlockPos rendererPos = renderer.getPos();
+		double x = rendererPos.getX() + 0.5 - cam.x;
+		double y = rendererPos.getY() + 0.5 - cam.y;
+		double z = rendererPos.getZ() + 0.5 - cam.z;
 		// The context is handed down through IHeadUpDisplayRenderer/IHUDButton/IHUDModuleRenderer,
 		// so nothing in the HUD render path depends on ambient state. The billboard transforms are
 		// applied to the level stage's own PoseStack now: 1.21.6 made the GuiGraphicsExtractor pose 2D, so
@@ -470,11 +479,12 @@ public class LogisticsHUDRenderer {
 	private int[] getCursor(IHeadUpDisplayRendererProvider renderer) {
 		Minecraft mc = Minecraft.getInstance();
 		Player player = mc.player;
+		final BlockPos rendererPos = renderer.getPos();
 
 		Vec3 look = player.getLookAngle();
 		Vector3d playerView = new Vector3d(look.x, look.y, look.z);
 		Vector3d playerPos = new Vector3d(player.getX(), player.getY() + player.getEyeHeight(), player.getZ());
-		Vector3d panelPos = new Vector3d(renderer.getX() + 0.5, renderer.getY() + 0.5, renderer.getZ() + 0.5);
+		Vector3d panelPos = new Vector3d(rendererPos.getX() + 0.5, rendererPos.getY() + 0.5, rendererPos.getZ() + 0.5);
 		Vector3d panelView = playerPos.sub(panelPos, new Vector3d());
 
 		// Cursor plane tracks the rendered panel: LP1 used 0.44 for a 0.4 panel offset.

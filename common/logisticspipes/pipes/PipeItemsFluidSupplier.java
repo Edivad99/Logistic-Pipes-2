@@ -207,7 +207,7 @@ public class PipeItemsFluidSupplier extends CoreRoutedPipe implements IRequestIt
 				}
 			}
 
-			((PipeItemsFluidSupplier) Objects.requireNonNull(container).pipe).setRequestFailed(false);
+			((PipeItemsFluidSupplier) Objects.requireNonNull(getContainer()).pipe).setRequestFailed(false);
 
 			//Make request
 
@@ -231,12 +231,12 @@ public class PipeItemsFluidSupplier extends CoreRoutedPipe implements IRequestIt
 				boolean success = false;
 
 				if (requestPartials) {
-					countToRequest = RequestTree.requestPartial(need.makeStack(countToRequest), (IRequestItems) container.pipe, null);
+					countToRequest = RequestTree.requestPartial(need.makeStack(countToRequest), (IRequestItems) getContainer().pipe, null);
 					if (countToRequest > 0) {
 						success = true;
 					}
 				} else {
-					success = RequestTree.request(need.makeStack(countToRequest), (IRequestItems) container.pipe, null, null);
+					success = RequestTree.request(need.makeStack(countToRequest), (IRequestItems) getContainer().pipe, null, null);
 				}
 
 				if (success) {
@@ -247,7 +247,7 @@ public class PipeItemsFluidSupplier extends CoreRoutedPipe implements IRequestIt
 						requestedItems.put(need, currentRequest + countToRequest);
 					}
 				} else {
-					((PipeItemsFluidSupplier) container.pipe).setRequestFailed(true);
+					((PipeItemsFluidSupplier) getContainer().pipe).setRequestFailed(true);
 				}
 			}
 		}

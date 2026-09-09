@@ -144,9 +144,8 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 		super.ignoreDisableUpdateEntity();
 		if (tick++ == 5) {
 			if (getWorld() != null) {
-				BlockPos pos = new BlockPos(getX(), getY(), getZ());
-				BlockState state = getWorld().getBlockState(pos);
-				getWorld().sendBlockUpdated(pos, state, state, 3);
+				BlockState state = getWorld().getBlockState(getPos());
+				getWorld().sendBlockUpdated(getPos(), state, state, 3);
 			}
 		}
 		if (getWorld().isClientSide()) {
@@ -502,7 +501,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 			if (!left.isEmpty()) {
 				left.setCount(inv.addCompressed(left, false));
 				if (left.getCount() > 0) {
-					ItemIdentifierInventory.dropItems(getWorld(), left, getX(), getY(), getZ());
+					ItemIdentifierInventory.dropItems(getWorld(), left, getPos().getX(), getPos().getY(), getPos().getZ());
 				}
 			}
 		}
@@ -512,7 +511,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 			if (!left.isEmpty()) {
 				left.setCount(inv.addCompressed(left, false));
 				if (left.getCount() > 0) {
-					ItemIdentifierInventory.dropItems(getWorld(), left, getX(), getY(), getZ());
+					ItemIdentifierInventory.dropItems(getWorld(), left, getPos().getX(), getPos().getY(), getPos().getZ());
 				}
 			}
 		}

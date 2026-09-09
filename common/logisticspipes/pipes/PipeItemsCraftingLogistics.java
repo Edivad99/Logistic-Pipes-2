@@ -23,6 +23,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.common.base.Preconditions;
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.gui.hud.HUDCrafting;
 import logisticspipes.interfaces.IChangeListener;
@@ -162,7 +163,7 @@ public class PipeItemsCraftingLogistics extends CoreRoutedPipe implements ICraft
 	}
 
 	@Override
-	public Level getLevelForHUD() {
+	public @Nullable Level getLevelForHUD() {
 		return getWorld();
 	}
 

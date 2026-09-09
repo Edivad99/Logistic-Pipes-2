@@ -500,22 +500,12 @@ public class LogisticsTileGenericPipe extends BlockEntity implements ILPPipeTile
 		return true;
 	}
 
-	@Override
-	public int getX() {
-		return getBlockPos().getX();
-	}
+    @Override
+    public BlockPos getPos() {
+        return getBlockPos();
+    }
 
-	@Override
-	public int getY() {
-		return getBlockPos().getY();
-	}
-
-	@Override
-	public int getZ() {
-		return getBlockPos().getZ();
-	}
-
-	@Override
+    @Override
 	public boolean isRouterInitialized() {
 		return isInitialized() && (!isRoutingPipe() || !getRoutingPipe().stillNeedReplace());
 	}

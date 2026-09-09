@@ -16,7 +16,7 @@ public class SatelliteMenu extends DummyMenu {
     private final SatellitePipe pipe;
 
     public SatelliteMenu(int containerId, Inventory inventory, SatellitePipe pipe) {
-        super(LPMenuTypes.SATELLITE.get(), containerId, inventory.player, ((CoreUnroutedPipe) pipe).container);
+        super(LPMenuTypes.SATELLITE.get(), containerId, inventory.player, ((CoreUnroutedPipe) pipe).getContainer());
         this.pipe = pipe;
     }
 }

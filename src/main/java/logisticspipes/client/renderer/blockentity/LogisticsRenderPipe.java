@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Unit;
@@ -304,7 +305,7 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
             if (item.getItemIdentifierStack() == null) {
                 continue;
             }
-            if (!item.getContainer().getBlockPos().equals(lPipe.container.getBlockPos())) {
+            if (!item.getContainer().getBlockPos().equals(lPipe.getContainer().getBlockPos())) {
                 continue;
             }
 
@@ -317,9 +318,11 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
                 CoreUnroutedPipe nPipe = lPipe.transport.getNextPipe(item.output);
                 if (nPipe != null) {
                     fPos -= lPipe.transport.getPipeLength();
-                    lX -= lPipe.getX() - nPipe.getX();
-                    lY -= lPipe.getY() - nPipe.getY();
-                    lZ -= lPipe.getZ() - nPipe.getZ();
+                    final BlockPos from = lPipe.getPos();
+                    final BlockPos to = nPipe.getPos();
+                    lX -= from.getX() - to.getX();
+                    lY -= from.getY() - to.getY();
+                    lZ -= from.getZ() - to.getZ();
                     lItemYaw += lPipe.transport.getYawDiff(item);
                     lPipe = nPipe;
                     item = item.renderCopy();
@@ -340,7 +343,7 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
             double itemYawForPitch = lPipe.getItemRenderYaw(fPos, item);
 
             ItemStack stack = item.getItemIdentifierStack().makeNormalStack();
-            doRenderItem(stack, pipe.container.getLevel(), lX + pos.getXCoord(), lY + pos.getYCoord(),
+            doRenderItem(stack, pipe.getContainer().getLevel(), lX + pos.getXCoord(), lY + pos.getYCoord(),
                 lZ + pos.getZCoord(), light, 0.75F, boxScale, itemYaw, itemPitch, itemYawForPitch, partialTickTime,
                 poseStack, collector, packedLight, packedOverlay);
             count++;
@@ -357,7 +360,7 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
                 continue;
             }
             ItemStack stack = item.getValue1().makeNormalStack();
-            doRenderItem(stack, pipe.container.getLevel(), x + pos.getXCoord(), y + pos.getYCoord(),
+            doRenderItem(stack, pipe.getContainer().getLevel(), x + pos.getXCoord(), y + pos.getYCoord(),
                 z + pos.getZCoord(), light, 0.25F, 0, 0, 0, 0, partialTickTime, poseStack, collector, packedLight,
                 packedOverlay);
             count++;
@@ -437,9 +440,9 @@ public class LogisticsRenderPipe implements BlockEntityRenderer<LogisticsTileGen
     private void submitPipeSigns(CoreRoutedPipe pipe, double x, double y, double z,
         PoseStack poseStack, SubmitNodeCollector collector, int packedLight) {
         List<Pair<Direction, IPipeSign>> pipeSigns = pipe.getPipeSigns();
-        if (pipe.container != null && !pipeSigns.isEmpty()) {
+        if (pipe.getContainer() != null && !pipeSigns.isEmpty()) {
             for (Pair<Direction, IPipeSign> pair : pipeSigns) {
-                if (pipe.container.renderState.pipeConnectionMatrix.isConnected(pair.getValue1())) {
+                if (pipe.getContainer().renderState.pipeConnectionMatrix.isConnected(pair.getValue1())) {
                     continue;
                 }
                 poseStack.pushPose();

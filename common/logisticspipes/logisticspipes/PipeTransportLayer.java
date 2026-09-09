@@ -57,7 +57,7 @@ public class PipeTransportLayer extends TransportLayer {
 		}
 
 		// 2nd priority, deliver to non-routed exit
-		new WorldCoordinatesWrapper(routedPipe.container).connectedTileEntities().stream()
+		new WorldCoordinatesWrapper(routedPipe.getContainer()).connectedTileEntities().stream()
 				.filter(neighbor -> {
 					if (router.isRoutedExit(neighbor.getDirection())) return false;
 					final CoreRoutedPipe routerPipe = router.getPipe();

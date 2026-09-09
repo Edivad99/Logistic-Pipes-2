@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.stream.Collectors;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -171,7 +170,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	}
 
 	@Override
-	public Level getLevelForHUD() {
+	public @Nullable Level getLevelForHUD() {
 		return getWorld();
 	}
 
@@ -252,7 +251,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 		final Iterator<ItemIdentifierStack> iterator = lostItems.iterator();
 		while (iterator.hasNext()) {
 			ItemIdentifierStack stack = iterator.next();
-			int received = RequestTree.requestPartial(stack, (CoreRoutedPipe) container.pipe, null);
+			int received = RequestTree.requestPartial(stack, (CoreRoutedPipe) getContainer().pipe, null);
 			if (received > 0) {
 				if (received == stack.getStackSize()) {
 					iterator.remove();

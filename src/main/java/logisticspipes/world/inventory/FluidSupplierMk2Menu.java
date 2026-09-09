@@ -15,7 +15,7 @@ public class FluidSupplierMk2Menu extends DummyMenu {
     private final PipeFluidSupplierMk2 pipe;
 
     public FluidSupplierMk2Menu(int containerId, Inventory inventory, PipeFluidSupplierMk2 pipe) {
-        super(LPMenuTypes.FLUID_SUPPLIER_MK2.get(), containerId, inventory.player, pipe.container);
+        super(LPMenuTypes.FLUID_SUPPLIER_MK2.get(), containerId, inventory.player, pipe.getContainer());
         this.pipe = pipe;
         addNormalSlotsForPlayerInventory(inventory, 13, 92);
         addFluidSlot(0, pipe.getDummyInventory(), 60, 18);

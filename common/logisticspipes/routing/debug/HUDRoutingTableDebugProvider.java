@@ -1,6 +1,9 @@
 package logisticspipes.routing.debug;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.interfaces.IHeadUpDisplayRenderer;
 import logisticspipes.interfaces.IHeadUpDisplayRendererProvider;
@@ -21,23 +24,13 @@ public class HUDRoutingTableDebugProvider implements IHeadUpDisplayRendererProvi
 		return hud;
 	}
 
-	@Override
-	public int getX() {
-		return pos.getXInt();
-	}
+    @Override
+    public BlockPos getPos() {
+        return pos.getBlockPos();
+    }
 
 	@Override
-	public int getY() {
-		return pos.getYInt();
-	}
-
-	@Override
-	public int getZ() {
-		return pos.getZInt();
-	}
-
-	@Override
-	public Level getLevelForHUD() {
+	public @Nullable Level getLevelForHUD() {
 		return null;
 	}
 

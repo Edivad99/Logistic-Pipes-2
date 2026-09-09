@@ -219,23 +219,13 @@ public class LogisticsPowerJunctionBlockEntity extends LogisticsSolidBlockEntity
     }
 
     @Override
-    public Level getLevelForHUD() {
+    public @Nullable Level getLevelForHUD() {
         return level;
     }
 
     @Override
-    public int getX() {
-        return getBlockPos().getX();
-    }
-
-    @Override
-    public int getY() {
-        return getBlockPos().getY();
-    }
-
-    @Override
-    public int getZ() {
-        return getBlockPos().getZ();
+    public BlockPos getPos() {
+        return getBlockPos();
     }
 
     @Override

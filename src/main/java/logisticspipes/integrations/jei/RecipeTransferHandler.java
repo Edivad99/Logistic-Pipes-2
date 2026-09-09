@@ -74,7 +74,7 @@ public class RecipeTransferHandler<C extends AbstractContainerMenu & IJeiScreenH
         if (gui instanceof LogisticsCraftingTableScreen craftingTable) {
             be = craftingTable.crafter;
         } else {
-            be = ((RequestTableScreen) gui).table.container;
+            be = ((RequestTableScreen) gui).table.getContainer();
         }
 
         if (be == null) {

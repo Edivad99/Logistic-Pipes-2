@@ -98,7 +98,7 @@ public class PipeItemsRequestLogisticsMk2 extends PipeItemsRequestLogistics impl
 
 	public void dropDisk() {
 		if (!disk.isEmpty()) {
-			ItemEntity item = new ItemEntity(getWorld(), getX(), getY(), getZ(), disk);
+			ItemEntity item = new ItemEntity(getWorld(), getPos().getX(), getPos().getY(), getPos().getZ(), disk);
 			getWorld().addFreshEntity(item);
 			disk = ItemStack.EMPTY;
 		}

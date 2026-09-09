@@ -3,6 +3,7 @@ package logisticspipes.world.item;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
 
 import org.jspecify.annotations.Nullable;
 
@@ -79,9 +79,10 @@ public class RemoteOrderer extends LogisticsItem {
                 if (pipe.getWorld() != level) {
                     energyUse += 2500;
                 }
-                energyUse = (int) (energyUse + Math.sqrt(Math.pow(pipe.getX() - player.getX(), 2) +
-                    Math.pow(pipe.getY() - player.getY(), 2) +
-                    Math.pow(pipe.getZ() - player.getZ(), 2)
+                final BlockPos pipePos = pipe.getPos();
+                energyUse = (int) (energyUse + Math.sqrt(Math.pow(pipePos.getX() - player.getX(), 2) +
+                    Math.pow(pipePos.getY() - player.getY(), 2) +
+                    Math.pow(pipePos.getZ() - player.getZ(), 2)
                 ));
                 if (pipe.useEnergy(energyUse)) {
                     if (player instanceof ServerPlayer serverPlayer) {
