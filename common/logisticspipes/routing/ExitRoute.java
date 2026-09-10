@@ -29,10 +29,10 @@ public class ExitRoute implements Comparable<ExitRoute> {
 	public final int blockDistance;
 	public final EnumSet<PipeRoutingConnectionType> connectionDetails;
 	public final IRouter destination;
-	public Direction exitOrientation;
-	public Direction insertOrientation;
+	public @Nullable Direction exitOrientation;
+	public @Nullable Direction insertOrientation;
 	public double distanceToDestination;
-	public IRouter root;
+	public @Nullable IRouter root;
 	public List<IFilter> filters = Collections.unmodifiableList(new ArrayList<>(0));
 	/**
 	 * Used to store debug information. No use in the actual Routing table

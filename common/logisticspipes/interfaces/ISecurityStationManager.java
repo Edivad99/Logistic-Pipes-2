@@ -14,7 +14,7 @@ public interface ISecurityStationManager {
 	void add(LogisticsSecurityBlockEntity tile);
 
 	@Nullable
-	LogisticsSecurityBlockEntity getStation(UUID id);
+	LogisticsSecurityBlockEntity getStation(@Nullable UUID id);
 
 	void remove(LogisticsSecurityBlockEntity tile);
 

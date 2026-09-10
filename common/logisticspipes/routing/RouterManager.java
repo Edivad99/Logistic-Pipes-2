@@ -39,10 +39,10 @@ import logisticspipes.world.level.block.entity.LogisticsSecurityBlockEntity;
 
 public class RouterManager implements IChannelConnectionManager, ISecurityStationManager {
 
-	private final ArrayList<ServerRouter> routersServer = new ArrayList<>();
+	private final ArrayList<@Nullable ServerRouter> routersServer = new ArrayList<>();
 	private final Map<UUID, Integer> uuidMap = new HashMap<>();
 
-	private final WeakHashMap<LogisticsSecurityBlockEntity, Void> security = new WeakHashMap<>();
+	private final WeakHashMap<LogisticsSecurityBlockEntity, @Nullable Void> security = new WeakHashMap<>();
 	private List<String> authorized = new LinkedList<>();
 
 	private final ArrayList<ChannelConnection> channelConnectedPipes = new ArrayList<>();
@@ -64,7 +64,7 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 		}
 	}
 
-	public int getIDforUUID(UUID id) {
+	public int getIDforUUID(@Nullable UUID id) {
 		if (id == null) {
 			return -1;
 		}
@@ -111,13 +111,8 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 	}
 
 	/**
-	 * This assumes you know what you are doing. expect exceptions to be thrown
-	 * if you pass the wrong side.
-	 *
-	 * @param id
-	 * @param side
-	 *            false for server, true for client.
-	 * @return is this a router for the side.
+	 * Whether a server router exists under {@code id}, without bounds checking: an id outside the
+	 * list throws.
 	 */
 	public boolean isRouterUnsafe(int id) {
 		return routersServer.get(id) != null;
@@ -190,11 +185,14 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 	@Override
 	public void add(LogisticsSecurityBlockEntity tile) {
 		security.put(tile, null);
-		authorizeUUID(tile.getSecId());
+		UUID secId = tile.getSecId();
+		if (secId != null) {
+			authorizeUUID(secId);
+		}
 	}
 
 	@Override
-	public LogisticsSecurityBlockEntity getStation(UUID id) {
+	public @Nullable LogisticsSecurityBlockEntity getStation(@Nullable UUID id) {
 		if (id == null) {
 			return null;
 		}
@@ -209,7 +207,10 @@ public class RouterManager implements IChannelConnectionManager, ISecurityStatio
 	@Override
 	public void remove(LogisticsSecurityBlockEntity tile) {
 		security.remove(tile);
-		deauthorizeUUID(tile.getSecId());
+		UUID secId = tile.getSecId();
+		if (secId != null) {
+			deauthorizeUUID(secId);
+		}
 	}
 
 	public void dimensionUnloaded(Identifier dim) {

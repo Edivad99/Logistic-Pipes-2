@@ -83,7 +83,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	protected static final Lock SharedLSADatabasereadLock = ServerRouter.SharedLSADatabaseLock.readLock();
 	protected static final Lock SharedLSADatabasewriteLock = ServerRouter.SharedLSADatabaseLock.writeLock();
 	protected static int[] lastLsaVersion = new int[0];
-	protected static LSA[] SharedLSADatabase = new LSA[0];
+	protected static @Nullable LSA[] SharedLSADatabase = new LSA[0];
 
 	// things with specific interests -- providers (including crafters)
 	private static final ConcurrentHashMap<ItemIdentifier, TreeSet<ServerRouter>> globalSpecificInterests = new ConcurrentHashMap<>();
@@ -117,7 +117,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	/**
 	 * Map of router -> orientation for all known destinations
 	 **/
-	public List<List<ExitRoute>> routeTable = Collections.unmodifiableList(new ArrayList<>());
+	public List<@Nullable List<ExitRoute>> routeTable = Collections.unmodifiableList(new ArrayList<>());
 	public List<ExitRoute> routeCosts = Collections.unmodifiableList(new ArrayList<>());
 	public List<Pair<ILogisticsPowerProvider, List<IFilter>>> lpPowerTable = Collections.unmodifiableList(new ArrayList<>());
 	public List<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPowerTable = Collections.unmodifiableList(new ArrayList<>());
@@ -167,14 +167,12 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
         this.pos = pos;
 		clearPipeCache();
 		myLsa = new LSA();
-		myLsa.neighboursWithMetric = new HashMap<>();
-		myLsa.power = new ArrayList<>();
 		ServerRouter.SharedLSADatabasewriteLock.lock(); // any time after we claim the SimpleID, the database could be accessed at that index
 		try {
 			simpleID = ServerRouter.claimSimpleID();
 			if (ServerRouter.SharedLSADatabase.length <= simpleID) {
 				int newLength = ((int) (simpleID * 1.5)) + 1;
-				LSA[] new_SharedLSADatabase = new LSA[newLength];
+				@Nullable LSA[] new_SharedLSADatabase = new LSA[newLength];
 				System.arraycopy(ServerRouter.SharedLSADatabase, 0, new_SharedLSADatabase, 0, ServerRouter.SharedLSADatabase.length);
 				ServerRouter.SharedLSADatabase = new_SharedLSADatabase;
 				int[] new_lastLSAVersion = new int[newLength];
@@ -194,7 +192,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		ServerRouter.genericInterests.clear();
 		ServerRouter.SharedLSADatabasewriteLock.lock();
 		try {
-			ServerRouter.SharedLSADatabase = new LSA[0];
+			ServerRouter.SharedLSADatabase = new @Nullable LSA[0];
 			ServerRouter.lastLsaVersion = new int[0];
 		} finally {
 			ServerRouter.SharedLSADatabasewriteLock.unlock();
@@ -366,7 +364,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	}
 
 	@Override
-	public List<List<ExitRoute>> getRouteTable() {
+	public List<@Nullable List<ExitRoute>> getRouteTable() {
 		ensureLatestRoutingTable();
 		return routeTable;
 	}
@@ -624,7 +622,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		}
 	}
 
-	private void lockAndUpdateLSA(HashMap<IRouter, Quartet<Double, EnumSet<PipeRoutingConnectionType>, List<IFilter>, Integer>> neighboursWithMetric, ArrayList<Pair<ILogisticsPowerProvider, List<IFilter>>> power, ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower) {
+	private void lockAndUpdateLSA(HashMap<IRouter, Quartet<Double, EnumSet<PipeRoutingConnectionType>, List<IFilter>, Integer>> neighboursWithMetric, @Nullable ArrayList<Pair<ILogisticsPowerProvider, List<IFilter>>> power, @Nullable ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower) {
 		ServerRouter.SharedLSADatabasewriteLock.lock();
 		try {
 			myLsa.neighboursWithMetric = neighboursWithMetric;
@@ -872,7 +870,7 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 		debug.stepOneDone();
 
 		//Build route table
-		ArrayList<List<ExitRoute>> routeTable = new ArrayList<>(ServerRouter.getBiggestSimpleID() + 1);
+		ArrayList<@Nullable List<ExitRoute>> routeTable = new ArrayList<>(ServerRouter.getBiggestSimpleID() + 1);
 		while (simpleID >= routeTable.size()) {
 			routeTable.add(null);
 		}
@@ -1319,9 +1317,9 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 
 	protected static class LSA {
 
-		public HashMap<IRouter, Quartet<Double, EnumSet<PipeRoutingConnectionType>, List<IFilter>, Integer>> neighboursWithMetric;
-		public List<Pair<ILogisticsPowerProvider, List<IFilter>>> power;
-		public ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower;
+		public HashMap<IRouter, Quartet<Double, EnumSet<PipeRoutingConnectionType>, List<IFilter>, Integer>> neighboursWithMetric = new HashMap<>();
+		public @Nullable List<Pair<ILogisticsPowerProvider, List<IFilter>>> power;
+		public @Nullable ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower;
 	}
 
 	private abstract static class RouterRunnable implements Comparable<RouterRunnable>, Runnable {
@@ -1448,10 +1446,10 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 
 		private final int index = ServerRouter.maxLSAUpdateIndex++;
 		HashMap<IRouter, Quartet<Double, EnumSet<PipeRoutingConnectionType>, List<IFilter>, Integer>> neighboursWithMetric;
-		ArrayList<Pair<ILogisticsPowerProvider, List<IFilter>>> power;
-		ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower;
+		@Nullable ArrayList<Pair<ILogisticsPowerProvider, List<IFilter>>> power;
+		@Nullable ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower;
 
-		LSARouterRunnable(HashMap<IRouter, Quartet<Double, EnumSet<PipeRoutingConnectionType>, List<IFilter>, Integer>> neighboursWithMetric, ArrayList<Pair<ILogisticsPowerProvider, List<IFilter>>> power, ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower) {
+		LSARouterRunnable(HashMap<IRouter, Quartet<Double, EnumSet<PipeRoutingConnectionType>, List<IFilter>, Integer>> neighboursWithMetric, @Nullable ArrayList<Pair<ILogisticsPowerProvider, List<IFilter>>> power, @Nullable ArrayList<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPower) {
 			this.neighboursWithMetric = neighboursWithMetric;
 			this.power = power;
 			this.subSystemPower = subSystemPower;
