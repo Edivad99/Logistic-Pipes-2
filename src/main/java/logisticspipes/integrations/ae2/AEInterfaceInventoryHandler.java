@@ -188,18 +188,10 @@ public class AEInterfaceInventoryHandler extends SpecialInventoryHandler impleme
         return entries;
     }
 
-    /**
-     * The types currently stored, plus one for the room a slotless network always has.
-     *
-     * <p>The {@code + 1} is load-bearing and must not be "simplified" away: {@code
-     * PipeTransportLogistics#canPipeConnect_internal} decides whether a pipe may connect to a
-     * neighbor with {@code util.getContainerSize() > 0}, so reporting the bare number of stored
-     * types would make a pipe refuse to connect to an empty network -- and disconnect from one that
-     * became empty.</p>
-     */
+    /** The number of types currently stored: a slotless network has no slots of its own. */
     @Override
     public int getContainerSize() {
-        return getItemsAndCount().size() + 1;
+        return getItemsAndCount().size();
     }
 
     @Override

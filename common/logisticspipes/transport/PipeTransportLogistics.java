@@ -637,7 +637,7 @@ public class PipeTransportLogistics {
 			}
 			IInventoryUtil util = SimpleServiceLocator.inventoryUtilFactory.getInventoryUtil(tile, side.getOpposite());
 			if (util != null) {
-				return util.getContainerSize() > 0;
+				return true;
 			}
 			if (tile instanceof LogisticsSolidBlockEntity) {
 				return true;
