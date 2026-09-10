@@ -1,5 +1,7 @@
 package logisticspipes.request;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -61,7 +63,7 @@ public class RequestHandler {
 			}
 
 			@Override
-			public void handleSucessfullRequestOf(IResource item, LinkedLogisticsOrderList parts) {
+			public void handleSucessfullRequestOf(IResource item, @Nullable LinkedLogisticsOrderList parts) {
 				sendToPlayer(player, new RequestAnswerMessage(List.of(item), false));
 				if (pipe instanceof IRequestWatcher) {
 					((IRequestWatcher) pipe).handleOrderList(item, parts);
@@ -84,7 +86,7 @@ public class RequestHandler {
 			}
 
 			@Override
-			public void handleSucessfullRequestOf(IResource item, LinkedLogisticsOrderList parts) {}
+			public void handleSucessfullRequestOf(IResource item, @Nullable LinkedLogisticsOrderList parts) {}
 
 			@Override
 			public void handleSucessfullRequestOfList(List<IResource> resources, LinkedLogisticsOrderList parts) {
@@ -137,7 +139,7 @@ public class RequestHandler {
 			}
 
 			@Override
-			public void handleSucessfullRequestOf(IResource item, LinkedLogisticsOrderList parts) {}
+			public void handleSucessfullRequestOf(IResource item, @Nullable LinkedLogisticsOrderList parts) {}
 
 			@Override
 			public void handleSucessfullRequestOfList(List<IResource> resources, LinkedLogisticsOrderList parts) {
@@ -170,7 +172,7 @@ public class RequestHandler {
 			}
 
 			@Override
-			public void handleSucessfullRequestOf(IResource item, LinkedLogisticsOrderList parts) {}
+			public void handleSucessfullRequestOf(IResource item, @Nullable LinkedLogisticsOrderList parts) {}
 
 			@Override
 			public void handleSucessfullRequestOfList(List<IResource> resources, LinkedLogisticsOrderList parts) {
@@ -203,7 +205,7 @@ public class RequestHandler {
 			}
 
 			@Override
-			public void handleSucessfullRequestOf(IResource item, LinkedLogisticsOrderList parts) {
+			public void handleSucessfullRequestOf(IResource item, @Nullable LinkedLogisticsOrderList parts) {
 				status[0] = "DONE";
 				List<IResource> itemList = new LinkedList<>();
 				itemList.add(item);
@@ -237,7 +239,7 @@ public class RequestHandler {
 			}
 
 			@Override
-			public void handleSucessfullRequestOf(IResource item, LinkedLogisticsOrderList parts) {
+			public void handleSucessfullRequestOf(IResource item, @Nullable LinkedLogisticsOrderList parts) {
 				sendToPlayer(player, new RequestAnswerMessage(List.of(item), false));
 			}
 

@@ -213,7 +213,7 @@ public class PipeItemsCraftingLogistics extends CoreRoutedPipe implements ICraft
 	}
 
 	@Override
-	public void setOrderManagerContent(Collection<ItemIdentifierStack> list) {
+	public void setOrderManagerContent(Collection<@Nullable ItemIdentifierStack> list) {
 		displayList.clear();
 		displayList.addAll(list);
 	}

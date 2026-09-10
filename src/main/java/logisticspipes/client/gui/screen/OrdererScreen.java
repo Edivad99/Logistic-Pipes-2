@@ -7,6 +7,8 @@
 
 package logisticspipes.client.gui.screen;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
@@ -79,7 +81,7 @@ public abstract class OrdererScreen<T extends OrdererMenu> extends LogisticsBase
     public abstract void refreshItems();
 
     @Override
-    public void setAvailableItems(Collection<ItemIdentifierStack> allItems) {
+    public void setAvailableItems(Collection<@Nullable ItemIdentifierStack> allItems) {
         itemDisplay.setItemList(allItems.stream().filter(Objects::nonNull).collect(Collectors.toList()));
     }
 

@@ -192,7 +192,6 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 		}
 	}
 
-	@Nullable
 	private Pair<NeighborTileEntity<BlockEntity>, ConnectionType> nextPointedOrientation(@Nullable Direction previousDirection) {
 		final Map<NeighborTileEntity<BlockEntity>, ConnectionType> neighbors = getAdjacent().neighbors();
 		final Stream<NeighborTileEntity<BlockEntity>> sortedNeighborsStream = neighbors.keySet().stream()
@@ -607,7 +606,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 		localModeWatchers.remove(player);
 	}
 
-	public void handleModuleItemIdentifierList(Collection<ItemIdentifierStack> allItems) {
+	public void handleModuleItemIdentifierList(Collection<@Nullable ItemIdentifierStack> allItems) {
 		moduleInventory.handleItemIdentifierList(allItems);
 	}
 
@@ -628,7 +627,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@Override
-	public void handleSendQueueItemIdentifierList(Collection<ItemIdentifierStack> allItems) {
+	public void handleSendQueueItemIdentifierList(Collection<@Nullable ItemIdentifierStack> allItems) {
 		displayList.clear();
 		displayList.addAll(allItems);
 	}

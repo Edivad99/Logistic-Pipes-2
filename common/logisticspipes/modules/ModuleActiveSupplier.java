@@ -137,7 +137,7 @@ public class ModuleActiveSupplier extends LogisticsModule
 	}
 
 	@Override
-	public void handleInvContent(Collection<ItemIdentifierStack> list) {
+	public void handleInvContent(Collection<@Nullable ItemIdentifierStack> list) {
 		inventory.handleItemIdentifierList(list);
 	}
 

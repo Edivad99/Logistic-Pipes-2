@@ -544,7 +544,7 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
     }
 
     @Override
-    public void setAvailableItems(Collection<ItemIdentifierStack> allItems) {
+    public void setAvailableItems(Collection<@Nullable ItemIdentifierStack> allItems) {
         itemDisplay.setItemList(allItems.stream().filter(Objects::nonNull).collect(Collectors.toList()));
     }
 

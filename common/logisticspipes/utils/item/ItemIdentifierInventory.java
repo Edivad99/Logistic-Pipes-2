@@ -303,7 +303,7 @@ public class ItemIdentifierInventory
 	}
 
 	@Override
-	public void handleItemIdentifierList(Collection<ItemIdentifierStack> allItems) {
+	public void handleItemIdentifierList(Collection<@Nullable ItemIdentifierStack> allItems) {
 		int i = 0;
 		for (ItemIdentifierStack stack : allItems) {
 			if (contents.length <= i) {
@@ -429,7 +429,7 @@ public class ItemIdentifierInventory
 	}
 
 	@Override
-	public boolean containsItem(final ItemIdentifier item) {
+	public boolean containsItem(final @Nullable ItemIdentifier item) {
 		return contentsMap.containsKey(item);
 	}
 

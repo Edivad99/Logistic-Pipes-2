@@ -1,6 +1,9 @@
 package logisticspipes.textures.provider;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
@@ -11,7 +14,7 @@ import logisticspipes.renderer.IIconProvider;
 
 public class LPPipeIconProvider implements IIconProvider {
 
-	private ArrayList<TextureAtlasSprite> icons;
+	private @Nullable ArrayList<@Nullable TextureAtlasSprite> icons;
 
 	public LPPipeIconProvider() {
 		if (FMLEnvironment.getDist() == Dist.CLIENT) {
@@ -20,11 +23,13 @@ public class LPPipeIconProvider implements IIconProvider {
 	}
 
 	@Override
+	@Nullable
 	public TextureAtlasSprite getIcon(int iconIndex) {
-		return icons.get(iconIndex);
+		return Objects.requireNonNull(icons, "no icons off the client").get(iconIndex);
 	}
 
 	public void setIcon(int index, TextureAtlasSprite icon) {
+		final ArrayList<@Nullable TextureAtlasSprite> icons = Objects.requireNonNull(this.icons, "no icons off the client");
 		while (icons.size() < index + 1) {
 			icons.add(null);
 		}

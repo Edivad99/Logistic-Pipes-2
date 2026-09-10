@@ -1,5 +1,7 @@
 package logisticspipes.interfaces;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 
 import logisticspipes.utils.item.ItemIdentifierStack;
@@ -9,5 +11,5 @@ import logisticspipes.utils.item.ItemIdentifierStack;
  */
 public interface IAvailableItemsReceiver {
 
-    void setAvailableItems(Collection<ItemIdentifierStack> allItems);
+    void setAvailableItems(Collection<@Nullable ItemIdentifierStack> allItems);
 }

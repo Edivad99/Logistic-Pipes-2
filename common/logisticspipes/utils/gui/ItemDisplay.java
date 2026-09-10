@@ -100,7 +100,7 @@ public class ItemDisplay {
 		this.requestCountBar.reposition(amountPosLeft - (this.amountWidth / 2), amountPosTop - 2, this.amountWidth, 12);
 	}
 
-	public void setItemList(Collection<ItemIdentifierStack> allItems) {
+	public void setItemList(Collection<@Nullable ItemIdentifierStack> allItems) {
 		listbyserver = true;
 		this.allItems.clear();
 		allItems.stream().sorted(new ItemidStackDisplayOptionComparator()).forEach(this.allItems::add);

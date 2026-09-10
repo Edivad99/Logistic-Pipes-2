@@ -1,5 +1,7 @@
 package logisticspipes.routing;
 
+import org.jspecify.annotations.Nullable;
+
 import lombok.Getter;
 
 import logisticspipes.interfaces.routing.IProvideItems;
@@ -13,7 +15,7 @@ public class LogisticsDictPromise extends LogisticsPromise {
 	@Getter
 	private DictResource resource;
 
-	public LogisticsDictPromise(DictResource item, int stackSize, IProvideItems sender, IOrderInfoProvider.ResourceType type) {
+	public LogisticsDictPromise(DictResource item, int stackSize, IProvideItems sender, IOrderInfoProvider.@Nullable ResourceType type) {
 		super(item.stack.getItem(), stackSize, sender, type);
 		this.resource = item;
 		this.resource.stack = new ItemIdentifierStack(this.resource.stack);

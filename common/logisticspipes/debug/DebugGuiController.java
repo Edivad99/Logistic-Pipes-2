@@ -53,10 +53,10 @@ public class DebugGuiController {
 	}
 
 	private final HashMap<Player, IDebugGuiEntry> serverDebugger = new HashMap<>();
-	private final List<IDataConnection> serverList = new LinkedList<>();
+	private final List<@Nullable IDataConnection> serverList = new LinkedList<>();
 
 	private @Nullable IDebugGuiEntry clientController = null;
-	private final List<Future<IDataConnection>> clientList = new LinkedList<>();
+	private final List<@Nullable Future<IDataConnection>> clientList = new LinkedList<>();
 	private final Map<Integer, List<byte[]>> pendingClientData = new HashMap<>();
 
 	public void startWatchingOf(Object object, Player player) {

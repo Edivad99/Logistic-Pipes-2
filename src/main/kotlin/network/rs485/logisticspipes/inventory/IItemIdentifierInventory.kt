@@ -51,7 +51,8 @@ interface IItemIdentifierInventory : Container, ILPCCTypeHolder, IClientInformat
     fun getIDStackInSlot(i: Int): ItemIdentifierStack?
     fun setItem(i: Int, itemstack: ItemIdentifierStack?)
     fun containsItem(item: ItemIdentifier?): Boolean
-    fun handleItemIdentifierList(allItems: Collection<ItemIdentifierStack>)
+    /** Slot by slot, with a null standing in for every empty slot. */
+    fun handleItemIdentifierList(allItems: Collection<ItemIdentifierStack?>)
     fun addListener(listener: ISimpleInventoryEventHandler)
     fun removeListener(listener: ISimpleInventoryEventHandler)
     fun containsUndamagedItem(item: ItemIdentifier): Boolean

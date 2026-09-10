@@ -55,7 +55,11 @@ class LPNeighborTileEntitySneakyInsertion<T : BlockEntity>(tileEntity: T, direct
     }
 
     fun from(upgradeManager: ISlotUpgradeManager?): LPNeighborTileEntitySneakyInsertion<T> {
-        if (upgradeManager?.hasSneakyUpgrade() == true) sneakyDirection = upgradeManager.sneakyOrientation
+        // Keeps the pipe's own side when the upgrade is there but no side was picked: the manager
+        // reports a sneaky upgrade before the player configures one.
+        if (upgradeManager?.hasSneakyUpgrade() == true) {
+            upgradeManager.sneakyOrientation?.let { sneakyDirection = it }
+        }
         return this
     }
 }

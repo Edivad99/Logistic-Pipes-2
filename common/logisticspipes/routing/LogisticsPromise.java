@@ -31,7 +31,7 @@ public class LogisticsPromise implements IPromise {
 	public IProvideItems sender;
 	public @Nullable ResourceType type;
 
-	public LogisticsPromise(ItemIdentifier item, int numberOfItems, IProvideItems sender, ResourceType type) {
+	public LogisticsPromise(ItemIdentifier item, int numberOfItems, IProvideItems sender, @Nullable ResourceType type) {
 		this.item = item;
 		this.numberOfItems = numberOfItems;
 		this.sender = sender;

@@ -203,7 +203,7 @@ public class InvSysConnectorScreen extends LogisticsBaseGuiScreen<InvSysConMenu>
         return true;
     }
 
-    public void handleContentAnswer(Collection<ItemIdentifierStack> allItems) {
+    public void handleContentAnswer(Collection<@Nullable ItemIdentifierStack> allItems) {
         this.allItems.clear();
         this.allItems.addAll(allItems);
     }

@@ -250,7 +250,7 @@ public class ModuleItemSink extends LogisticsModule
 	}
 
 	@Override
-	public void handleInvContent(Collection<ItemIdentifierStack> list) {
+	public void handleInvContent(Collection<@Nullable ItemIdentifierStack> list) {
 		filterInventory.handleItemIdentifierList(list);
 	}
 

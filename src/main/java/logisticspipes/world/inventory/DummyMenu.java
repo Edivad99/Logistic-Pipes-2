@@ -57,7 +57,7 @@ public abstract class DummyMenu extends AbstractContainerMenu implements IJeiScr
 
     private final List<Slot> transferTop = new ArrayList<>();
     private final List<Slot> transferBottom = new ArrayList<>();
-    private final List<BitSet> slotsFuzzyFlags = new ArrayList<>();
+    private final List<@Nullable BitSet> slotsFuzzyFlags = new ArrayList<>();
 
     /** Recipe viewers step a ghost slot's count with these instead of a real mouse button. */
     private static final int STEP_UP = 1000;
@@ -413,7 +413,7 @@ public abstract class DummyMenu extends AbstractContainerMenu implements IJeiScr
         return super.addSlot(slot);
     }
 
-    protected Slot addRestrictedSlot(int slotId, Container inventory, int xCoord, int yCoord, Item item) {
+    protected Slot addRestrictedSlot(int slotId, Container inventory, int xCoord, int yCoord, @Nullable Item item) {
         return addSlot(new RestrictedSlot(inventory, slotId, xCoord, yCoord, item));
     }
 

@@ -624,6 +624,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 
 	// OC methods — @Override removed, types replaced with Object (OC not on classpath)
 	@ModDependentMethod(modId = LPConstants.openComputersModID)
+	@Nullable
 	public Object node() {
 		return node;
 	}
@@ -949,7 +950,6 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 		return this.subMultiBlock.stream().map(level::getBlockEntity);
 	}
 
-	@Nullable
 	public ResourceHandler<ItemResource> getItemCap(@Nullable Direction side) {
 		if (side != null) {
 			return getItemHandlerForSide(side);
@@ -957,7 +957,6 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 		return null;
 	}
 
-	@Nullable
 	public ResourceHandler<FluidResource> getFluidCap(@Nullable Direction side) {
 		if (side != null && pipe != null && pipe.transport instanceof PipeFluidTransportLogistics fluidTransport) {
 			return fluidTransport.getFluidResourceHandler(side);

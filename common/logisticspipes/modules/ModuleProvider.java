@@ -415,7 +415,7 @@ public class ModuleProvider extends LogisticsModule implements SneakyDirection, 
 	}
 
 	@Override
-	public void handleInvContent(Collection<ItemIdentifierStack> list) {
+	public void handleInvContent(Collection<@Nullable ItemIdentifierStack> list) {
 		displayList.clear();
 		displayList.addAll(list);
 	}

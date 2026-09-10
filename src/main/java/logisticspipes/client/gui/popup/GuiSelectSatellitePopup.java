@@ -1,5 +1,7 @@
 package logisticspipes.client.gui.popup;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -20,12 +22,12 @@ import network.rs485.logisticspipes.util.TextUtil;
 
 public class GuiSelectSatellitePopup extends SubGuiScreen {
 
-    private final Consumer<UUID> handleResult;
+    private final Consumer<@Nullable UUID> handleResult;
     private final TextListDisplay textList;
     String GUI_LANG_KEY = "gui.popup.selectsatellite.";
     private List<SatelliteEntry> pipeList = List.of();
 
-    public GuiSelectSatellitePopup(BlockPos pos, boolean fluidSatellites, Consumer<UUID> handleResult) {
+    public GuiSelectSatellitePopup(BlockPos pos, boolean fluidSatellites, Consumer<@Nullable UUID> handleResult) {
         super(150, 170, 0, 0);
         this.handleResult = handleResult;
         this.textList = new TextListDisplay(this, 6, 16, 6, 30, 12, new TextListDisplay.List() {

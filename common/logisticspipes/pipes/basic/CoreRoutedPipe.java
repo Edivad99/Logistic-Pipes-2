@@ -1110,6 +1110,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		}
 	}
 
+	@Nullable
 	public UUID getSecurityID() {
 		return getOriginalUpgradeManager().getSecurityID();
 	}
@@ -1668,7 +1669,6 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		}
 	}
 
-	@Nullable
 	public IPipeSign getPipeSign(@Nullable Direction dir) {
 		if (dir == null) return null;
 		return signItem[dir.ordinal()];

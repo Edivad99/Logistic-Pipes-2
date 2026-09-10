@@ -147,7 +147,7 @@ public class ModuleEnchantmentSinkMK2 extends LogisticsModule
 	}
 
 	@Override
-	public void handleInvContent(Collection<ItemIdentifierStack> list) {
+	public void handleInvContent(Collection<@Nullable ItemIdentifierStack> list) {
 		filterInventory.handleItemIdentifierList(list);
 	}
 

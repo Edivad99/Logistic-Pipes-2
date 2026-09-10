@@ -135,7 +135,7 @@ public class PipeItemsProviderLogistics extends CoreRoutedPipe implements IProvi
 	}
 
 	@Override
-	public void setReceivedChestContent(Collection<ItemIdentifierStack> list) {
+	public void setReceivedChestContent(Collection<@Nullable ItemIdentifierStack> list) {
 		providerModule.displayList.clear();
 		providerModule.displayList.ensureCapacity(list.size());
 		providerModule.displayList.addAll(list);
@@ -147,7 +147,7 @@ public class PipeItemsProviderLogistics extends CoreRoutedPipe implements IProvi
 	}
 
 	@Override
-	public void setOrderManagerContent(Collection<ItemIdentifierStack> list) {
+	public void setOrderManagerContent(Collection<@Nullable ItemIdentifierStack> list) {
 		itemListOrderer.clear();
 		itemListOrderer.addAll(list);
 	}

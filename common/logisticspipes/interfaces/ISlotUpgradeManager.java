@@ -24,6 +24,7 @@ public interface ISlotUpgradeManager {
 
 	boolean hasSneakyUpgrade();
 
+	@Nullable
 	Direction getSneakyOrientation();
 
 	boolean hasOwnSneakyUpgrade();

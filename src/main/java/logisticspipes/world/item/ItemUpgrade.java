@@ -49,8 +49,7 @@ public class ItemUpgrade extends LogisticsItem {
             "Upgrade " + resource + " not found in Item registry");
     }
 
-    @Nullable
-    public IPipeUpgrade getUpgradeForItem(ItemStack itemStack, IPipeUpgrade currentUpgrade) {
+    public @Nullable IPipeUpgrade getUpgradeForItem(ItemStack itemStack, @Nullable IPipeUpgrade currentUpgrade) {
         if (itemStack.isEmpty()) {
             return null;
         }

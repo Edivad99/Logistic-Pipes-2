@@ -151,7 +151,7 @@ class AsyncAdvancedExtractor : AsyncModule<ExtractorJob, Unit>(), SimpleFilter, 
         return filterInventory
     }
 
-    override fun handleInvContent(items: MutableCollection<ItemIdentifierStack>) =
+    override fun handleInvContent(items: MutableCollection<ItemIdentifierStack?>) =
         filterInventory.handleItemIdentifierList(items)
 
     override fun InventoryChanged(inventory: Container) {

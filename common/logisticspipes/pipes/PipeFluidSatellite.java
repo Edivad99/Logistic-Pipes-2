@@ -129,7 +129,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	}
 
 	@Override
-	public void setReceivedChestContent(Collection<ItemIdentifierStack> list) {
+	public void setReceivedChestContent(Collection<@Nullable ItemIdentifierStack> list) {
 		itemList.clear();
 		itemList.addAll(list);
 	}

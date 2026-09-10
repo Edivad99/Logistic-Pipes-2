@@ -7,6 +7,8 @@
 
 package logisticspipes.client.gui.screen;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Locale;
 import java.util.Optional;
 
@@ -98,7 +100,7 @@ public class SneakyConfiguratorScreen extends ModuleBaseScreen<SneakyDirectionMe
             panelHeight, 256, 256);
     }
 
-    private String getButtonOrientationString(Direction orientation) {
+    private String getButtonOrientationString(@Nullable Direction orientation) {
         String s = (orientation == null ? "DEFAULT" : orientation.name());
         if (orientation == directionReceiver.getSneakyDirection()) {
             return "\u00a7a>" + s + "<";

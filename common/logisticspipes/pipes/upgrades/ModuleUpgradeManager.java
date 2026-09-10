@@ -97,6 +97,7 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 	}
 
 	@Override
+	@Nullable
 	public Direction getSneakyOrientation() {
 		if (sneakyOrientation != null) {
 			return sneakyOrientation;
