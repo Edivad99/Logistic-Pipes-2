@@ -3,6 +3,8 @@ package logisticspipes.proxy.computers.objects;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.proxy.computers.interfaces.ICCTypeWrapped;
@@ -53,7 +55,7 @@ public class CCItemIdentifier implements ILPCCTypeDefinition {
 		}
 
 		@CCCommand(description = "Returns the tag of this ItemIdentifier")
-		public CompoundTag getTagCompound() {
+		public @Nullable CompoundTag getTagCompound() {
 			return ident.getCustomDataTag();
 		}
 
@@ -88,7 +90,7 @@ public class CCItemIdentifier implements ILPCCTypeDefinition {
 		}
 
 		@CCCommand(description = "Returns an FluidIdentifier if one exists for this ItemIdentifier")
-		public FluidIdentifier getFluidContainer() {
+		public @Nullable FluidIdentifier getFluidContainer() {
 			return FluidIdentifier.get(ident);
 		}
 

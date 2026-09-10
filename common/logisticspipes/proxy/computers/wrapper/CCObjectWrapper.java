@@ -8,6 +8,8 @@ import java.util.WeakHashMap;
 
 import net.minecraft.nbt.Tag;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCQueued;
 import logisticspipes.proxy.computers.interfaces.CCSecurtiyCheck;
@@ -96,7 +98,7 @@ public class CCObjectWrapper {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Object getWrappedObject(Object input, final ICommandWrapper wrapper) {
+	public static @Nullable Object getWrappedObject(Object input, final ICommandWrapper wrapper) {
 		if (input instanceof Object[]) {
 			Object[] array = (Object[]) input;
 			for (int i = 0; i < array.length; i++) {
