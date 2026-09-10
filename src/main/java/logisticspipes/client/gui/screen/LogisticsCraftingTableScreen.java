@@ -1,5 +1,7 @@
 package logisticspipes.client.gui.screen;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Arrays;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -67,7 +69,7 @@ public class LogisticsCraftingTableScreen extends LogisticsBaseGuiScreen<AutoCra
         }
         LPGuiGraphics.drawPlayerInventoryBackground(guiGraphics, leftPos + 8, topPos + 135);
 
-        ItemIdentifierStack[] items = new ItemIdentifierStack[9];
+        @Nullable ItemIdentifierStack[] items = new ItemIdentifierStack[9];
         for (int i = 0; i < 9; i++) {
             if (crafter.matrix.getIDStackInSlot(i) != null) {
                 items[i] = crafter.matrix.getIDStackInSlot(i);

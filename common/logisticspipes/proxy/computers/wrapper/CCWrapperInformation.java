@@ -1,5 +1,7 @@
 package logisticspipes.proxy.computers.wrapper;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,5 +16,5 @@ public class CCWrapperInformation {
 	public HashMap<Integer, String> commandMap = new HashMap<>();
 	public Map<Integer, Method> commands = new LinkedHashMap<>();
 	public Map<String, Pair<Boolean, String>> commandTypes = new LinkedHashMap<>();
-	public Method securityMethod = null;
+	public @Nullable Method securityMethod = null;
 }

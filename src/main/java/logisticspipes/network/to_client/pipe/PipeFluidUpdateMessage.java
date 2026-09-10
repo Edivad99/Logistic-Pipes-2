@@ -1,5 +1,7 @@
 package logisticspipes.network.to_client.pipe;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
@@ -41,7 +43,7 @@ public record PipeFluidUpdateMessage(BlockPos pos, List<FluidStack> sides) imple
             || !(be.pipe.transport instanceof PipeFluidTransportLogistics transport)) {
             return;
         }
-        final FluidStack[] sides = new FluidStack[Direction.values().length];
+        final @Nullable FluidStack[] sides = new FluidStack[Direction.values().length];
         for (int i = 0; i < sides.length; i++) {
             // The render cache uses null, not an empty stack, for a side with nothing on it.
             final FluidStack side = i < message.sides.size() ? message.sides.get(i) : FluidStack.EMPTY;

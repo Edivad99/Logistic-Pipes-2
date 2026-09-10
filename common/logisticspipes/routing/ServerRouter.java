@@ -111,8 +111,8 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	public Map<CoreRoutedPipe, ExitRoute> adjacent = new HashMap<>();
 	public Map<ServerRouter, ExitRoute> adjacentRouter = new HashMap<>();
 	public Map<ServerRouter, ExitRoute> adjacentRouterOld = new HashMap<>();
-	public List<Pair<ILogisticsPowerProvider, List<IFilter>>> powerAdjacent = new ArrayList<>();
-	public List<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPowerAdjacent = new ArrayList<>();
+	public @Nullable List<Pair<ILogisticsPowerProvider, List<IFilter>>> powerAdjacent = new ArrayList<>();
+	public @Nullable List<Pair<ISubSystemPowerProvider, List<IFilter>>> subSystemPowerAdjacent = new ArrayList<>();
 	public boolean[] sideDisconnected = new boolean[6];
 	/**
 	 * Map of router -> orientation for all known destinations

@@ -69,7 +69,7 @@ public class FluidLogisticsPromise implements IPromise {
 	}
 
 	@Override
-	public ResourceType getType() {
+	public @Nullable ResourceType getType() {
 		return type;
 	}
 

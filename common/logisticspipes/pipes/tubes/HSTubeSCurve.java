@@ -34,7 +34,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 
 	@Getter
 	private CurveSOrientation orientation;
-	private List<AABB> boxes = null;
+	private @Nullable List<AABB> boxes = null;
 
 	public HSTubeSCurve(Item item) {
 		super(new PipeMultiBlockTransportLogistics(), item);

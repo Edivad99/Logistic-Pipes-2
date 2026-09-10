@@ -28,7 +28,7 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 	private final @Nullable IPipeUpgrade[] upgrades = new @Nullable IPipeUpgrade[2];
 	private final PipeLogisticsChassis pipe; // FIXME: get rid of this pipe reference
 
-	private Direction sneakyOrientation = null;
+	private @Nullable Direction sneakyOrientation = null;
 	private boolean isAdvancedCrafter = false;
 	private boolean isFuzzyUpgrade = false;
 	private int liquidCrafter = 0;

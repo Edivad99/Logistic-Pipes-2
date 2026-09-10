@@ -46,8 +46,8 @@ public class UpgradeManager
 	private int securityDelay = 0;
 
 	/* cached attributes */
-	private Direction sneakyOrientation = null;
-	private Direction[] combinedSneakyOrientation = new Direction[9];
+	private @Nullable Direction sneakyOrientation = null;
+	private @Nullable Direction[] combinedSneakyOrientation = new Direction[9];
 	private int speedUpgradeCount = 0;
 	private final EnumSet<Direction> disconnectedSides = EnumSet.noneOf(Direction.class);
 	private boolean isAdvancedCrafter = false;
@@ -55,8 +55,8 @@ public class UpgradeManager
 	private boolean isCombinedSneakyUpgrade = false;
 	private int liquidCrafter = 0;
 	private boolean hasByproductExtractor = false;
-	private UUID uuid = null;
-	private String uuidS = null;
+	private @Nullable UUID uuid = null;
+	private @Nullable String uuidS = null;
 	private boolean hasPatternUpgrade = false;
 	private boolean hasPowerPassUpgrade = false;
 	private boolean hasRFPowerUpgrade = false;
@@ -274,6 +274,7 @@ public class UpgradeManager
 	}
 
 	@Override
+	@Nullable
 	public Direction getSneakyOrientation() {
 		return sneakyOrientation;
 	}
@@ -383,6 +384,7 @@ public class UpgradeManager
 		return false;
 	}
 
+	@Nullable
 	public UUID getSecurityID() {
 		return uuid;
 	}

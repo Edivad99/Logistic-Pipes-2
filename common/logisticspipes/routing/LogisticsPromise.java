@@ -29,7 +29,7 @@ public class LogisticsPromise implements IPromise {
 	public ItemIdentifier item;
 	public int numberOfItems;
 	public IProvideItems sender;
-	public ResourceType type;
+	public @Nullable ResourceType type;
 
 	public LogisticsPromise(ItemIdentifier item, int numberOfItems, IProvideItems sender, ResourceType type) {
 		this.item = item;
@@ -70,7 +70,7 @@ public class LogisticsPromise implements IPromise {
 	}
 
 	@Override
-	public ResourceType getType() {
+	public @Nullable ResourceType getType() {
 		return type;
 	}
 

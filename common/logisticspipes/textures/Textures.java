@@ -1,5 +1,7 @@
 package logisticspipes.textures;
 
+import org.jspecify.annotations.Nullable;
+
 
 import logisticspipes.LogisticsPipes;
 import logisticspipes.renderer.IIconProvider;
@@ -61,10 +63,10 @@ public class Textures {
 	public static SmallTextureType LOGISTICSPIPE_BASIC_TRANSPORT_TEXTURE = Textures.smallEmpty;
 
 	public static Object[] LOGISTICS_REQUEST_TABLE = new Object[0];
-	public static Object LOGISTICS_REQUEST_TABLE_NEW = null;
-	public static Object LOGISTICS_REQUEST_TABLE_NEW_ROUTED = null;
-	public static Object LOGISTICS_REQUEST_TABLE_NEW_UNROUTED = null;
-	public static Object LOGISTICS_REQUEST_TABLE_NEW_EMPTY = null;
+	public static @Nullable Object LOGISTICS_REQUEST_TABLE_NEW = null;
+	public static @Nullable Object LOGISTICS_REQUEST_TABLE_NEW_ROUTED = null;
+	public static @Nullable Object LOGISTICS_REQUEST_TABLE_NEW_UNROUTED = null;
+	public static @Nullable Object LOGISTICS_REQUEST_TABLE_NEW_EMPTY = null;
 
 	public static int LOGISTICSPIPE_LIQUID_CONNECTOR = 0;
 	/*	public static TextureAtlasSprite LOGISTICSACTIONTRIGGERS_DISABLED;

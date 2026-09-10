@@ -1,5 +1,7 @@
 package logisticspipes.utils.gui;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -9,8 +11,8 @@ import logisticspipes.interfaces.ISlotCheck;
 
 public class RestrictedSlot extends Slot {
 
-	private final Item item;
-	private final ISlotCheck slotCheck;
+	private final @Nullable Item item;
+	private final @Nullable ISlotCheck slotCheck;
 
 	public RestrictedSlot(Container container, int slot, int x, int y, Class<? extends Item> itemClass) {
 		super(container, slot, x, y);

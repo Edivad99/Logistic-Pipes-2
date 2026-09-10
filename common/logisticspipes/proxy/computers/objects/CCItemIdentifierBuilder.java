@@ -1,5 +1,7 @@
 package logisticspipes.proxy.computers.objects;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 
 import net.minecraft.core.component.DataComponentPatch;
@@ -18,7 +20,7 @@ public class CCItemIdentifierBuilder implements ILPCCTypeHolder {
 
 	private final Object[] ccTypeHolder = new Object[1];
 	private int itemID = 0;
-	private String itemIDName = null;
+	private @Nullable String itemIDName = null;
 	private int itemData = 0;
 
 	@CCCommand(description = "Set the itemID for this ItemIdentifierBuilder")

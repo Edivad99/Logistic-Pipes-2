@@ -44,8 +44,8 @@ public class RequestTreeNode {
 	protected final RequestTree root;
 	@Getter
 	private final IResource requestType;
-	private final IAdditionalTargetInformation info;
-	private final RequestTreeNode parentNode;
+	private final @Nullable IAdditionalTargetInformation info;
+	private final @Nullable RequestTreeNode parentNode;
 	private List<RequestTreeNode> subRequests = new ArrayList<>();
 	private List<IPromise> promises = new ArrayList<>();
 	private List<IExtraPromise> extrapromises = new ArrayList<>();

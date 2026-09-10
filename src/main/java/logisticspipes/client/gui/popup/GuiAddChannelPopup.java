@@ -25,10 +25,10 @@ public class GuiAddChannelPopup extends SubGuiScreen {
 
     private static final String GUI_LANG_KEY = "gui.popup.addchannel.";
     protected final UUID responsibleSecurityID;
-    protected InputBar textInput = null;
-    protected GuiCheckBox checkPublic = null;
-    protected GuiCheckBox checkSecurity = null;
-    protected GuiCheckBox checkPrivate = null;
+    protected @Nullable InputBar textInput = null;
+    protected @Nullable GuiCheckBox checkPublic = null;
+    protected @Nullable GuiCheckBox checkSecurity = null;
+    protected @Nullable GuiCheckBox checkPrivate = null;
 
     public GuiAddChannelPopup(UUID responsibleSecurityID) {
         super(118, 140, 0, 0);

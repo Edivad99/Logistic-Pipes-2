@@ -1,5 +1,7 @@
 package logisticspipes.client.model.mesh;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Arrays;
 
 /**
@@ -10,9 +12,9 @@ public final class ObjMeshBuilder {
 
     private static final int INITIAL_QUADS = 16;
 
-    private float[] pos;
-    private float[] uv;
-    private float[] normal;
+    private @Nullable float[] pos;
+    private @Nullable float[] uv;
+    private @Nullable float[] normal;
     private int quadCount;
 
     public ObjMeshBuilder() {

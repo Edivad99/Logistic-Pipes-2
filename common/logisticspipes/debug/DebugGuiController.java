@@ -55,7 +55,7 @@ public class DebugGuiController {
 	private final HashMap<Player, IDebugGuiEntry> serverDebugger = new HashMap<>();
 	private final List<IDataConnection> serverList = new LinkedList<>();
 
-	private IDebugGuiEntry clientController = null;
+	private @Nullable IDebugGuiEntry clientController = null;
 	private final List<Future<IDataConnection>> clientList = new LinkedList<>();
 	private final Map<Integer, List<byte[]>> pendingClientData = new HashMap<>();
 

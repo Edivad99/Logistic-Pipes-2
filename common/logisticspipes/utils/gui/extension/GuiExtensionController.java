@@ -1,5 +1,7 @@
 package logisticspipes.utils.gui.extension;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public class GuiExtensionController {
 	private final List<GuiExtension> extensionsToRemove = new ArrayList<>();
 	@Setter
 	private int maxBottom;
-	private GuiExtension currentlyExtended = null;
+	private @Nullable GuiExtension currentlyExtended = null;
 	private Map<Slot, Integer> slotMap = new HashMap<>();
 	private Map<AbstractWidget, Integer> buttonMap = new HashMap<>();
 

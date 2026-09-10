@@ -72,7 +72,7 @@ public abstract class DummyMenu extends AbstractContainerMenu implements IJeiScr
 
     @Getter
     private final Player player;
-    private final BlockEntity blockEntity;
+    private final @Nullable BlockEntity blockEntity;
 
     protected DummyMenu(@Nullable MenuType<?> menuType, int containerId, Player player,
         @Nullable BlockEntity blockEntity) {

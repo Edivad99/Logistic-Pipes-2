@@ -1,5 +1,7 @@
 package logisticspipes.client.gui.popup;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -28,7 +30,7 @@ public class SelectItemOutOfList extends SubGuiScreen implements IItemSearch {
 
     private final List<ItemIdentifierStack> candidate;
     private final IHandleItemChoice handler;
-    private ItemDisplay itemDisplay = null;
+    private @Nullable ItemDisplay itemDisplay = null;
     private InputBar search;
 
     public SelectItemOutOfList(List<ItemIdentifierStack> candidate, IHandleItemChoice handler) {

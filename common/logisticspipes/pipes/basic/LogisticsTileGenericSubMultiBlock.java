@@ -36,9 +36,9 @@ import logisticspipes.world.level.block.entity.LPBlockEntityTypes;
 public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements ISubMultiBlockPipeInformationProvider {
 
 	private Set<BlockPos> mainPipePos = new HashSet<>();
-	private List<LogisticsTileGenericPipe> mainPipe;
+	private @Nullable List<LogisticsTileGenericPipe> mainPipe;
 	private List<CoreMultiBlockPipe.SubBlockTypeForShare> subTypes = new ArrayList<>();
-	private TileBuffer[] tileBuffer;
+	private TileBuffer @Nullable [] tileBuffer;
 
 	public LogisticsTileGenericSubMultiBlock(BlockPos blockPos, BlockState blockState) {
 		super(LPBlockEntityTypes.SUB_PIPE.get(), blockPos, blockState);

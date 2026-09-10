@@ -113,8 +113,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 	private boolean sendInitPacket = true;
 	@Getter
 	private boolean initialized = false;
-    @Nullable
-	private TileBuffer[] tileBuffer;
+	private TileBuffer @Nullable [] tileBuffer;
 	private boolean sendClientUpdate = false;
 	private boolean blockNeighborChange = false;
 	private boolean refreshRenderState = false;
@@ -796,7 +795,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 		sendClientUpdate = true;
 	}
 
-	public TileBuffer[] getTileCache() {
+	public TileBuffer @Nullable [] getTileCache() {
 		if (tileBuffer == null && pipe != null) {
 			tileBuffer = TileBuffer.makeBuffer(this.level, this.worldPosition, pipe.transport.delveIntoUnloadedChunks());
 		}
@@ -865,7 +864,6 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 	}
 
 	/** Used by RegisterCapabilitiesEvent wiring in LPRegistries. */
-	@Nullable
 	public ItemInsertionHandler getItemHandlerForSide(@Nullable Direction side) {
 		return itemInsertionHandlers != null ? itemInsertionHandlers.get(side) : null;
 	}

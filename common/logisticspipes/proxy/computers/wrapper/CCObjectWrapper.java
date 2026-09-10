@@ -100,7 +100,7 @@ public class CCObjectWrapper {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static @Nullable Object getWrappedObject(Object input, final ICommandWrapper wrapper) {
 		if (input instanceof Object[]) {
-			Object[] array = (Object[]) input;
+			@Nullable Object[] array = (Object[]) input;
 			for (int i = 0; i < array.length; i++) {
 				array[i] = CCObjectWrapper.getWrappedObject(array[i], wrapper);
 			}

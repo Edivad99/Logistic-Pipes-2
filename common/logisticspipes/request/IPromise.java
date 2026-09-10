@@ -21,6 +21,7 @@ public interface IPromise {
 
 	ItemIdentifier getItemType();
 
+	@Nullable
 	ResourceType getType();
 
 	@Nullable

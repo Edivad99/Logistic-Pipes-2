@@ -179,7 +179,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
     @Nullable
 	protected LogisticsItemOrderManager orderItemManager = null;
 	protected int throttleTime = 20;
-	protected IPipeSign[] signItem = new IPipeSign[6];
+	protected @Nullable IPipeSign[] signItem = new IPipeSign[6];
 	private boolean recheckConnections = false;
 	@Setter
     @Getter

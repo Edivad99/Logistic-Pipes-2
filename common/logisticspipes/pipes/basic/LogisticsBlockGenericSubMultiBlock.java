@@ -118,7 +118,7 @@ public class LogisticsBlockGenericSubMultiBlock extends Block implements EntityB
 	// getIcon_DEAD — stub removed; IBlockAccess and TextureAtlasSprite-based getIcon removed in 1.20.1
 	*/
 
-	public static BlockPos currentCreatedMultiBlock;
+	public static @Nullable BlockPos currentCreatedMultiBlock;
 
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,

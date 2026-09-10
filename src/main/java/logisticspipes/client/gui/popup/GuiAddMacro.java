@@ -1,5 +1,7 @@
 package logisticspipes.client.gui.popup;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +55,7 @@ public class GuiAddMacro extends SubGuiScreen implements IItemSearch {
     private String Search2 = "";
     private boolean displayCursor = false;
     private long oldSystemTime = 0;
-    private ItemTooltip tooltip;
+    private @Nullable ItemTooltip tooltip;
 
     public GuiAddMacro(IDiskProvider diskProvider, String macroName) {
         super(200, 200, 0, 0);

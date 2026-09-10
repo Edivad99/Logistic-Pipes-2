@@ -33,7 +33,7 @@ public class HSTubeGain extends CoreMultiBlockPipe {
 
 	@Getter
 	private TubeGainOrientation orientation;
-	private List<AABB> boxes = null;
+	private @Nullable List<AABB> boxes = null;
 
 	public HSTubeGain(Item item) {
 		super(new PipeMultiBlockTransportLogistics(), item);
