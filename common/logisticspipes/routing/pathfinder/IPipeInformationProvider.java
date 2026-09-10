@@ -67,5 +67,5 @@ public interface IPipeInformationProvider {
 
 	boolean isMultiBlock();
 
-	Stream<BlockEntity> getPartsOfPipe();
+	Stream<@Nullable BlockEntity> getPartsOfPipe();
 }

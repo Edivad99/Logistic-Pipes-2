@@ -946,7 +946,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 	}
 
 	@Override
-	public Stream<BlockEntity> getPartsOfPipe() {
+	public Stream<@Nullable BlockEntity> getPartsOfPipe() {
 		return this.subMultiBlock.stream().map(level::getBlockEntity);
 	}
 

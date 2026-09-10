@@ -84,7 +84,7 @@ public class ModuleProvider extends LogisticsModule implements SneakyDirection, 
 		IClientInformationProvider, IHUDModuleHandler, IModuleWatchReceiver, IModuleInventoryReceive,
 		IModuleMenuProvider {
 
-	public final ArrayList<ItemIdentifierStack> displayList = new ArrayList<>();
+	public final ArrayList<@Nullable ItemIdentifierStack> displayList = new ArrayList<>();
 	public final ItemIdentifierInventoryProperty filterInventory = new ItemIdentifierInventoryProperty(
 			new ItemIdentifierInventory(9, "Items to provide (or empty for all)", 1), "filterInv");
 	public final BooleanProperty isActive = new BooleanProperty(false, "isActive");

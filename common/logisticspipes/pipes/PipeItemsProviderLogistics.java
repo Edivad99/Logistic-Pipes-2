@@ -45,7 +45,7 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 
 public class PipeItemsProviderLogistics extends CoreRoutedPipe implements IProvideItems, IHeadUpDisplayRendererProvider, IChestContentReceiver, IOrderManagerContentReceiver {
 
-	public final LinkedList<ItemIdentifierStack> itemListOrderer = new LinkedList<>();
+	public final LinkedList<@Nullable ItemIdentifierStack> itemListOrderer = new LinkedList<>();
 	private final HUDProvider HUD = new HUDProvider(this);
 
 	protected final ModuleProvider providerModule = new ModuleProvider();

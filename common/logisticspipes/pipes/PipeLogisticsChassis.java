@@ -122,7 +122,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	private boolean init = false;
 
 	// HUD
-	public final LinkedList<ItemIdentifierStack> displayList = new LinkedList<>();
+	public final LinkedList<@Nullable ItemIdentifierStack> displayList = new LinkedList<>();
 	public final PlayerCollectionList localModeWatchers = new PlayerCollectionList();
 	private final HudChassisPipe hud;
 
@@ -617,7 +617,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 				HudUpdateTick.add(getRouter());
 			} else {
 				if (localModeWatchers.size() > 0) {
-					LinkedList<ItemIdentifierStack> items = ItemIdentifierStack.getListSendQueue(sendQueue);
+					LinkedList<@Nullable ItemIdentifierStack> items = ItemIdentifierStack.getListSendQueue(sendQueue);
 					localModeWatchers.send(new SendQueueContentMessage(getPos(), items));
 					return items.size();
 				}

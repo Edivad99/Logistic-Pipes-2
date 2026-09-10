@@ -392,7 +392,7 @@ public class PathFinder {
 		return foundPipes;
 	}
 
-	private void listTileEntity(BlockEntity tile) {
+	private void listTileEntity(@Nullable BlockEntity tile) {
 		if (changeListener != null && tile instanceof ILPTEInformation && ((ILPTEInformation) tile).getLPTileEntityObject() != null) {
 			if (!((ILPTEInformation) tile).getLPTileEntityObject().changeListeners.contains(changeListener)) {
 				((ILPTEInformation) tile).getLPTileEntityObject().changeListeners.add(changeListener);

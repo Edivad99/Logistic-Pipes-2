@@ -71,7 +71,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 	private HashMap<ItemIdentifier, List<ItemRoutingInformation>> itemsOnRoute = new HashMap<>();
 	public int resistance;
 	public Set<ItemIdentifierStack> oldList = new TreeSet<>();
-	public final LinkedList<ItemIdentifierStack> displayList = new LinkedList<>();
+	public final LinkedList<@Nullable ItemIdentifierStack> displayList = new LinkedList<>();
 	public final PlayerCollectionList localModeWatchers = new PlayerCollectionList();
 	public final PlayerCollectionList localGuiWatchers = new PlayerCollectionList();
 	private HUDInvSysConnector HUD = new HUDInvSysConnector(this);

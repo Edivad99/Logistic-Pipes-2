@@ -66,7 +66,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	}
 
 	public final PlayerCollectionList localModeWatchers = new PlayerCollectionList();
-	private final LinkedList<ItemIdentifierStack> itemList = new LinkedList<>();
+	private final LinkedList<@Nullable ItemIdentifierStack> itemList = new LinkedList<>();
 	private final HUDSatellite HUD = new HUDSatellite(this);
 	protected final LinkedList<ItemIdentifierStack> lostItems = new LinkedList<>();
 	private final ModuleSatellite moduleSatellite;

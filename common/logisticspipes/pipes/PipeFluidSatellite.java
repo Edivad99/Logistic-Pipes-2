@@ -62,7 +62,7 @@ public class PipeFluidSatellite extends FluidRoutedPipe implements IRequestFluid
 	}
 
 	public final PlayerCollectionList localModeWatchers = new PlayerCollectionList();
-	private final List<ItemIdentifierStack> itemList = new LinkedList<>();
+	private final List<@Nullable ItemIdentifierStack> itemList = new LinkedList<>();
 	private final List<ItemIdentifierStack> oldList = new LinkedList<>();
 	private final HUDSatellite HUD = new HUDSatellite(this);
 	protected final Map<FluidIdentifier, Integer> lostItems = new HashMap<>();
