@@ -217,7 +217,7 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
         private final List<AbstractButton> BUTTONS = new ArrayList<>();
         private final List<String> graphTexts = new ArrayList<>();
         private final List<int[]> graphTextPos = new ArrayList<>();
-        private ItemDisplay itemDisplay;
+        private @Nullable ItemDisplay itemDisplay;
         private float xViewportOffset = -1434;
         private float yViewportOffset;
         private float xViewportScale = 15;
@@ -226,7 +226,7 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
         private boolean isDraggingXBar = false;
         private boolean isDraggingYBar = false;
         // Buffered text labels populated in draw(), drawn in drawForegroundLayer()
-        private String taskNameLabel = null;
+        private @Nullable String taskNameLabel = null;
         // What the vertical scale was fitted to, so panning and zooming survive a redraw
         private @Nullable ItemIdentifier fittedItem;
         private long fittedMax = -1;
@@ -600,7 +600,7 @@ public class StatisticsScreen extends LogisticsBaseGuiScreen<StatisticsMenu> {
     private class TabCrafting implements StatisticsTab {
 
         private final List<AbstractButton> BUTTONS = new ArrayList<>();
-        private ItemDisplay itemDisplay;
+        private @Nullable ItemDisplay itemDisplay;
 
         @Override
         public void init() {

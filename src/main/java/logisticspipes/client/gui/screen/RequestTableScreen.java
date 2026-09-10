@@ -33,6 +33,8 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConfigs;
 import logisticspipes.client.gui.popup.GuiDiskPopup;
 import logisticspipes.client.gui.popup.GuiRequestPopup;
@@ -84,17 +86,17 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
     private final AbstractButton[] cycleButtons = new AbstractButton[2];
     private final IChainAddList<AbstractWidget> moveWhileSmall = new ChainAddArrayList<>();
     private final IChainAddList<AbstractWidget> hideWhileSmall = new ChainAddArrayList<>();
-    public ItemDisplay itemDisplay;
+    public @Nullable ItemDisplay itemDisplay;
     public Identifier dimension;
     protected DisplayOptions displayOptions = DisplayOptions.Both;
     private SmallGuiButton macroButton;
-    private InputBar search;
+    private @Nullable InputBar search;
     private boolean showRequest = true;
     private int startLeft;
     private int startXSize;
     private int orderIdForButton;
     private AbstractButton hideShowButton;
-    private GuiCheckBox popupCheck;
+    private @Nullable GuiCheckBox popupCheck;
 
     public RequestTableScreen(RequestTableMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 410, 240, 0, 0);
@@ -256,7 +258,7 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
                     private final Map<Pair<Integer, Integer>, IOrderInfoProvider> ordererPosition = new HashMap<>();
                     private int height;
                     private int width = 4;
-                    private AbstractButton localControlledButton;
+                    private @Nullable AbstractButton localControlledButton;
 
                     @Override
                     public void renderForeground(GuiGraphicsExtractor guiGraphics, int left, int top) {

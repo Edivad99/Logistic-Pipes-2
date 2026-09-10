@@ -1,5 +1,7 @@
 package logisticspipes.renderer.state;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -30,7 +32,7 @@ public class ConnectionMatrix {
 		}
 	}
 
-	public boolean isBCConnected(Direction direction) {
+	public boolean isBCConnected(@Nullable Direction direction) {
 		// test if the direction.ordinal()'th bit of mask is set
 		return direction != null && (isBCPipeMask & (1 << direction.ordinal())) != 0;
 	}
@@ -43,7 +45,7 @@ public class ConnectionMatrix {
 		}
 	}
 
-	public boolean isTDConnected(Direction direction) {
+	public boolean isTDConnected(@Nullable Direction direction) {
 		// test if the direction.ordinal()'th bit of mask is set
 		return direction != null && (isTDPipeMask & (1 << direction.ordinal())) != 0;
 	}

@@ -92,7 +92,7 @@ public abstract class LogisticsBaseGuiScreen<T extends AbstractContainerMenu>
     private AbstractWidget selectedButton;
     private int currentDrawScreenMouseX;
     private int currentDrawScreenMouseY;
-    private IFuzzySlot fuzzySlot;
+    private @Nullable IFuzzySlot fuzzySlot;
     private boolean fuzzySlotActiveGui;
     private int fuzzySlotGuiHoverTime;
 
@@ -226,7 +226,7 @@ public abstract class LogisticsBaseGuiScreen<T extends AbstractContainerMenu>
      * {@code AbstractFurnaceScreen} does. LP keeps a hook of its own only because dozens of screens
      * override it and because the argument order differs.</p>
      *
-     * <p>Same name and argument order as {@link SubGuiScreen#extractGuiBackground}, which is the
+     * <p>Same name and argument order as {@code SubGuiScreen.extractGuiBackground}, which is the
      * matching hook on the popup side.</p>
      */
     protected void extractGuiBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {

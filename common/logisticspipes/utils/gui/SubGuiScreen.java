@@ -49,7 +49,7 @@ public abstract class SubGuiScreen extends Screen implements ISubGuiController, 
 	}
 	protected int xCenterOffset;
 	protected int yCenterOffset;
-	protected ISubGuiController controller;
+	protected @Nullable ISubGuiController controller;
     @Nullable
 	private SubGuiScreen subGui;
 

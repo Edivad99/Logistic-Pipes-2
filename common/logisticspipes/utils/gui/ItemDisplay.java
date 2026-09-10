@@ -40,7 +40,7 @@ public class ItemDisplay {
 	private static final int PANELSIZEX = 20;
 	private static final int PANELSIZEY = 20;
 
-	private ItemIdentifierStack selectedItem = null;
+	private @Nullable ItemIdentifierStack selectedItem = null;
 	public final LinkedList<ItemIdentifierStack> allItems = new LinkedList<>();
 	private final Map<Pair<Integer, Integer>, ItemIdentifierStack> map = new HashMap<>();
 
@@ -53,10 +53,10 @@ public class ItemDisplay {
 	private ItemTooltip tooltip = null;
 	private boolean listbyserver = false;
 
-	private final IItemSearch search;
+	private final @Nullable IItemSearch search;
 	private final Font font;
 	private final LogisticsBaseGuiScreen<?> screen;
-	private final ISpecialItemRenderer renderer;
+	private final @Nullable ISpecialItemRenderer renderer;
 	private int left, top, height, width, amountPosLeft, amountPosTop, amountWidth;
 	private int itemsPerPage;
 	private final int[] amountChangeMode;
@@ -64,7 +64,9 @@ public class ItemDisplay {
 	private static DisplayOption option = DisplayOption.ID;
 	private final ItemStackRenderer stackRenderer = new ItemStackRenderer(0, 0, 100.0F, false, false);
 
-	public ItemDisplay(IItemSearch search, Font font, LogisticsBaseGuiScreen<?> screen, ISpecialItemRenderer renderer, int left, int top, int width, int height, int amountPosLeft, int amountPosTop, int amountWidth, int[] amountChangeMode, boolean shiftPageChange) {
+	public ItemDisplay(@Nullable IItemSearch search, Font font, LogisticsBaseGuiScreen<?> screen, @Nullable ISpecialItemRenderer renderer,
+			int left, int top, int width, int height, int amountPosLeft, int amountPosTop, int amountWidth, int[] amountChangeMode,
+			boolean shiftPageChange) {
 		this.search = search;
 		this.font = font;
 		this.screen = screen;
@@ -464,7 +466,7 @@ public class ItemDisplay {
 		requestCountBar.setInteger(requestCountBar.getInteger() - getAmountChangeMode(i));
 	}
 
-	public ItemIdentifierStack getSelectedItem() {
+	public @Nullable ItemIdentifierStack getSelectedItem() {
 		return selectedItem;
 	}
 

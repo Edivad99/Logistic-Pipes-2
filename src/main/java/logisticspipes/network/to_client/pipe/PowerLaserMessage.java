@@ -11,6 +11,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConstants;
 import logisticspipes.network.TargetLookup;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
@@ -51,7 +53,7 @@ public record PowerLaserMessage(
     /**
      * A laser appearing along {@code direction}.
      */
-    public static PowerLaserMessage add(BlockPos pos, Direction direction, int color, float length,
+    public static PowerLaserMessage add(BlockPos pos, @Nullable Direction direction, int color, float length,
         boolean reverse, boolean renderBall) {
         return new PowerLaserMessage(pos, Optional.ofNullable(direction), color, length, reverse, renderBall,
             false);
@@ -60,7 +62,7 @@ public record PowerLaserMessage(
     /**
      * A laser going away. Only the colour, the side and the kind are needed to find it again.
      */
-    public static PowerLaserMessage remove(BlockPos pos, Direction direction, int color, boolean renderBall) {
+    public static PowerLaserMessage remove(BlockPos pos, @Nullable Direction direction, int color, boolean renderBall) {
         return new PowerLaserMessage(pos, Optional.ofNullable(direction), color, 0, false, renderBall, true);
     }
 

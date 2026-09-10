@@ -10,6 +10,8 @@ import io.netty.buffer.ByteBuf;
 
 import lombok.Getter;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConfigs;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
@@ -33,7 +35,7 @@ public class TextureMatrix {
 	@Getter
 	private boolean isFluid;
 	@Getter
-	private Direction pointedOrientation;
+	private @Nullable Direction pointedOrientation;
 
 	private boolean dirty = true;
 
@@ -103,14 +105,14 @@ public class TextureMatrix {
 		dirty = true;
 	}
 
-	public boolean isRoutedInDir(Direction dir) {
+	public boolean isRoutedInDir(@Nullable Direction dir) {
 		if (dir == null) {
 			return false;
 		}
 		return isRoutedInDir[dir.ordinal()];
 	}
 
-	public boolean isSubPowerInDir(Direction dir) {
+	public boolean isSubPowerInDir(@Nullable Direction dir) {
 		if (dir == null) {
 			return false;
 		}
