@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import net.minecraft.core.Direction;
@@ -76,12 +77,16 @@ public class ExitRoute implements Comparable<ExitRoute> {
 			return true;
 		}
 
-		if (!(aThat instanceof ExitRoute)) {
+		if (!(aThat instanceof ExitRoute that)) {
 			return false;
 		}
-		ExitRoute that = (ExitRoute) aThat;
-		return exitOrientation.equals(that.exitOrientation) && insertOrientation.equals(that.insertOrientation) && connectionDetails.equals(that.connectionDetails) && distanceToDestination == that.distanceToDestination && destinationDistanceToRoot == that.destinationDistanceToRoot && destination == that.destination
-				&& filters.equals(that.filters);
+		return Objects.equals(exitOrientation, that.exitOrientation) &&
+            Objects.equals(insertOrientation, that.insertOrientation) &&
+            connectionDetails.equals(that.connectionDetails) &&
+            distanceToDestination == that.distanceToDestination &&
+            destinationDistanceToRoot == that.destinationDistanceToRoot &&
+            destination == that.destination &&
+            filters.equals(that.filters);
 	}
 
 	public boolean isSameWay(ExitRoute that) {

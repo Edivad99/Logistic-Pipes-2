@@ -40,7 +40,11 @@ public interface IRouter {
 
 	@Nullable ExitRoute getExitFor(int id, boolean active, ItemIdentifier type);
 
-	List<List<ExitRoute>> getRouteTable();
+	/**
+	 * The route table, indexed by router id, with a null entry for every id this router has no route
+	 * to -- the list is sized by the largest id in the network, not by how many are reachable.
+	 */
+	List<@Nullable List<ExitRoute>> getRouteTable();
 
 	List<ExitRoute> getIRoutersByCost();
 

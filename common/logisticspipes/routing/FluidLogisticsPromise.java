@@ -7,6 +7,8 @@
 
 package logisticspipes.routing;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IProvide;
 import logisticspipes.interfaces.routing.IProvideFluids;
@@ -72,7 +74,7 @@ public class FluidLogisticsPromise implements IPromise {
 	}
 
 	@Override
-	public IOrderInfoProvider fullFill(IResource requestType, IAdditionalTargetInformation info) {
+	public @Nullable IOrderInfoProvider fullFill(IResource requestType, @Nullable IAdditionalTargetInformation info) {
 		return sender.fullFill(this, ((FluidResource) requestType).getTarget(), type, info);
 	}
 }

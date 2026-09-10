@@ -12,10 +12,10 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 
 public class LogisticsFluidOrder extends LogisticsOrder {
 
-	public LogisticsFluidOrder(FluidIdentifier fuild, Integer amount, IRequestFluid destination, ResourceType type,
+	public LogisticsFluidOrder(FluidIdentifier fluid, Integer amount, IRequestFluid destination, ResourceType type,
 			@Nullable IAdditionalTargetInformation info) {
 		super(type, info);
-		fluid = fuild;
+		this.fluid = fluid;
 		this.amount = amount;
 		this.destination = destination;
 	}

@@ -54,7 +54,7 @@ public class RouteLayer {
 		}
 
 		// Are we the destination? Deliver it
-		if (item.getDestinationUUID().equals(router.getId())) {
+		if (router.getId().equals(item.getDestinationUUID())) {
 
 			transport.handleItem(item);
 

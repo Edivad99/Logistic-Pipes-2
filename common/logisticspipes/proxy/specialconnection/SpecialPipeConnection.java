@@ -2,10 +2,10 @@ package logisticspipes.proxy.specialconnection;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.core.Direction;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import org.jspecify.annotations.Nullable;
@@ -37,8 +37,15 @@ public class SpecialPipeConnection {
 		return List.of();
 	}
 
+	/**
+	 * One end of a special connection, as the handler that owns it describes it.
+	 *
+	 * <p>The two orientations are checked here rather than where they are used: the path finder
+	 * stamps {@code exitOrientation} onto every route it found beyond this connection, and the
+	 * router then reads it without asking. A handler that supplied null would crash several frames
+	 * later, inside the routing table build, with nothing left to say who was at fault.
+	 */
 	@Data
-	@AllArgsConstructor
 	public static class ConnectionInformation {
 
 		private IPipeInformationProvider connectedPipe;
@@ -46,5 +53,14 @@ public class SpecialPipeConnection {
 		private Direction insertOrientation;
 		private Direction exitOrientation;
 		private double distance;
+
+		public ConnectionInformation(IPipeInformationProvider connectedPipe, EnumSet<PipeRoutingConnectionType> connectionFlags,
+				Direction insertOrientation, Direction exitOrientation, double distance) {
+			this.connectedPipe = Objects.requireNonNull(connectedPipe, "connectedPipe");
+			this.connectionFlags = Objects.requireNonNull(connectionFlags, "connectionFlags");
+			this.insertOrientation = Objects.requireNonNull(insertOrientation, "insertOrientation");
+			this.exitOrientation = Objects.requireNonNull(exitOrientation, "exitOrientation");
+			this.distance = distance;
+		}
 	}
 }

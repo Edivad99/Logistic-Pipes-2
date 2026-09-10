@@ -2,13 +2,9 @@ package logisticspipes.routing;
 
 import lombok.Getter;
 
-import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IProvideItems;
-import logisticspipes.interfaces.routing.IRequestItems;
 import logisticspipes.request.IExtraPromise;
 import logisticspipes.request.resources.DictResource;
-import logisticspipes.request.resources.IResource;
-import logisticspipes.request.resources.ItemResource;
 import logisticspipes.routing.order.IOrderInfoProvider;
 import logisticspipes.utils.item.ItemIdentifierStack;
 
@@ -29,18 +25,5 @@ public class LogisticsDictPromise extends LogisticsPromise {
 		numberOfItems -= more;
 		this.resource.stack.setStackSize(numberOfItems);
 		return new LogisticsExtraDictPromise(getResource().clone(), more, sender, false);
-	}
-
-	@Override
-	public IOrderInfoProvider fullFill(IResource requestType, IAdditionalTargetInformation info) {
-		IRequestItems destination;
-		if (requestType instanceof ItemResource) {
-			destination = ((ItemResource) requestType).getTarget();
-		} else if (requestType instanceof DictResource) {
-			destination = ((DictResource) requestType).getTarget();
-		} else {
-			throw new UnsupportedOperationException();
-		}
-		return sender.fullFill(this, destination, info);
 	}
 }

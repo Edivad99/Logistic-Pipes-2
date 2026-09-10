@@ -564,7 +564,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		}
 		sb.append('\n');
 		sb.append("*******EXIT ROUTE TABLE*************\n");
-		List<List<ExitRoute>> table = router.getRouteTable();
+		List<@Nullable List<ExitRoute>> table = router.getRouteTable();
 		for (int i = 0; i < table.size(); i++) {
 			if (table.get(i) != null) {
 				if (table.get(i).size() > 0) {

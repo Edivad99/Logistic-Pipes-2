@@ -15,6 +15,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.LPConstants;
 import logisticspipes.interfaces.SatellitePipe;
 import logisticspipes.network.TargetLookup;
@@ -46,10 +48,7 @@ public record RequestSatellitePipeListMessage(BlockPos pos, boolean fluid) imple
     public static void handle(RequestSatellitePipeListMessage message, IPayloadContext context) {
         final LogisticsTileGenericPipe container =
             TargetLookup.blockEntityAt(context.player(), message.pos, LogisticsTileGenericPipe.class);
-        if (container == null
-            || !(container.pipe instanceof CoreRoutedPipe pipe)
-            || pipe.getRouter() == null
-            || pipe.getRouter().getRouteTable() == null) {
+        if (container == null || !(container.pipe instanceof CoreRoutedPipe pipe)) {
             return;
         }
         final List<SatelliteEntry> satellites = message.fluid
@@ -70,7 +69,7 @@ public record RequestSatellitePipeListMessage(BlockPos pos, boolean fluid) imple
         CoreRoutedPipe from,
         Collection<T> satellites
     ) {
-        final List<List<ExitRoute>> routeTable = from.getRouter().getRouteTable();
+        final List<@Nullable List<ExitRoute>> routeTable = from.getRouter().getRouteTable();
         return satellites.stream()
             .filter(Objects::nonNull)
             .filter(satellite -> satellite.getRouter() != null)
@@ -80,14 +79,15 @@ public record RequestSatellitePipeListMessage(BlockPos pos, boolean fluid) imple
             .toList();
     }
 
-    private static boolean routesTo(List<List<ExitRoute>> routeTable, int routerId) {
+    private static boolean routesTo(List<@Nullable List<ExitRoute>> routeTable, int routerId) {
         return routeTable.size() > routerId
             && routeTable.get(routerId) != null
             && !routeTable.get(routerId).isEmpty();
     }
 
-    private static double nearestHop(List<List<ExitRoute>> routeTable, int routerId) {
-        return routeTable.get(routerId).stream()
+    /** Only reached for a router {@link #routesTo} has already vouched for, so the entry is there. */
+    private static double nearestHop(List<@Nullable List<ExitRoute>> routeTable, int routerId) {
+        return Objects.requireNonNull(routeTable.get(routerId)).stream()
             .mapToDouble(route -> route.distanceToDestination)
             .min()
             .orElse(Double.MAX_VALUE);

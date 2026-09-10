@@ -1105,11 +1105,18 @@ public class ServerRouter implements IRouter, Comparable<ServerRouter> {
 	@Override
 	public @Nullable ExitRoute getExitFor(int id, boolean active, ItemIdentifier type) {
 		ensureLatestRoutingTable();
-		if (getRouteTable().size() <= id || getRouteTable().get(id) == null) {
+		// Read the table once: RoutingTableUpdateThread replaces it wholesale, so two reads can
+		// disagree and the null check would then be guarding a different list than the loop walks.
+		final List<@Nullable List<ExitRoute>> table = getRouteTable();
+		if (table.size() <= id) {
+			return null;
+		}
+		final List<ExitRoute> routes = table.get(id);
+		if (routes == null) {
 			return null;
 		}
 		outer:
-		for (ExitRoute exit : getRouteTable().get(id)) {
+		for (ExitRoute exit : routes) {
 			if (exit.containsFlag(PipeRoutingConnectionType.canRouteTo)) {
 				for (IFilter filter : exit.filters) {
 					if (!active) {

@@ -1,5 +1,7 @@
 package logisticspipes.request;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IProvide;
 import logisticspipes.request.resources.IResource;
@@ -21,7 +23,8 @@ public interface IPromise {
 
 	ResourceType getType();
 
-	IOrderInfoProvider fullFill(IResource requestType, IAdditionalTargetInformation info);
+	@Nullable
+	IOrderInfoProvider fullFill(IResource requestType, @Nullable IAdditionalTargetInformation info);
 
 	IPromise copy();
 }

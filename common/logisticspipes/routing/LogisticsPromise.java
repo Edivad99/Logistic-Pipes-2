@@ -7,6 +7,10 @@
 
 package logisticspipes.routing;
 
+import java.util.Objects;
+
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IProvide;
 import logisticspipes.interfaces.routing.IProvideItems;
@@ -71,15 +75,15 @@ public class LogisticsPromise implements IPromise {
 	}
 
 	@Override
-	public IOrderInfoProvider fullFill(IResource requestType, IAdditionalTargetInformation info) {
+	public @Nullable IOrderInfoProvider fullFill(IResource requestType, @Nullable IAdditionalTargetInformation info) {
 		IRequestItems destination;
-		if (requestType instanceof ItemResource) {
-			destination = ((ItemResource) requestType).getTarget();
-		} else if (requestType instanceof DictResource) {
-			destination = ((DictResource) requestType).getTarget();
+		if (requestType instanceof ItemResource itemResource) {
+			destination = itemResource.getTarget();
+		} else if (requestType instanceof DictResource dictResource) {
+			destination = dictResource.getTarget();
 		} else {
 			throw new UnsupportedOperationException();
 		}
-		return sender.fullFill(this, destination, info);
+		return sender.fullFill(this, Objects.requireNonNull(destination, "destination"), info);
 	}
 }
