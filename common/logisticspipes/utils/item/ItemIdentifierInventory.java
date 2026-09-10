@@ -48,7 +48,7 @@ public class ItemIdentifierInventory
 		implements ValueIOSerializable, IItemIdentifierInventory {
 
 	private final Object[] ccTypeHolder = new Object[1];
-	private final ItemIdentifierStack[] contents;
+	private final @Nullable ItemIdentifierStack[] contents;
 	private final String name;
 	private final int stackLimit;
 	private final HashMap<ItemIdentifier, Integer> contentsMap;
@@ -85,7 +85,7 @@ public class ItemIdentifierInventory
 	};
 
 	public ItemIdentifierInventory(int size, String name, int stackLimit, boolean liquidInv) {
-		contents = new ItemIdentifierStack[size];
+		contents = new @Nullable ItemIdentifierStack[size];
 		this.name = name;
 		this.stackLimit = stackLimit;
 		contentsMap = new HashMap<>((int) (size * 1.5));

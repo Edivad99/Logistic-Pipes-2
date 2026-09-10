@@ -49,7 +49,9 @@ import logisticspipes.world.item.LogisticsFluidContainer;
 
 public class LogisticsManager implements ILogisticsManager {
 
-	private Triplet<Integer, SinkReply, List<IFilter>> getBestReply(ItemStack stack, ItemIdentifier item, IRouter sourceRouter, List<ExitRoute> validDestinations, boolean excludeSource, List<Integer> jamList, Triplet<Integer, SinkReply, List<IFilter>> result, boolean allowDefault) {
+	private Triplet<Integer, SinkReply, List<IFilter>> getBestReply(ItemStack stack, ItemIdentifier item, @Nullable IRouter sourceRouter,
+			List<ExitRoute> validDestinations, boolean excludeSource, List<Integer> jamList,
+			@Nullable Triplet<Integer, SinkReply, List<IFilter>> result, boolean allowDefault) {
 		if (result == null) {
 			result = new Triplet<>(null, null, null);
 		}

@@ -3,6 +3,8 @@ package logisticspipes.utils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -103,7 +105,7 @@ public class PlayerCollectionList {
 		}
 
 		@Override
-		public Player next() {
+		public @Nullable Player next() {
 			EqualWeakReference<Player> reference = iterator.next();
 			return reference.get();
 		}

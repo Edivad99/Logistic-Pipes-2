@@ -5,6 +5,8 @@ import java.util.Set;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.asm.te.LPTileEntityObject;
 
 /**
@@ -32,7 +34,7 @@ public class CacheHolder {
 
 	private final Table<CacheTypes, Object, Object> cache = HashBasedTable.create();
 
-	public Object getCacheFor(CacheTypes type, Object key) {
+	public @Nullable Object getCacheFor(CacheTypes type, Object key) {
 		return cache.get(type, key);
 	}
 
@@ -40,7 +42,7 @@ public class CacheHolder {
 		cache.put(type, key, value);
 	}
 
-	public void trigger(CacheTypes type) {
+	public void trigger(@Nullable CacheTypes type) {
 		if (type != null) {
 			cache.row(type).clear();
 		} else {

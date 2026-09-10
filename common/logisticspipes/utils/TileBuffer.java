@@ -9,12 +9,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
 
 public final class TileBuffer {
 
-	private Block block = null;
-	private BlockEntity tile;
+	private @Nullable Block block = null;
+	private @Nullable BlockEntity tile;
 
 	private final SafeTimeTracker tracker = new SafeTimeTracker(20, 5);
 	private final Level level;
@@ -76,7 +78,7 @@ public final class TileBuffer {
 		tracker.markTime(level);
 	}
 
-	public Block getBlock() {
+	public @Nullable Block getBlock() {
 		if (tile != null && !tile.isRemoved()) {
 			return block;
 		}
@@ -92,7 +94,7 @@ public final class TileBuffer {
 		return null;
 	}
 
-	public BlockEntity getTile() {
+	public @Nullable BlockEntity getTile() {
 		if (tile != null && !tile.isRemoved()) {
 			return tile;
 		}

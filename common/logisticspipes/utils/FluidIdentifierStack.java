@@ -8,7 +8,6 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 
 public class FluidIdentifierStack implements Comparable<FluidIdentifierStack> {
 
-	private Object ccType;
 	private final FluidIdentifier fluid;
 	private int milliBuckets;
 
