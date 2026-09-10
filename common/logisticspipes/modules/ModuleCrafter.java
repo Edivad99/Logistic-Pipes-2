@@ -397,7 +397,7 @@ public class ModuleCrafter extends LogisticsModule
 	}
 
 	@Override
-	public void itemCouldNotBeSend(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemCouldNotBeSend(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		Objects.requireNonNull(invRequester).itemCouldNotBeSend(item, info);
 	}
 

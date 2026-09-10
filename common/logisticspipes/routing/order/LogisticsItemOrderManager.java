@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.IChangeListener;
 import logisticspipes.interfaces.ILPPositionProvider;
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
@@ -33,17 +35,18 @@ public class LogisticsItemOrderManager extends LogisticsOrderManager<LogisticsIt
 
 	private static class LogisticsItemOrderExtra extends LogisticsItemOrder {
 
-		public LogisticsItemOrderExtra(DictResource item, IRequestItems destination, ResourceType type, IAdditionalTargetInformation info) {
+		public LogisticsItemOrderExtra(DictResource item, @Nullable IRequestItems destination, ResourceType type,
+				@Nullable IAdditionalTargetInformation info) {
 			super(item, destination, type, info);
 		}
 	}
 
 	public LogisticsItemOrderManager(ILPPositionProvider pos) {
-		super(new LogisticsOrderLinkedList<LogisticsItemOrder, DictResource.Identifier>(new IC()), pos);
+		super(new LogisticsOrderLinkedList<>(new IC()), pos);
 	}
 
 	public LogisticsItemOrderManager(IChangeListener listener, ILPPositionProvider pos) {
-		super(listener, pos, new LogisticsOrderLinkedList<LogisticsItemOrder, DictResource.Identifier>(new IC()));
+		super(listener, pos, new LogisticsOrderLinkedList<>(new IC()));
 	}
 
 	@Override
@@ -77,7 +80,7 @@ public class LogisticsItemOrderManager extends LogisticsOrderManager<LogisticsIt
 		int itemsToRemove = resource.getRequestedAmount();
 		DictResource.Identifier ident = resource.getIdentifier();
 		Iterator<LogisticsItemOrder> iter = orders.iterator();
-		List<LogisticsItemOrder> toRemove = new LinkedList<LogisticsItemOrder>();
+		List<LogisticsItemOrder> toRemove = new LinkedList<>();
 		while (iter.hasNext()) {
 			LogisticsItemOrder order = iter.next();
 			if (order.getType() != ResourceType.EXTRA) continue;

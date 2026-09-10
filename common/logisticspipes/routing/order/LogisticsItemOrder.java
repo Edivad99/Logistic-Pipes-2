@@ -2,6 +2,8 @@ package logisticspipes.routing.order;
 
 import lombok.Getter;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IRequestItems;
 import logisticspipes.request.resources.DictResource;
@@ -10,11 +12,9 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 
 public class LogisticsItemOrder extends LogisticsOrder {
 
-	public LogisticsItemOrder(DictResource item, IRequestItems destination, ResourceType type, IAdditionalTargetInformation info) {
+	public LogisticsItemOrder(DictResource item, @Nullable IRequestItems destination, ResourceType type,
+			@Nullable IAdditionalTargetInformation info) {
 		super(type, info);
-		if (item == null) {
-			throw new NullPointerException();
-		}
 		resource = item;
 		this.destination = destination;
 	}
@@ -22,10 +22,10 @@ public class LogisticsItemOrder extends LogisticsOrder {
 	@Getter
 	private final DictResource resource;
 	@Getter
-	private final IRequestItems destination;
+	private final @Nullable IRequestItems destination;
 
 	@Override
-	public IRouter getRouter() {
+	public @Nullable IRouter getRouter() {
 		if (destination == null) {
 			return null;
 		}

@@ -19,6 +19,8 @@ import net.minecraft.world.level.Level;
 
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.IChangeListener;
 import logisticspipes.interfaces.ILPPositionProvider;
 import logisticspipes.logisticspipes.IRoutedItem;
@@ -30,9 +32,9 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 public abstract class LogisticsOrderManager<T extends LogisticsOrder, I> implements Iterable<T> {
 
 	protected final LogisticsOrderLinkedList<T, I> orders;
-	protected IChangeListener listener = null;
+	protected @Nullable IChangeListener listener = null;
 	protected PlayerCollectionList watchingPlayers = new PlayerCollectionList();
-	private ILPPositionProvider pos;
+	private final ILPPositionProvider pos;
 
 	public LogisticsOrderManager(LogisticsOrderLinkedList<T, I> orders, ILPPositionProvider pos) {
 		this.orders = orders;
@@ -73,7 +75,7 @@ public abstract class LogisticsOrderManager<T extends LogisticsOrder, I> impleme
 	}
 
 	public LinkedList<ItemIdentifierStack> getContentList(Level level) {
-		if (level.isClientSide() || orders.size() == 0) {
+		if (level.isClientSide() || orders.isEmpty()) {
 			return new LinkedList<>();
 		}
 		LinkedList<ItemIdentifierStack> list = new LinkedList<>();
@@ -89,9 +91,9 @@ public abstract class LogisticsOrderManager<T extends LogisticsOrder, I> impleme
 
 	/* only multi-access SAFE when type is null; all other access patterns may change the state of the stack so the returned element is on top*/
 	@SuppressWarnings("unchecked")
-	public T peekAtTopRequest(ResourceType... type) {
+	public @Nullable T peekAtTopRequest(ResourceType... type) {
 		List<ResourceType> typeList = Arrays.asList(type);
-		if (orders.size() == 0) {
+		if (orders.isEmpty()) {
 			return null;
 		}
 		T top = (T) orders.getFirst().setInProgress(true);
@@ -108,7 +110,7 @@ public abstract class LogisticsOrderManager<T extends LogisticsOrder, I> impleme
 	}
 
 	@SuppressWarnings("unchecked")
-	public void sendSuccessfull(int number, boolean defersend, IRoutedItem item) {
+	public void sendSuccessfull(int number, boolean defersend, @Nullable IRoutedItem item) {
 		orders.getFirst().reduceAmountBy(number);
 		if (orders.getFirst().isWatched() && item != null) {
 			IDistanceTracker tracker = new DistanceTracker();

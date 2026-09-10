@@ -466,7 +466,7 @@ public class ModuleActiveSupplier extends LogisticsModule
 	}
 
 	@Override
-	public void itemCouldNotBeSend(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemCouldNotBeSend(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		itemLost(item, info);
 	}
 

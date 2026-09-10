@@ -2,6 +2,8 @@ package logisticspipes.routing.order;
 
 import lombok.Getter;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.IRequestFluid;
 import logisticspipes.routing.IRouter;
@@ -10,11 +12,9 @@ import logisticspipes.utils.item.ItemIdentifierStack;
 
 public class LogisticsFluidOrder extends LogisticsOrder {
 
-	public LogisticsFluidOrder(FluidIdentifier fuild, Integer amount, IRequestFluid destination, ResourceType type, IAdditionalTargetInformation info) {
+	public LogisticsFluidOrder(FluidIdentifier fuild, Integer amount, IRequestFluid destination, ResourceType type,
+			@Nullable IAdditionalTargetInformation info) {
 		super(type, info);
-		if (destination == null) {
-			throw new NullPointerException();
-		}
 		fluid = fuild;
 		this.amount = amount;
 		this.destination = destination;

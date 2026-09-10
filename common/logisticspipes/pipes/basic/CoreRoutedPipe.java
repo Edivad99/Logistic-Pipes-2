@@ -1065,7 +1065,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	@Override
-	public void itemCouldNotBeSend(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemCouldNotBeSend(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		if (this instanceof IRequireReliableTransport) {
 			((IRequireReliableTransport) this).itemLost(item, info);
 		}

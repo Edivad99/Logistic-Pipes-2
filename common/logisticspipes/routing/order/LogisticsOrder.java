@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.routing.IRouter;
 import logisticspipes.utils.item.ItemIdentifier;
@@ -19,7 +21,7 @@ public abstract class LogisticsOrder implements IOrderInfoProvider {
 	private static final int MIN_DISTANCE_TO_DISPLAY = 4;
 
 	@Getter
-	private final IAdditionalTargetInformation information;
+	private final @Nullable IAdditionalTargetInformation information;
 	@Getter
 	@Setter
 	private boolean isFinished = false;
@@ -37,12 +39,9 @@ public abstract class LogisticsOrder implements IOrderInfoProvider {
 	@Getter
 	@Setter
 	private byte machineProgress = 0;
-	private List<IDistanceTracker> trackers = new ArrayList<>();
+	private final List<IDistanceTracker> trackers = new ArrayList<>();
 
-	public LogisticsOrder(ResourceType type, IAdditionalTargetInformation info) {
-		if (type == null) {
-			throw new NullPointerException();
-		}
+	public LogisticsOrder(ResourceType type, @Nullable IAdditionalTargetInformation info) {
 		this.type = type;
 		information = info;
 	}
@@ -55,7 +54,7 @@ public abstract class LogisticsOrder implements IOrderInfoProvider {
 		return getRouter().getSimpleID();
 	}
 
-	public abstract IRouter getRouter();
+	public abstract @Nullable IRouter getRouter();
 
 	@Override
 	public void setWatched() {
@@ -94,7 +93,7 @@ public abstract class LogisticsOrder implements IOrderInfoProvider {
 	public abstract void reduceAmountBy(int amount);
 
 	@Override
-	public ItemIdentifier getTargetType() {
+	public @Nullable ItemIdentifier getTargetType() {
 		if (getRouter() == null || getRouter().getPipe() == null) {
 			return null;
 		}
@@ -102,7 +101,7 @@ public abstract class LogisticsOrder implements IOrderInfoProvider {
 	}
 
 	@Override
-	public BlockPos getTargetPosition() {
+	public @Nullable BlockPos getTargetPosition() {
 		if (getRouter() == null) {
 			return null;
 		}

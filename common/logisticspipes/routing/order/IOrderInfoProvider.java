@@ -10,6 +10,8 @@ import net.minecraft.network.codec.StreamCodec;
 
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.item.ItemIdentifier;
 import logisticspipes.utils.item.ItemIdentifierStack;
 
@@ -71,7 +73,8 @@ public interface IOrderInfoProvider {
 
 		public static Optional<Target> of(IOrderInfoProvider order) {
 			final BlockPos position = order.getTargetPosition();
-			return position == null ? Optional.empty() : Optional.of(new Target(position, order.getTargetType()));
+			final ItemIdentifier type = order.getTargetType();
+			return position == null || type == null ? Optional.empty() : Optional.of(new Target(position, type));
 		}
 	}
 
@@ -93,8 +96,10 @@ public interface IOrderInfoProvider {
 
 	byte getMachineProgress();
 
+	@Nullable
 	ItemIdentifier getTargetType();
 
+	@Nullable
 	BlockPos getTargetPosition();
 
 

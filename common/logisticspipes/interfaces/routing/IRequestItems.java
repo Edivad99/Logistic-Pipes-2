@@ -7,11 +7,13 @@
 
 package logisticspipes.interfaces.routing;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.item.ItemIdentifierStack;
 
 public interface IRequestItems extends Comparable<IRequestItems>, IRequest {
 
-	void itemCouldNotBeSend(ItemIdentifierStack item, IAdditionalTargetInformation info);
+	void itemCouldNotBeSend(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info);
 
 	@Override
 	int compareTo(IRequestItems other);
