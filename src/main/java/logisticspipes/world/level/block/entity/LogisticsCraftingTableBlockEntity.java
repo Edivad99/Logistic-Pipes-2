@@ -418,6 +418,11 @@ public class LogisticsCraftingTableBlockEntity extends LogisticsSolidBlockEntity
         fuzzyFlags.deserialize(input);
         input.child("targetType").ifPresent(child ->
             targetType = ItemIdentifier.get(ItemStackLoader.loadItemStack(child)));
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
         cacheRecipe();
     }
 
