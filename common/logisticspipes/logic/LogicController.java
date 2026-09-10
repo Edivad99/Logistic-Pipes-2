@@ -16,6 +16,8 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import lombok.Getter;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.item.SimpleStackInventory;
 
 public class LogicController implements ValueIOSerializable {
@@ -36,7 +38,7 @@ public class LogicController implements ValueIOSerializable {
 	public List<BaseLogicConnection> connections = new ArrayList<>();
 	public List<BaseLogicTask> tasks = new ArrayList<>();
 
-	private Thread oldThread = null;
+	private @Nullable Thread oldThread = null;
 	@Getter
 	private boolean unresolvedTasks = false;
 
