@@ -69,6 +69,7 @@ import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 import logisticspipes.util.ItemStackLoader;
 import logisticspipes.utils.CacheHolder.CacheTypes;
 import logisticspipes.utils.InventoryHelper;
+import logisticspipes.utils.transactor.ITransactor;
 import logisticspipes.utils.OrientationsUtil;
 import logisticspipes.utils.SyncList;
 import logisticspipes.utils.item.ItemIdentifierStack;
@@ -92,7 +93,7 @@ public class PipeTransportLogistics {
 	 * What is waiting to be retried. The last two are null only in the client's copy, which
 	 * {@link #setClientItemBuffer} fills for display: the tick loop that reads them is server-only.
 	 */
-	public final SyncList<Triplet<ItemIdentifierStack, @Nullable Pair<Integer /* Time */, Integer /* BufferCounter */>,
+	public final SyncList<Triplet<ItemIdentifierStack, Pair<Integer /* Time */, Integer /* BufferCounter */>,
 			@Nullable LPTravelingItemServer>> itemBuffer = new SyncList<>();
 	private @Nullable LevelChunk chunk;
 	public LPItemList items = new LPItemList(this);
@@ -167,10 +168,10 @@ public class PipeTransportLogistics {
 		if (!getWorld().isClientSide()) {
 			if (!itemBuffer.isEmpty()) {
 				List<LPTravelingItem> toAdd = new LinkedList<>();
-				Iterator<Triplet<ItemIdentifierStack, @Nullable Pair<Integer, Integer>, @Nullable LPTravelingItemServer>> iterator =
+				Iterator<Triplet<ItemIdentifierStack, Pair<Integer, Integer>, @Nullable LPTravelingItemServer>> iterator =
 						itemBuffer.iterator();
 				while (iterator.hasNext()) {
-					Triplet<ItemIdentifierStack, @Nullable Pair<Integer, Integer>, @Nullable LPTravelingItemServer> next = iterator.next();
+					Triplet<ItemIdentifierStack, Pair<Integer, Integer>, @Nullable LPTravelingItemServer> next = iterator.next();
 					int currentTimeOut = next.getValue2().getValue1();
 					if (currentTimeOut > 0) {
 						next.getValue2().setValue1(currentTimeOut - 1);
@@ -583,8 +584,15 @@ public class PipeTransportLogistics {
 	/**
 	 * @return true, if every item has been inserted and otherwise false.
 	 */
-	private boolean insertArrivingItem(LPTravelingItemServer arrivingItem, BlockEntity tile, Direction insertion) {
-		ItemStack added = InventoryHelper.getTransactorFor(tile, insertion).add(arrivingItem.getItemIdentifierStack().makeNormalStack(), insertion, true);
+	private boolean insertArrivingItem(LPTravelingItemServer arrivingItem, BlockEntity tile, @Nullable Direction insertion) {
+		// A sneaky upgrade points at a side of its own choosing, which need not be the side the item
+		// arrived from -- and a block can expose an item handler on one face and not another. No
+		// handler there means nothing was inserted, so the caller moves on to the next side.
+		final ITransactor transactor = InventoryHelper.getTransactorFor(tile, insertion);
+		if (transactor == null) {
+			return false;
+		}
+		ItemStack added = transactor.add(arrivingItem.getItemIdentifierStack().makeNormalStack(), insertion, true);
 
 		if (!added.isEmpty()) {
 			arrivingItem.getItemIdentifierStack().lowerStackSize(added.getCount());

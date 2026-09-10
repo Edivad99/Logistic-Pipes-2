@@ -7,16 +7,11 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 
-import org.jspecify.annotations.Nullable;
 
 import logisticspipes.proxy.computers.interfaces.ILPCCTypeHolder;
 
 @Data
-/**
- * A pair whose halves may each be null: the type parameters opt out of the package's non-null
- * default, because a tuple carries whatever it is given and several callers give it nothing.
- */
-public class Pair<T1 extends @Nullable Object, T2 extends @Nullable Object> implements ILPCCTypeHolder {
+public class Pair<T1, T2> implements ILPCCTypeHolder {
 
 	private final Object[] ccTypeHolder = new Object[1];
 	protected T1 value1;

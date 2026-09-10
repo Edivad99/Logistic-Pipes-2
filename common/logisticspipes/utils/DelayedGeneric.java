@@ -1,11 +1,10 @@
 package logisticspipes.utils;
 
-import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
-public class DelayedGeneric<T extends @Nullable Object> implements Delayed {
+public class DelayedGeneric<T> implements Delayed {
 
 	private final long origin;
 	private final long delay;

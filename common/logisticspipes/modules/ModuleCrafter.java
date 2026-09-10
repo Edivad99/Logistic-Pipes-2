@@ -147,7 +147,7 @@ public class ModuleCrafter extends LogisticsModule
 			.build();
 
 	// for reliable transport
-	protected final DelayQueue<DelayedGeneric<Pair<ItemIdentifierStack, @Nullable IAdditionalTargetInformation>>> lostItems = new DelayQueue<>();
+	protected final DelayQueue<DelayedGeneric<Pair<ItemIdentifierStack, IAdditionalTargetInformation>>> lostItems = new DelayQueue<>();
 	protected final PlayerCollectionList localModeWatchers = new PlayerCollectionList();
 	protected final PlayerCollectionList guiWatcher = new PlayerCollectionList();
 
@@ -247,10 +247,10 @@ public class ModuleCrafter extends LogisticsModule
 			return;
 		}
 		// if(true) return;
-		DelayedGeneric<Pair<ItemIdentifierStack, @Nullable IAdditionalTargetInformation>> lostItem = lostItems.poll();
+		DelayedGeneric<Pair<ItemIdentifierStack, IAdditionalTargetInformation>> lostItem = lostItems.poll();
 		int reRequested = 0;
 		while (lostItem != null && reRequested < 100) {
-			Pair<ItemIdentifierStack, @Nullable IAdditionalTargetInformation> pair = lostItem.get();
+			Pair<ItemIdentifierStack, IAdditionalTargetInformation> pair = lostItem.get();
 			if (service.getItemOrderManager().hasOrders(ResourceType.CRAFTING)) {
 				SinkReply reply = LogisticsManager.canSink(pair.getValue1().makeNormalStack(), getRouter(), null, true,
 						pair.getValue1().getItem(), null, true, true, false);

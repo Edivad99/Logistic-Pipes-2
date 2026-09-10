@@ -566,10 +566,13 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		sb.append("*******EXIT ROUTE TABLE*************\n");
 		List<@Nullable List<ExitRoute>> table = router.getRouteTable();
 		for (int i = 0; i < table.size(); i++) {
-			if (table.get(i) != null) {
-				if (table.get(i).size() > 0) {
-					sb.append(i).append(" -> ").append(table.get(i).get(0).destination.getSimpleID()).append('\n');
-					for (ExitRoute route : table.get(i)) {
+			// One read of the entry: the routing table is replaced wholesale by another thread, so
+			// repeated get(i) calls can disagree with the null check that guards them.
+			final List<ExitRoute> routes = table.get(i);
+			if (routes != null) {
+				if (!routes.isEmpty()) {
+					sb.append(i).append(" -> ").append(routes.getFirst().destination.getSimpleID()).append('\n');
+					for (ExitRoute route : routes) {
 						sb.append("\t\t via ").append(route.exitOrientation).append("(").append(route.distanceToDestination).append(" distance)").append('\n');
 					}
 				}
@@ -1568,7 +1571,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		if (dir.ordinal() < 6) {
 			if (signItem[dir.ordinal()] == null) {
 				signItem[dir.ordinal()] = type;
-				signItem[dir.ordinal()].init(this, dir);
+				type.init(this, dir);
 			}
 			if (getContainer() != null) {
 				sendSignData(player, true);

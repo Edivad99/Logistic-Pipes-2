@@ -28,7 +28,7 @@ public class ItemCraftingTemplate implements IReqCraftingTemplate {
 	protected ItemIdentifierStack result;
 	protected ICraftItems crafter;
 
-	protected ArrayList<Pair<IResource, @Nullable IAdditionalTargetInformation>> required = new ArrayList<>(9);
+	protected ArrayList<Pair<IResource, IAdditionalTargetInformation>> required = new ArrayList<>(9);
 
 	protected ArrayList<ItemIdentifierStack> byproduct = new ArrayList<>(9);
 
@@ -121,12 +121,12 @@ public class ItemCraftingTemplate implements IReqCraftingTemplate {
 	}
 
 	@Override
-	public List<Pair<IResource, @Nullable IAdditionalTargetInformation>> getComponents(int nCraftingSetsNeeded) {
-		List<Pair<IResource, @Nullable IAdditionalTargetInformation>> stacks = new ArrayList<>(required.size());
+	public List<Pair<IResource, IAdditionalTargetInformation>> getComponents(int nCraftingSetsNeeded) {
+		List<Pair<IResource, IAdditionalTargetInformation>> stacks = new ArrayList<>(required.size());
 
 		// for each thing needed to satisfy this promise
-		for (Pair<IResource, @Nullable IAdditionalTargetInformation> stack : required) {
-			Pair<IResource, @Nullable IAdditionalTargetInformation> pair = new Pair<>(stack.getValue1()
+		for (Pair<IResource, IAdditionalTargetInformation> stack : required) {
+			Pair<IResource, IAdditionalTargetInformation> pair = new Pair<>(stack.getValue1()
 					.clone(nCraftingSetsNeeded), stack.getValue2());
 			stacks.add(pair);
 		}

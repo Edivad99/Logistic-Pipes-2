@@ -4,12 +4,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import org.jspecify.annotations.Nullable;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Triplet<T1 extends @Nullable Object, T2 extends @Nullable Object, T3 extends @Nullable Object> extends Pair<T1, T2> {
+public class Triplet<T1, T2, T3> extends Pair<T1, T2> {
 
 	protected T3 value3;
 

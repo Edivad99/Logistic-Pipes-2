@@ -13,7 +13,7 @@ import logisticspipes.utils.tuples.Pair;
 
 public interface ICraftingTemplate extends Comparable<ICraftingTemplate> {
 
-	List<Pair<IResource, @Nullable IAdditionalTargetInformation>> getComponents(int nCraftingSets);
+	List<Pair<IResource, IAdditionalTargetInformation>> getComponents(int nCraftingSets);
 
 	List<IExtraPromise> getByproducts(int workSets);
 
