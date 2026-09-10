@@ -8,6 +8,8 @@ import net.minecraft.core.Direction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.ISpecialPipedConnection;
 import logisticspipes.routing.PipeRoutingConnectionType;
 import logisticspipes.routing.pathfinder.IPipeInformationProvider;
@@ -25,7 +27,8 @@ public class SpecialPipeConnection {
 		return new SpecialPipeConnection(event.registeredPipedConnections());
 	}
 
-	public List<ConnectionInformation> getConnectedPipes(IPipeInformationProvider startPipe, EnumSet<PipeRoutingConnectionType> connection, Direction side) {
+	public List<ConnectionInformation> getConnectedPipes(IPipeInformationProvider startPipe, EnumSet<PipeRoutingConnectionType> connection,
+			@Nullable Direction side) {
 		for (ISpecialPipedConnection connectionHandler : handler) {
 			if (connectionHandler.isType(startPipe)) {
 				return connectionHandler.getConnections(startPipe, connection, side);

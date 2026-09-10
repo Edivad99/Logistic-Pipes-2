@@ -26,6 +26,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.neoforged.neoforge.capabilities.Capabilities;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.api.ILogisticsPowerProvider;
 import logisticspipes.asm.te.ILPTEInformation;
 import logisticspipes.asm.te.ITileEntityChangeListener;
@@ -82,7 +84,7 @@ public class PathFinder {
 		return newSearch.getConnectedRoutingPipes(provider, connectionType, startOrientation);
 	}
 
-	public PathFinder(IPipeInformationProvider startPipe, int maxVisited, int maxLength, ITileEntityChangeListener changeListener) {
+	public PathFinder(@Nullable IPipeInformationProvider startPipe, int maxVisited, int maxLength, ITileEntityChangeListener changeListener) {
 		this(maxVisited, maxLength, null);
 		if (startPipe == null) {
 			result = new HashMap<>();
@@ -97,7 +99,7 @@ public class PathFinder {
 		result = getConnectedRoutingPipes(startPipe, EnumSet.allOf(PipeRoutingConnectionType.class), side);
 	}
 
-	private PathFinder(int maxVisited, int maxLength, IPaintPath pathPainter) {
+	private PathFinder(int maxVisited, int maxLength, @Nullable IPaintPath pathPainter) {
 		this.maxVisited = maxVisited;
 		this.maxLength = maxLength;
 		setVisited = new HashSet<>();
@@ -117,18 +119,18 @@ public class PathFinder {
 	private final HashMap<DistanceKey, Double> distances;
 
 	private record DistanceKey(BlockPos pos, boolean viaSpecialConnection) {}
-	private final IPaintPath pathPainter;
+	private final @Nullable IPaintPath pathPainter;
 	private double pipesVisited;
 
-	public List<Pair<ILogisticsPowerProvider, List<IFilter>>> powerNodes;
-	public List<Pair<ISubSystemPowerProvider, List<IFilter>>> subPowerProvider;
-	public HashMap<CoreRoutedPipe, ExitRoute> result;
+	public @Nullable List<Pair<ILogisticsPowerProvider, List<IFilter>>> powerNodes;
+	public @Nullable List<Pair<ISubSystemPowerProvider, List<IFilter>>> subPowerProvider;
+	public HashMap<CoreRoutedPipe, ExitRoute> result = new HashMap<>();
 
-	public ITileEntityChangeListener changeListener;
+	public @Nullable ITileEntityChangeListener changeListener;
 	public Set<List<ITileEntityChangeListener>> listenedPipes = new HashSet<>();
 	public Set<LPTileEntityObject> touchedPipes = new HashSet<>();
 
-	private HashMap<CoreRoutedPipe, ExitRoute> getConnectedRoutingPipes(IPipeInformationProvider startPipe, EnumSet<PipeRoutingConnectionType> connectionFlags, Direction side) {
+	private HashMap<CoreRoutedPipe, ExitRoute> getConnectedRoutingPipes(IPipeInformationProvider startPipe, EnumSet<PipeRoutingConnectionType> connectionFlags, @Nullable Direction side) {
 		HashMap<CoreRoutedPipe, ExitRoute> foundPipes = new HashMap<>();
 
 		final int setVisitedSize = setVisited.size();
