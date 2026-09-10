@@ -1,5 +1,7 @@
 package logisticspipes.utils.gui;
 
+import java.util.function.Consumer;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -8,14 +10,19 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import logisticspipes.LPConstants;
 
 public class GuiCheckBox extends AbstractButton {
 
 	/** Replaces the old Button.id field removed in 1.20.1 */
 	public final int id;
-	private boolean state;
-	private java.util.function.Consumer<GuiCheckBox> pressListener = b -> {};
+	@Setter
+    private boolean state;
+	@Setter
+    private Consumer<GuiCheckBox> pressListener = b -> {};
 
 	public GuiCheckBox(int par1, int par2, int par3, int par4, int par5, boolean startState) {
 		super(par2, par3, par4, par5, Component.empty());
@@ -23,11 +30,7 @@ public class GuiCheckBox extends AbstractButton {
 		state = startState;
 	}
 
-	public void setPressListener(java.util.function.Consumer<GuiCheckBox> listener) {
-		this.pressListener = listener;
-	}
-
-	@Override
+    @Override
 	public void onPress(InputWithModifiers input) {
 		// State is owned by the press listener (they call change()/setState themselves);
 		// toggling here too made every click a double flip, i.e. a no-op.
@@ -54,9 +57,5 @@ public class GuiCheckBox extends AbstractButton {
 
 	public boolean getState() {
 		return state;
-	}
-
-	public void setState(boolean flag) {
-		state = flag;
 	}
 }

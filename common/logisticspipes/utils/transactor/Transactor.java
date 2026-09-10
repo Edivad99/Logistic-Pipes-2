@@ -14,5 +14,5 @@ public abstract class Transactor implements ITransactor {
 		return added;
 	}
 
-	public abstract int inject(ItemStack stack, Direction orientation, boolean doAdd);
+	public abstract int inject(ItemStack stack, @Nullable Direction orientation, boolean doAdd);
 }

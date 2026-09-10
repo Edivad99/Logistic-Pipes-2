@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 
+import logisticspipes.pipes.upgrades.IPipeUpgrade;
 import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.IWatchingHandler.WatchMode;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
@@ -88,8 +89,12 @@ public class PipeControllerMenu extends DummyMenu {
     }
 
     private static boolean allowsUpgrade(ItemStack stack, CoreRoutedPipe pipe) {
-        return !stack.isEmpty() && stack.getItem() instanceof ItemUpgrade upgrade
-            && upgrade.getUpgradeForItem(stack, null).isAllowedForPipe(pipe);
+        if (stack.isEmpty() || !(stack.getItem() instanceof ItemUpgrade upgrade)) {
+            return false;
+        }
+        // Null when the upgrade type carries no IPipeUpgrade class -- the slot refuses the item.
+        final IPipeUpgrade pipeUpgrade = upgrade.getUpgradeForItem(stack, null);
+        return pipeUpgrade != null && pipeUpgrade.isAllowedForPipe(pipe);
     }
 
     private static boolean allowsSneakyUpgrade(ItemStack stack, CoreRoutedPipe pipe) {

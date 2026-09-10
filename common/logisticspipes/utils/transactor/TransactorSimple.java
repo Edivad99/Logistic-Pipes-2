@@ -1,5 +1,7 @@
 package logisticspipes.utils.transactor;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class TransactorSimple extends Transactor {
 	}
 
 	@Override
-	public int inject(ItemStack stack, Direction orientation, boolean doAdd) {
+	public int inject(ItemStack stack, @Nullable Direction orientation, boolean doAdd) {
 		List<IInvSlot> filledSlots = new ArrayList<>(inventory.size());
 		List<IInvSlot> emptySlots = new ArrayList<>(inventory.size());
 		for (IInvSlot slot : InventoryIterator.getIterable(inventory, orientation)) {

@@ -22,12 +22,15 @@ public class PlayerCollectionList {
 		Iterator<EqualWeakReference<Player>> iPlayers = players.iterator();
 		while (iPlayers.hasNext()) {
 			EqualWeakReference<Player> playerReference = iPlayers.next();
+			// One read of the referent: it is a weak reference, and the collector can clear it between
+			// the null check and the next call.
+			final Player referenced = playerReference.get();
 			boolean remove = false;
-			if (playerReference.get() == null) {
+			if (referenced == null) {
 				remove = true;
-			} else if (playerReference.get().isDeadOrDying()) {
+			} else if (referenced.isDeadOrDying()) {
 				remove = true;
-			} else if (playerReference.get() instanceof ServerPlayer serverPlayer) {
+			} else if (referenced instanceof ServerPlayer serverPlayer) {
 				if (!serverPlayer.connection.getConnection().isConnected()) {
 					remove = true;
 				}

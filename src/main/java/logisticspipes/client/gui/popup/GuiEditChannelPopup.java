@@ -1,6 +1,7 @@
 package logisticspipes.client.gui.popup;
 
 import java.util.Optional;
+import java.util.Objects;
 import java.util.UUID;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -34,7 +35,8 @@ public class GuiEditChannelPopup extends GuiAddChannelPopup {
     public void init() {
         super.init();
         if (toInit != null) {
-            this.textInput.setValue(toInit.getName());
+            // A channel need not have a name, and EditBox refuses null: an unnamed one opens empty.
+            this.textInput.setValue(Objects.requireNonNullElse(toInit.getName(), ""));
             checkPublic.setState(toInit.getRights() == ChannelInformation.AccessRights.PUBLIC);
             checkSecurity.setState(toInit.getRights() == ChannelInformation.AccessRights.SECURED);
             checkPrivate.setState(toInit.getRights() == ChannelInformation.AccessRights.PRIVATE);

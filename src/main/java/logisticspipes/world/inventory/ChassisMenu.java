@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 
+import logisticspipes.pipes.upgrades.IPipeUpgrade;
 import logisticspipes.modules.LogisticsModule;
 import logisticspipes.pipes.PipeLogisticsChassis;
 import logisticspipes.pipes.upgrades.ModuleUpgradeManager;
@@ -77,6 +78,9 @@ public class ChassisMenu extends DummyMenu {
             return false;
         }
         final LogisticsModule module = pipe.getModules().getModule(moduleSlot);
-        return module != null && upgrade.getUpgradeForItem(stack, null).isAllowedForModule(module);
+        // Null when the upgrade type carries no IPipeUpgrade class: the slot then refuses the item
+        // rather than crashing on the question.
+        final IPipeUpgrade pipeUpgrade = upgrade.getUpgradeForItem(stack, null);
+        return module != null && pipeUpgrade != null && pipeUpgrade.isAllowedForModule(module);
     }
 }
