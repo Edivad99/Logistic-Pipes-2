@@ -369,7 +369,13 @@ public class RequestTreeNode {
 				continue;
 			}
 			boolean valid = false;
-			List<ExitRoute> sources = extraPromise.getProvider().getRouter().getRouteTable().get(getRequestType().getRouter().getSimpleID());
+			// Null when the provider's table has no entry for this requester at all -- it is sized by
+			// the largest router id in the network, not by how many are reachable.
+			List<ExitRoute> sources = extraPromise.getProvider().getRouter().getRouteTable()
+					.get(getRequestType().getRouter().getSimpleID());
+			if (sources == null) {
+				continue;
+			}
 			outer:
 			for (ExitRoute source : sources) {
 				if (source != null && source.containsFlag(PipeRoutingConnectionType.canRouteTo)) {

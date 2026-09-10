@@ -10,16 +10,15 @@ import logisticspipes.world.item.component.LPDataComponents;
 
 public class HUDConfig implements IHUDConfig {
 
-	private ItemStack itemStack;
+	private final ItemStack itemStack;
 
 	public HUDConfig(ItemStack stack) {
 		stack.set(LPDataComponents.HUD, HUDComponent.DEFAULT);
 		this.itemStack = stack;
 	}
 
-	@Nullable
-	private HUDComponent getComponent() {
-		return this.itemStack.get(LPDataComponents.HUD);
+    private HUDComponent getComponent() {
+		return this.itemStack.getOrDefault(LPDataComponents.HUD, HUDComponent.DEFAULT);
 	}
 
 	@Override

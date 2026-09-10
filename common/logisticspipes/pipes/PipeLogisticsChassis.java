@@ -668,13 +668,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 				//also add tag-less variants ... we should probably add a module.interestedIgnoringNBT at some point
 				items.stream().map(ItemIdentifier::getIgnoringNBT).forEach(itemIdentifiers::add);
 
-				boolean modulesInterestedInUndamaged = false;
-				for (int i = 0; i < getChassisSize(); i++) {
-					if (getSubModule(moduleIndex).interestedInUndamagedID()) {
-						modulesInterestedInUndamaged = true;
-						break;
-					}
-				}
+                boolean modulesInterestedInUndamaged = module.interestedInUndamagedID();
 				if (modulesInterestedInUndamaged) {
 					items.stream().map(ItemIdentifier::getUndamaged).forEach(itemIdentifiers::add);
 				}

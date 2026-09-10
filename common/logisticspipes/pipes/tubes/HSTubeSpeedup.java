@@ -49,7 +49,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 			}
 
 			@Override
-			protected void handleTileReachedServer(LPTravelingItemServer arrivingItem, BlockEntity tile, Direction dir) {
+			protected void handleTileReachedServer(LPTravelingItemServer arrivingItem, @Nullable BlockEntity tile, @Nullable Direction dir) {
 				if (dir.getOpposite() == ((HSTubeSpeedup) getMultiPipe()).orientation.dir1) {
 					arrivingItem.setSpeed(LPConstants.PIPE_NORMAL_SPEED * 20);
 					handleTileReachedServer_internal(arrivingItem, tile, dir);
@@ -59,7 +59,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 			}
 
 			@Override
-			protected void handleTileReachedClient(LPTravelingItemClient arrivingItem, BlockEntity tile, Direction dir) {
+			protected void handleTileReachedClient(LPTravelingItemClient arrivingItem, @Nullable BlockEntity tile, @Nullable Direction dir) {
 				if (dir.getOpposite() == ((HSTubeSpeedup) getMultiPipe()).orientation.dir1) {
 					if (SimpleServiceLocator.pipeInformationManager.isItemPipe(tile)) {
 						arrivingItem.setSpeed(LPConstants.PIPE_NORMAL_SPEED * 20);

@@ -69,8 +69,9 @@ public class FluidResource implements IResource {
 	@Override
 	public boolean matches(ItemIdentifier itemType, MatchSettings settings) {
 		if (itemType.isFluidContainer()) {
-			FluidIdentifier other = FluidIdentifier.get(itemType);
-			return other.equals(liquid);
+			// Asked of our own fluid: a container LP recognises can still hold nothing, and
+			// FluidIdentifier.get answers null for it.
+			return liquid.equals(FluidIdentifier.get(itemType));
 		}
 		return false;
 	}

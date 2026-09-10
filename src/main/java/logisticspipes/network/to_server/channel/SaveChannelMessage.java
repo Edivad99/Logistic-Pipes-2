@@ -62,7 +62,9 @@ public record SaveChannelMessage(Optional<UUID> channel, String name, AccessRigh
     private static void apply(IChannelManager manager, ChannelInformation channel, SaveChannelMessage message,
         UUID security) {
         final UUID id = channel.getChannelIdentifier();
-        if (!channel.getName().equals(message.name)) {
+        // The name is optional -- a channel can be saved without one -- so the comparison starts
+        // from the message, which always carries a name.
+        if (!message.name.equals(channel.getName())) {
             manager.updateChannelName(id, message.name);
         }
         // Compared with Objects.equals: the old condition mixed equals with a reference comparison

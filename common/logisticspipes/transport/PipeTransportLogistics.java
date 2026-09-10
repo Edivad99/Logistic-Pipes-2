@@ -472,11 +472,11 @@ public class PipeTransportLogistics {
 		}
 	}
 
-	protected void handleTileReachedServer(LPTravelingItemServer arrivingItem, BlockEntity tile, Direction dir) {
+	protected void handleTileReachedServer(LPTravelingItemServer arrivingItem, @Nullable BlockEntity tile, @Nullable Direction dir) {
 		handleTileReachedServer_internal(arrivingItem, tile, dir);
 	}
 
-	protected final void handleTileReachedServer_internal(LPTravelingItemServer arrivingItem, BlockEntity tile, Direction dir) {
+	protected final void handleTileReachedServer_internal(LPTravelingItemServer arrivingItem, @Nullable BlockEntity tile, @Nullable Direction dir) {
 		if (getPipe() instanceof PipeItemsFluidSupplier) {
 			((PipeItemsFluidSupplier) getPipe()).endReached(arrivingItem, tile);
 			if (arrivingItem.getItemIdentifierStack().getStackSize() <= 0) {
@@ -617,7 +617,7 @@ public class PipeTransportLogistics {
 		return !isSplitStack;
 	}
 
-	protected void handleTileReachedClient(LPTravelingItemClient arrivingItem, BlockEntity tile, Direction dir) {
+	protected void handleTileReachedClient(LPTravelingItemClient arrivingItem, @Nullable BlockEntity tile, @Nullable Direction dir) {
 		if (SimpleServiceLocator.pipeInformationManager.isItemPipe(tile)) {
 			passToNextPipe(arrivingItem, tile);
 		}

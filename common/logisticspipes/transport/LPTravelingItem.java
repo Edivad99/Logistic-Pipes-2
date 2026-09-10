@@ -72,7 +72,7 @@ public abstract class LPTravelingItem {
 		id = getNextId();
 	}
 
-	public LPTravelingItem(int id, float position, Direction input, Direction output, float yaw) {
+	public LPTravelingItem(int id, float position, @Nullable Direction input, @Nullable Direction output, float yaw) {
 		this.id = id;
 		this.position = position;
 		this.input = input;
@@ -117,7 +117,7 @@ public abstract class LPTravelingItem {
 		private int age;
 		private float hoverStart = (float) (Math.random() * Math.PI * 2.0D);
 
-		public LPTravelingItemClient(int id, float position, Direction input, Direction output, float yaw) {
+		public LPTravelingItemClient(int id, float position, @Nullable Direction input, @Nullable Direction output, float yaw) {
 			super(id, position, input, output, yaw);
 		}
 
@@ -246,7 +246,11 @@ public abstract class LPTravelingItem {
 					case null, default -> position;
 				};
 
-				Vec3 motion = Vec3.ZERO.relative(exitdirection, getSpeed() * 2.0);
+				// No direction means the item never got one -- the switch above already treats that as
+				// "drop where it stands", so it leaves with no motion rather than crashing.
+				Vec3 motion = exitdirection == null
+						? Vec3.ZERO
+						: Vec3.ZERO.relative(exitdirection, getSpeed() * 2.0);
 
 				ItemEntity entityitem = new ItemEntity(level, position.x, position.y, position.z, getItemIdentifierStack().makeNormalStack());
 
@@ -363,7 +367,8 @@ public abstract class LPTravelingItem {
 			newItem.setDestination(getDestination());
 			newItem.clearDestination();
 
-			if (container instanceof LogisticsTileGenericPipe && ((LogisticsTileGenericPipe) container).pipe.transport instanceof PipeTransportLogistics) {
+			if (container instanceof LogisticsTileGenericPipe genericPipe && genericPipe.pipe != null
+					&& genericPipe.pipe.transport instanceof PipeTransportLogistics) {
 				((LogisticsTileGenericPipe) container).pipe.transport.injectItem((LPTravelingItem) newItem, orientation);
 			}
 		}

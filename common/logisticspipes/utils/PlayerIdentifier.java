@@ -2,6 +2,7 @@ package logisticspipes.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -121,20 +122,16 @@ public class PlayerIdentifier {
 
     @Override
     public String toString() {
-        return id.toString();
+        return String.valueOf(id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return Objects.hashCode(id);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof PlayerIdentifier) {
-            return id.equals(((PlayerIdentifier) obj).id);
-        } else {
-            return false;
-        }
+        return obj instanceof PlayerIdentifier other && Objects.equals(id, other.id);
     }
 }

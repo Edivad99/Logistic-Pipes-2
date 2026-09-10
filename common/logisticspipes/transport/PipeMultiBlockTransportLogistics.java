@@ -100,7 +100,7 @@ public class PipeMultiBlockTransportLogistics extends PipeTransportLogistics {
 	}
 
 	@Override
-	protected void handleTileReachedServer(LPTravelingItemServer arrivingItem, BlockEntity tile, Direction dir) {
+	protected void handleTileReachedServer(LPTravelingItemServer arrivingItem, @Nullable BlockEntity tile, @Nullable Direction dir) {
 		markChunkModified(tile);
 		if (tile instanceof LogisticsTileGenericPipe && ((LogisticsTileGenericPipe) tile).pipe instanceof CoreMultiBlockPipe) {
 			passToNextPipe(arrivingItem, tile);
@@ -119,7 +119,7 @@ public class PipeMultiBlockTransportLogistics extends PipeTransportLogistics {
 	}
 
 	@Override
-	protected void handleTileReachedClient(LPTravelingItemClient arrivingItem, BlockEntity tile, Direction dir) {
+	protected void handleTileReachedClient(LPTravelingItemClient arrivingItem, @Nullable BlockEntity tile, @Nullable Direction dir) {
 		if (tile instanceof LogisticsTileGenericPipe && ((LogisticsTileGenericPipe) tile).pipe instanceof CoreMultiBlockPipe) {
 			passToNextPipe(arrivingItem, tile);
 			return;

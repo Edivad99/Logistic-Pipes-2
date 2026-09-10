@@ -108,7 +108,10 @@ public class TEControl {
         if (!(be instanceof ILPTEInformation ilpteInformation)) {
             return;
         }
-        if (ilpteInformation.getLPTileEntityObject() != null) {
+        // Captured now rather than read again inside the task: the task runs a tick later, and this
+        // path is the block entity being removed -- by then the object may be gone.
+        final LPTileEntityObject teObject = ilpteInformation.getLPTileEntityObject();
+        if (teObject != null) {
             QueuedTasks.queueTask(() -> {
                 BlockPos pos = be.getBlockPos();
                 for (Direction dir : Direction.values()) {
@@ -125,7 +128,7 @@ public class TEControl {
                         }
                     }
                 }
-                var listeners = new ArrayList<>(ilpteInformation.getLPTileEntityObject().changeListeners);
+                var listeners = new ArrayList<>(teObject.changeListeners);
                 for (ITileEntityChangeListener listener : listeners) {
                     listener.pipeRemoved(pos);
                 }
