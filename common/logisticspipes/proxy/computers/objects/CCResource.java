@@ -1,5 +1,7 @@
 package logisticspipes.proxy.computers.objects;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.proxy.computers.interfaces.ICCTypeWrapped;
@@ -137,6 +139,7 @@ public class CCResource implements ILPCCTypeDefinition {
 		/* Lagacy Support for old scripts */
 
 		@CCCommand(description = "Returns the first value")
+		@Nullable
 		public Object getValue1() {
 			if (resource instanceof ItemResource) {
 				return ((ItemResource) resource).getItem();

@@ -1637,7 +1637,9 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 		List<Pair<Direction, IPipeSign>> list = new ArrayList<>();
 		for (int i = 0; i < 6; i++) {
 			if (signItem[i] != null) {
-				list.add(new Pair<>(DirectionUtil.getOrientation(i), signItem[i]));
+				// from3DDataValue rather than DirectionUtil.getOrientation, which answers null out of
+				// range: the loop never leaves it, and the pair has no room for a missing side.
+				list.add(new Pair<>(Direction.from3DDataValue(i), signItem[i]));
 			}
 		}
 		return list;

@@ -40,8 +40,8 @@ public class UpgradeManager
 	public final SimpleStackInventory inv = new SimpleStackInventory(9, "UpgradeInventory", 16);
 	public final SimpleStackInventory sneakyInv = new SimpleStackInventory(9, "SneakyUpgradeInventory", 1);
 	public final SimpleStackInventory secInv = new SimpleStackInventory(1, "SecurityInventory", 16);
-	private IPipeUpgrade[] upgrades = new IPipeUpgrade[9];
-	private IPipeUpgrade[] sneakyUpgrades = new IPipeUpgrade[9];
+	private @Nullable IPipeUpgrade[] upgrades = new @Nullable IPipeUpgrade[9];
+	private @Nullable IPipeUpgrade[] sneakyUpgrades = new @Nullable IPipeUpgrade[9];
 	private CoreRoutedPipe pipe;
 	private int securityDelay = 0;
 
@@ -105,7 +105,7 @@ public class UpgradeManager
 		InventoryChanged(inv);
 	}
 
-	private boolean updateModule(int slot, IPipeUpgrade[] upgrades, Container inv) {
+	private boolean updateModule(int slot, @Nullable IPipeUpgrade[] upgrades, Container inv) {
 		ItemStack stack = inv.getItem(slot);
 		if (stack.getItem() instanceof ItemUpgrade) {
 			upgrades[slot] = ((ItemUpgrade) stack.getItem()).getUpgradeForItem(stack, upgrades[slot]);
@@ -120,7 +120,7 @@ public class UpgradeManager
 		}
 	}
 
-	private boolean removeUpgrade(int slot, IPipeUpgrade[] upgrades) {
+	private boolean removeUpgrade(int slot, @Nullable IPipeUpgrade[] upgrades) {
 		boolean needUpdate = upgrades[slot].needsUpdate();
 		upgrades[slot] = null;
 		return needUpdate;
@@ -491,6 +491,7 @@ public class UpgradeManager
 		return guiUpgrades[i];
 	}
 
+	@Nullable
 	public IPipeUpgrade getUpgrade(int i) {
 		if (i < upgrades.length) {
 			return upgrades[i];

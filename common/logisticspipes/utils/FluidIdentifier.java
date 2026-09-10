@@ -112,6 +112,7 @@ public class FluidIdentifier implements Comparable<FluidIdentifier>, ILPCCTypeHo
 	 * through a FluidStack, whose {@link FluidStack#getComponentsPatch()} is canonical by
 	 * construction.
 	 */
+	@Nullable
 	public static FluidIdentifier get(Fluid fluid, DataComponentPatch rawPatch) {
 		if (rawPatch.isEmpty()) {
 			return FluidIdentifier.getOrCreateSimple(fluid);

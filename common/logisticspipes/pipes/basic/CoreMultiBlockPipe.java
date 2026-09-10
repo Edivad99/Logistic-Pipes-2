@@ -105,6 +105,7 @@ public abstract class CoreMultiBlockPipe extends CoreUnroutedPipe {
 
 	public abstract AABB getCompleteBox();
 
+	@Nullable
 	public abstract ITubeOrientation getTubeOrientation(Player player, int xPos, int zPos);
 
 	public abstract float getPipeLength();
@@ -119,6 +120,7 @@ public abstract class CoreMultiBlockPipe extends CoreUnroutedPipe {
 
 	public abstract @Nullable Direction getExitForInput(Direction comingFrom);
 
+	@Nullable
 	public abstract BlockEntity getConnectedEndTile(Direction output);
 
 	@Override

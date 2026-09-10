@@ -147,7 +147,7 @@ public class ModuleCrafter extends LogisticsModule
 			.build();
 
 	// for reliable transport
-	protected final DelayQueue<DelayedGeneric<Pair<ItemIdentifierStack, IAdditionalTargetInformation>>> lostItems = new DelayQueue<>();
+	protected final DelayQueue<DelayedGeneric<Pair<ItemIdentifierStack, @Nullable IAdditionalTargetInformation>>> lostItems = new DelayQueue<>();
 	protected final PlayerCollectionList localModeWatchers = new PlayerCollectionList();
 	protected final PlayerCollectionList guiWatcher = new PlayerCollectionList();
 
@@ -157,7 +157,7 @@ public class ModuleCrafter extends LogisticsModule
 
 	@Nullable
 	private IRequestItems invRequester;
-	private WeakReference<BlockEntity> lastAccessedCrafter = new WeakReference<>(null);
+	private WeakReference<@Nullable BlockEntity> lastAccessedCrafter = new WeakReference<>(null);
 	private boolean cachedAreAllOrderesToBuffer;
 	public ModuleCrafter() {
 		advancedSatelliteUUIDList.ensureSize(9);
@@ -247,10 +247,10 @@ public class ModuleCrafter extends LogisticsModule
 			return;
 		}
 		// if(true) return;
-		DelayedGeneric<Pair<ItemIdentifierStack, IAdditionalTargetInformation>> lostItem = lostItems.poll();
+		DelayedGeneric<Pair<ItemIdentifierStack, @Nullable IAdditionalTargetInformation>> lostItem = lostItems.poll();
 		int reRequested = 0;
 		while (lostItem != null && reRequested < 100) {
-			Pair<ItemIdentifierStack, IAdditionalTargetInformation> pair = lostItem.get();
+			Pair<ItemIdentifierStack, @Nullable IAdditionalTargetInformation> pair = lostItem.get();
 			if (service.getItemOrderManager().hasOrders(ResourceType.CRAFTING)) {
 				SinkReply reply = LogisticsManager.canSink(pair.getValue1().makeNormalStack(), getRouter(), null, true,
 						pair.getValue1().getItem(), null, true, true, false);
@@ -365,8 +365,8 @@ public class ModuleCrafter extends LogisticsModule
 	}
 
 	@Override
-	public LogisticsItemOrder fullFill(LogisticsPromise promise, IRequestItems destination,
-			IAdditionalTargetInformation info) {
+	public @Nullable LogisticsItemOrder fullFill(LogisticsPromise promise, IRequestItems destination,
+			@Nullable IAdditionalTargetInformation info) {
 		final IPipeServiceProvider service = this.service;
 		if (service == null) return null;
 		if (promise instanceof LogisticsExtraDictPromise) {
@@ -463,10 +463,17 @@ public class ModuleCrafter extends LogisticsModule
 			// has a satellite configured and that one is unreachable
 			return null;
 		}
+		// A satellite whose pipe is not loaded counts as unreachable, same as one with no route:
+		// isSatelliteConnected() only checks that a route exists, and a router outlives its chunk.
+		// Letting the null through would build a template whose requirements are addressed to
+		// nobody, and the request would fail much later with nothing to say which slot was at fault.
 		if (!getUpgradeManager().isAdvancedSatelliteCrafter()) {
 			IRouter r = getSatelliteRouter(-1);
 			if (r != null) {
 				IRequestItems sat = r.getPipe();
+				if (sat == null) {
+					return null;
+				}
 				for (int i = 6; i < 9; i++) {
 					target[i] = sat;
 				}
@@ -475,7 +482,11 @@ public class ModuleCrafter extends LogisticsModule
 			for (int i = 0; i < 9; i++) {
 				IRouter r = getSatelliteRouter(i);
 				if (r != null) {
-					target[i] = r.getPipe();
+					IRequestItems sat = r.getPipe();
+					if (sat == null) {
+						return null;
+					}
+					target[i] = sat;
 				}
 			}
 		}
@@ -498,7 +509,7 @@ public class ModuleCrafter extends LogisticsModule
 		}
 
 		int liquidCrafter = getUpgradeManager().getFluidCrafter();
-		IRequestFluid[] liquidTarget = new IRequestFluid[liquidCrafter];
+		@Nullable IRequestFluid[] liquidTarget = new @Nullable IRequestFluid[liquidCrafter];
 
 		if (!getUpgradeManager().isAdvancedSatelliteCrafter()) {
 			IRouter r = getFluidSatelliteRouter(-1);
@@ -605,7 +616,7 @@ public class ModuleCrafter extends LogisticsModule
 		return service.getItemOrderManager().totalAmountCountInAllOrders();
 	}
 
-	private IRouter getSatelliteRouter(int x) {
+	private @Nullable IRouter getSatelliteRouter(int x) {
 		final UUID satelliteUUID = x == -1 ? this.satelliteUUID.getValue() : advancedSatelliteUUIDList.get(x);
 		final int satelliteRouterId = SimpleServiceLocator.routerManager.getIDforUUID(satelliteUUID);
 		return SimpleServiceLocator.routerManager.getRouter(satelliteRouterId);
@@ -731,11 +742,11 @@ public class ModuleCrafter extends LogisticsModule
 		}
 	}
 
-	public ItemIdentifierStack getByproductItem() {
+	public @Nullable ItemIdentifierStack getByproductItem() {
 		return dummyInventory.getIDStackInSlot(10);
 	}
 
-	public FluidIdentifier getFluidMaterial(int slotnr) {
+	public @Nullable FluidIdentifier getFluidMaterial(int slotnr) {
 		ItemIdentifierStack stack = liquidInventory.getIDStackInSlot(slotnr);
 		if (stack == null) {
 			return null;
@@ -757,7 +768,7 @@ public class ModuleCrafter extends LogisticsModule
         }
 	}
 
-	private IRouter getFluidSatelliteRouter(int x) {
+	private @Nullable IRouter getFluidSatelliteRouter(int x) {
 		final UUID liquidSatelliteUUID = x == -1 ? this.liquidSatelliteUUID.getValue() : liquidSatelliteUUIDList.get(x);
 		final int satelliteRouterId = SimpleServiceLocator.routerManager.getIDforUUID(liquidSatelliteUUID);
 		return SimpleServiceLocator.routerManager.getRouter(satelliteRouterId);

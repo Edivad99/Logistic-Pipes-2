@@ -139,6 +139,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
+	@Nullable
 	public ITubeOrientation getTubeOrientation(Player player, int xPos, int zPos) {
 		double x = xPos + 0.5 - player.getX();
 		double z = zPos + 0.5 - player.getZ();
@@ -222,6 +223,7 @@ public class HSTubeSCurve extends CoreMultiBlockPipe {
 	}
 
 	@Override
+	@Nullable
 	public BlockEntity getConnectedEndTile(Direction output) {
 		boolean useOwn;
 		if (!BlockPos.ZERO.equals(orientation.getOffset())) {

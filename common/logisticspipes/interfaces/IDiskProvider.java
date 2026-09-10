@@ -3,6 +3,8 @@ package logisticspipes.interfaces;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.gui.ItemDisplay;
 
 public interface IDiskProvider {
@@ -11,5 +13,6 @@ public interface IDiskProvider {
 
 	BlockPos getBlockPos();
 
+	@Nullable
 	ItemDisplay getItemDisplay();
 }

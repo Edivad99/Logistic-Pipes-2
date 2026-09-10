@@ -10,6 +10,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.IRotationProvider;
 import logisticspipes.network.to_server.block.RequestBlockRotationMessage;
 
@@ -87,6 +89,7 @@ public class LogisticsSolidBlockEntity extends BlockEntity implements IRotationP
         return getBlockPos();
     }
 
+    @Nullable
     public Level getLevelForHUD() {
         return level;
     }

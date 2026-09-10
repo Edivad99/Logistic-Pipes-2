@@ -704,6 +704,7 @@ public class RequestTableScreen extends LogisticsBaseGuiScreen<RequestTableMenu>
     }
 
     @Override
+    @Nullable
     public ItemDisplay getItemDisplay() {
         return itemDisplay;
     }

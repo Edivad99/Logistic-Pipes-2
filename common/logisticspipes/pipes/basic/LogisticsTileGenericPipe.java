@@ -652,6 +652,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 	}
 
 	@ModDependentMethod(modId = LPConstants.openComputersModID)
+	@Nullable
 	public Object sidedNode(Direction side) {
 		if (this.getTile(side) instanceof LogisticsTileGenericPipe || this.getTile(side) instanceof LogisticsSolidBlockEntity) {
 			return null;
@@ -810,6 +811,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 	}
 
 	@Override
+	@Nullable
 	public BlockEntity getNextConnectedTile(Direction to) {
 		if (this.pipe.isMultiBlock()) {
 			return ((CoreMultiBlockPipe) this.pipe).getConnectedEndTile(to);
@@ -817,10 +819,12 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 		return getTile(to, false);
 	}
 
+	@Nullable
 	public BlockEntity getTile(Direction to) {
 		return getTile(to, false);
 	}
 
+	@Nullable
 	public BlockEntity getTile(Direction to, boolean force) {
 		TileBuffer[] cache = getTileCache();
 		if (cache != null) {
@@ -833,6 +837,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 		}
 	}
 
+	@Nullable
 	public Block getBlock(Direction to) {
 		TileBuffer[] cache = getTileCache();
 		if (cache != null) {
@@ -869,6 +874,7 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 		refreshRenderState = true;
 	}
 
+	@Nullable
 	public IIconProvider getPipeIcons() {
 		if (pipe == null) {
 			return null;

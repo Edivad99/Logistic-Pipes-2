@@ -9,6 +9,8 @@ package logisticspipes.interfaces.routing;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.item.ItemIdentifierStack;
 
 public interface ICraftItems extends ICraft, IProvideItems, IItemSpaceControl, IRequireReliableTransport {
@@ -24,5 +26,6 @@ public interface ICraftItems extends ICraft, IProvideItems, IItemSpaceControl, I
 	 *             after can be crafted
 	 */
 	@Deprecated
+	@Nullable
 	List<ItemIdentifierStack> getCraftedItems(); // list of all items that can be crafted.
 }

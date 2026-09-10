@@ -34,6 +34,7 @@ public class PipeItemsSystemEntranceLogistics extends CoreRoutedPipe implements 
 		((EntrencsTransport) transport).pipe = this;
 	}
 
+	@Nullable
 	public UUID getLocalFreqUUID() {
 		if (inv.getItem(0) == null) {
 			return null;

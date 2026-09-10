@@ -2,6 +2,8 @@ package logisticspipes.request;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.ICraft;
 import logisticspipes.interfaces.routing.ICraftItems;
@@ -11,7 +13,7 @@ import logisticspipes.utils.tuples.Pair;
 
 public interface ICraftingTemplate extends Comparable<ICraftingTemplate> {
 
-	List<Pair<IResource, IAdditionalTargetInformation>> getComponents(int nCraftingSets);
+	List<Pair<IResource, @Nullable IAdditionalTargetInformation>> getComponents(int nCraftingSets);
 
 	List<IExtraPromise> getByproducts(int workSets);
 

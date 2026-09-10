@@ -1,11 +1,14 @@
 package logisticspipes.utils;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class OrientationsUtil {
 
+	@Nullable
 	public static Direction getOrientationOfTilewithTile(BlockEntity pipeTile, BlockEntity tileTile) {
 		final BlockPos pipe = pipeTile.getBlockPos();
 		final BlockPos other = tileTile.getBlockPos();

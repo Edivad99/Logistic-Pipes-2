@@ -15,6 +15,7 @@ import network.rs485.logisticspipes.inventory.ProviderMode;
 public class InventoryHelper {
 
 	//BC getTransactorFor using our getInventory
+	@Nullable
 	public static ITransactor getTransactorFor(Object object, @Nullable Direction dir) {
 		if (object instanceof BlockEntity tile) {
 			ITransactor t = SimpleServiceLocator.inventoryUtilFactory.getSpecialHandlerFor(tile, dir, ProviderMode.DEFAULT);

@@ -43,6 +43,7 @@ public class GuiManageChannelPopup extends SubGuiScreen implements IGUIChannelIn
             }
 
             @Override
+            @Nullable
             public String getTextAt(int index) {
                 return channelList.get(index).getName();
             }

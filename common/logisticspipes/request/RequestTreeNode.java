@@ -539,10 +539,10 @@ public class RequestTreeNode {
 
 	private int getSubRequests(int nCraftingSets, ICraftingTemplate template) {
 		boolean failed = false;
-		List<Pair<IResource, IAdditionalTargetInformation>> stacks = template.getComponents(nCraftingSets);
+		List<Pair<IResource, @Nullable IAdditionalTargetInformation>> stacks = template.getComponents(nCraftingSets);
 		int workSetsAvailable = nCraftingSets;
 		ArrayList<RequestTreeNode> lastNodes = new ArrayList<>(stacks.size());
-		for (Pair<IResource, IAdditionalTargetInformation> stack : stacks) {
+		for (Pair<IResource, @Nullable IAdditionalTargetInformation> stack : stacks) {
 			RequestTreeNode node = new RequestTreeNode(template, stack.getValue1(), this, RequestTree.defaultRequestFlags, stack.getValue2());
 			lastNodes.add(node);
 			if (!node.isDone()) {
@@ -570,9 +570,9 @@ public class RequestTreeNode {
 		ArrayList<RequestTreeNode> newChildren = new ArrayList<>();
 		if (workSets > 0) {
 			//now set the amounts
-			List<Pair<IResource, IAdditionalTargetInformation>> stacks = template.getComponents(workSets);
+			List<Pair<IResource, @Nullable IAdditionalTargetInformation>> stacks = template.getComponents(workSets);
 			boolean failed = false;
-			for (Pair<IResource, IAdditionalTargetInformation> stack : stacks) {
+			for (Pair<IResource, @Nullable IAdditionalTargetInformation> stack : stacks) {
 				RequestTreeNode node = new RequestTreeNode(template, stack.getValue1(), this, RequestTree.defaultRequestFlags, stack.getValue2());
 				newChildren.add(node);
 				if (!node.isDone()) {
@@ -600,9 +600,9 @@ public class RequestTreeNode {
 
 		int nCraftingSetsNeeded = (getMissingAmount() + template.getResultStackSize() - 1) / template.getResultStackSize();
 
-		List<Pair<IResource, IAdditionalTargetInformation>> stacks = template.getComponents(nCraftingSetsNeeded);
+		List<Pair<IResource, @Nullable IAdditionalTargetInformation>> stacks = template.getComponents(nCraftingSetsNeeded);
 
-		for (Pair<IResource, IAdditionalTargetInformation> stack : stacks) {
+		for (Pair<IResource, @Nullable IAdditionalTargetInformation> stack : stacks) {
 			new RequestTreeNode(template, stack.getValue1(), this, RequestTree.defaultRequestFlags, stack.getValue2());
 		}
 

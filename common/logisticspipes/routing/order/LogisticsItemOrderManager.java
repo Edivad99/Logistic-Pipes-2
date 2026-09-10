@@ -55,14 +55,16 @@ public class LogisticsItemOrderManager extends LogisticsOrderManager<LogisticsIt
 		super.sendFailed();
 	}
 
-	public LogisticsItemOrder addOrder(ItemIdentifierStack stack, IRequestItems requester, ResourceType type, IAdditionalTargetInformation info) {
+	public LogisticsItemOrder addOrder(ItemIdentifierStack stack, IRequestItems requester, ResourceType type,
+			@Nullable IAdditionalTargetInformation info) {
 		LogisticsItemOrder order = new LogisticsItemOrder(new DictResource(stack, null), requester, type, info);
 		orders.addLast(order);
 		listen();
 		return order;
 	}
 
-	public LogisticsItemOrder addOrder(DictResource stack, IRequestItems requester, ResourceType type, IAdditionalTargetInformation info) {
+	public LogisticsItemOrder addOrder(DictResource stack, IRequestItems requester, ResourceType type,
+			@Nullable IAdditionalTargetInformation info) {
 		LogisticsItemOrder order = new LogisticsItemOrder(stack, requester, type, info);
 		orders.addLast(order);
 		listen();

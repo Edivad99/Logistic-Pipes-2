@@ -49,6 +49,7 @@ public class PipeItemsSystemDestinationLogistics extends CoreRoutedPipe implemen
 		return null;
 	}
 
+	@Nullable
 	public UUID getTargetUUID() {
 		final ItemIdentifierStack itemIdent = inv.getIDStackInSlot(0);
 		if (itemIdent == null) {

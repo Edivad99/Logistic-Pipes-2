@@ -1,5 +1,7 @@
 package logisticspipes.utils.gui;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.world.Container;
 
 import lombok.Getter;
@@ -26,6 +28,7 @@ public class UpgradeSlot extends RestrictedSlot {
 		this.upgradeSlotId = upgradeSlotId;
 	}
 
+	@Nullable
 	public IPipeUpgrade getUpgrade() {
 		return manager.getUpgrade(upgradeSlotId);
 	}

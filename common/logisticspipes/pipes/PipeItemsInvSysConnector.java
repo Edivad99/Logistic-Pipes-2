@@ -211,6 +211,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 
 	private static UUID testUUID = UUID.randomUUID();
 
+	@Nullable
 	private UUID getConnectionUUID() {
 		return connectedChannel;
 	}

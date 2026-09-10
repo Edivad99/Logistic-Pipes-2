@@ -1,5 +1,7 @@
 package logisticspipes.proxy.computers.objects;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.proxy.computers.interfaces.ICCTypeWrapped;
@@ -25,6 +27,7 @@ public class CCQuartet implements ILPCCTypeDefinition {
 		}
 
 		@CCCommand(description = "Returns the forth value")
+		@Nullable
 		public Object getValue4() {
 			return quartet.getValue4();
 		}

@@ -55,6 +55,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 		};
 	}
 
+	@Nullable
 	private FluidRoutedPipe getFluidPipe() {
 		return (FluidRoutedPipe) getPipe();
 	}
@@ -81,6 +82,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 		}
 	}
 
+	@Nullable
 	public FluidStack drain(Direction from, FluidStack resource, boolean doDrain) {
 		if (sideTanks[from.ordinal()].getFluid() == null || !(FluidStack.isSameFluidSameComponents(sideTanks[from.ordinal()].getFluid(), resource))) {
 			return new FluidStack(resource.getFluid(), 0);

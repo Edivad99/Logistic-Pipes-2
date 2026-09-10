@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.renderer.IIconProvider;
 
 public class LPActionTriggerIconProvider implements IIconProvider {
@@ -26,6 +28,7 @@ public class LPActionTriggerIconProvider implements IIconProvider {
 	}
 
 	@Override
+	@Nullable
 	public TextureAtlasSprite getIcon(int iconIndex) {
 		if (iconIndex > 6) {
 			return null;

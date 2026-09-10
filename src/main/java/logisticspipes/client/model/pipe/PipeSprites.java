@@ -30,7 +30,7 @@ public record PipeSprites(
     @Nullable TextureAtlasSprite statusBC,
     @Nullable TextureAtlasSprite glassCenter,
     @Nullable TextureAtlasSprite innerBox,
-    IntFunction<TextureAtlasSprite> indexedIcon) {
+    IntFunction<@Nullable TextureAtlasSprite> indexedIcon) {
 
     public static PipeSprites empty() {
         return new PipeSprites(null, null, null, null, null, null, index -> null);

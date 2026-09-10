@@ -179,6 +179,7 @@ public abstract class SideConfigDisplay {
 		initTime = System.currentTimeMillis();
 	}
 
+	@Nullable
 	public SelectedFace getSelection() {
 		return selection;
 	}
@@ -228,6 +229,7 @@ public abstract class SideConfigDisplay {
 		}
 	}
 
+	@Nullable
 	public static HitResult getClosestHit(Vec3 origin, Collection<HitResult> candidates) {
 		double minLengthSquared = Double.POSITIVE_INFINITY;
 		HitResult closest = null;

@@ -142,6 +142,7 @@ public class PipeMultiBlockTransportLogistics extends PipeTransportLogistics {
 	}
 
 	@Override
+	@Nullable
 	public CoreUnroutedPipe getNextPipe(Direction output) {
 		BlockEntity tile = null;
 		if (getMultiPipe() != null) {

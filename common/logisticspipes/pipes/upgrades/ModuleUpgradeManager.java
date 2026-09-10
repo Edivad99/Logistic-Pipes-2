@@ -1,5 +1,7 @@
 package logisticspipes.pipes.upgrades;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -23,7 +25,7 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 	private final SimpleStackInventory internalInv;
 	@Getter
 	private final SimpleInventoryProperty inv;
-	private final IPipeUpgrade[] upgrades = new IPipeUpgrade[2];
+	private final @Nullable IPipeUpgrade[] upgrades = new @Nullable IPipeUpgrade[2];
 	private final PipeLogisticsChassis pipe; // FIXME: get rid of this pipe reference
 
 	private Direction sneakyOrientation = null;
@@ -108,6 +110,7 @@ public class ModuleUpgradeManager implements ISimpleInventoryEventHandler, ISlot
 	}
 
 	@Override
+	@Nullable
 	public IPipeUpgrade getUpgrade(int slot) {
 		return upgrades[slot];
 	}

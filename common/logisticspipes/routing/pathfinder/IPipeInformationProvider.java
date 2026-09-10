@@ -30,6 +30,7 @@ public interface IPipeInformationProvider {
 
 	CoreRoutedPipe getRoutingPipe();
 
+	@Nullable
 	BlockEntity getNextConnectedTile(Direction direction);
 
 	boolean isFirewallPipe();

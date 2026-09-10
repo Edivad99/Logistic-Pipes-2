@@ -1,5 +1,7 @@
 package logisticspipes.interfaces;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -28,6 +30,7 @@ public interface ISlotUpgradeManager {
 
 	Container getInv();
 
+	@Nullable
 	IPipeUpgrade getUpgrade(int slot);
 
 	BlockPos getPipePosition();

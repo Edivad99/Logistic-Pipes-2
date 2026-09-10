@@ -240,10 +240,12 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 		return this;
 	}
 
+	@Nullable
 	public BlockEntity getTile(Direction to) {
 		return getTile(to, false);
 	}
 
+	@Nullable
 	public BlockEntity getTile(Direction to, boolean force) {
 		TileBuffer[] cache = getTileCache();
 		if (cache != null) {
@@ -256,6 +258,7 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 		}
 	}
 
+	@Nullable
 	public Block getBlock(Direction to) {
 		TileBuffer[] cache = getTileCache();
 		if (cache != null) {
@@ -316,6 +319,7 @@ public class LogisticsTileGenericSubMultiBlock extends BlockEntity implements IS
 	}
 
 	@Override
+	@Nullable
 	public IPipeInformationProvider getMainTile() {
 		List<LogisticsTileGenericPipe> mainTiles = this.getMainPipe();
 		if (mainTiles.size() != 1) {

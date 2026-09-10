@@ -205,6 +205,7 @@ public final class ItemIdentifier implements Comparable<ItemIdentifier>, ILPCCTy
         return resultlist;
     }
 
+    @Nullable
     private static Map<Item, String> getCreativeTabNameMap() {
         Map<Item, String> map = ItemIdentifier.creativeTabNameByItem;
         if (map != null) {

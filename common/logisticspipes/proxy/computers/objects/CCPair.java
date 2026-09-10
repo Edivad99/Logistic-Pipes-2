@@ -1,5 +1,7 @@
 package logisticspipes.proxy.computers.objects;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCType;
 import logisticspipes.proxy.computers.interfaces.ICCTypeWrapped;
@@ -23,6 +25,7 @@ public class CCPair implements ILPCCTypeDefinition {
 		}
 
 		@CCCommand(description = "Returns the first value")
+		@Nullable
 		public Object getValue1() {
 			return pair.getValue1();
 		}
@@ -37,6 +40,7 @@ public class CCPair implements ILPCCTypeDefinition {
 		}
 
 		@CCCommand(description = "Returns the second value")
+		@Nullable
 		public Object getValue2() {
 			return pair.getValue2();
 		}

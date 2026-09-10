@@ -1,5 +1,7 @@
 package logisticspipes.asm.util;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -104,6 +106,7 @@ public class ASMHelper {
 		}
 
 		@Override
+		@Nullable
 		public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 			if (methodName.equals(name) && (methodDesc.isEmpty() || methodDesc.equals(desc))) {
 				return new FilterMaxVisitMethodVisitor(super.visitMethod(access, name, desc, signature, exceptions));

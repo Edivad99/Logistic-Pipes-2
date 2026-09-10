@@ -113,7 +113,7 @@ public abstract class LogisticsPowerProviderBlockEntity extends LogisticsSolidBl
         if (globalRequest > 0) {
             final double fullfillRatio = Math.min(1, Math.min(internalStorage, getMaxProvidePerTick()) / globalRequest);
             if (fullfillRatio > 0) {
-                final Function<NeighborTileEntity<LogisticsTileGenericPipe>, CoreRoutedPipe> getPipe =
+                final Function<NeighborTileEntity<LogisticsTileGenericPipe>, @Nullable CoreRoutedPipe> getPipe =
                     (NeighborTileEntity<LogisticsTileGenericPipe> neighbor) -> (CoreRoutedPipe) neighbor.getTileEntity().pipe;
                 orders.entrySet().stream()
                     .map(routerIdToOrderCount -> new Pair<>(

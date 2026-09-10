@@ -125,6 +125,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	}
 
 	@Override
+	@Nullable
 	public ITubeOrientation getTubeOrientation(Player player, int xPos, int zPos) {
 		double x = xPos + 0.5 - player.getX();
 		double z = zPos + 0.5 - player.getZ();
@@ -176,6 +177,7 @@ public class HSTubeSpeedup extends CoreMultiBlockPipe {
 	}
 
 	@Override
+	@Nullable
 	public BlockEntity getConnectedEndTile(Direction output) {
 		if (orientation.dir1 == output) {
 			PositionRotation rotation = new PositionRotation();

@@ -88,7 +88,12 @@ public class PipeTransportLogistics {
 	}
 
 	private final int bufferTimeOut = 20 * 2; // 2 Seconds
-	public final SyncList<Triplet<ItemIdentifierStack, Pair<Integer /* Time */, Integer /* BufferCounter */>, LPTravelingItemServer>> itemBuffer = new SyncList<>();
+	/**
+	 * What is waiting to be retried. The last two are null only in the client's copy, which
+	 * {@link #setClientItemBuffer} fills for display: the tick loop that reads them is server-only.
+	 */
+	public final SyncList<Triplet<ItemIdentifierStack, @Nullable Pair<Integer /* Time */, Integer /* BufferCounter */>,
+			@Nullable LPTravelingItemServer>> itemBuffer = new SyncList<>();
 	private @Nullable LevelChunk chunk;
 	public LPItemList items = new LPItemList(this);
 	public LogisticsTileGenericPipe container;
@@ -143,6 +148,7 @@ public class PipeTransportLogistics {
 		return container.pipe;
 	}
 
+	@Nullable
 	protected CoreRoutedPipe getRoutedPipe() {
 		if (!isRouted) {
 			throw new UnsupportedOperationException("Can't use a Transport pipe as a routing pipe");
@@ -161,9 +167,10 @@ public class PipeTransportLogistics {
 		if (!getWorld().isClientSide()) {
 			if (!itemBuffer.isEmpty()) {
 				List<LPTravelingItem> toAdd = new LinkedList<>();
-				Iterator<Triplet<ItemIdentifierStack, Pair<Integer, Integer>, LPTravelingItemServer>> iterator = itemBuffer.iterator();
+				Iterator<Triplet<ItemIdentifierStack, @Nullable Pair<Integer, Integer>, @Nullable LPTravelingItemServer>> iterator =
+						itemBuffer.iterator();
 				while (iterator.hasNext()) {
-					Triplet<ItemIdentifierStack, Pair<Integer, Integer>, LPTravelingItemServer> next = iterator.next();
+					Triplet<ItemIdentifierStack, @Nullable Pair<Integer, Integer>, @Nullable LPTravelingItemServer> next = iterator.next();
 					int currentTimeOut = next.getValue2().getValue1();
 					if (currentTimeOut > 0) {
 						next.getValue2().setValue1(currentTimeOut - 1);

@@ -59,6 +59,7 @@ public class TextureRegistrar {
 	// on-disk texture path under assets/logisticspipes/textures/. The 1.12.2
 	// code assumed a flat "blocks/<fileName>" layout, but the real files live
 	// under several subfolders in resources/assets/logisticspipes/textures/blocks/pipes/.
+	@Nullable
 	private static String resolvePath(String fileName) {
 		// Flat file directly under blocks/pipes/ (no new_texture/ prefix)
 		if (fileName.equals("pipes/liquid_connector")) {

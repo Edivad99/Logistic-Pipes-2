@@ -9,6 +9,8 @@ import net.minecraft.network.chat.Component;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.Color;
 
 public class TextListDisplay {
@@ -17,6 +19,7 @@ public class TextListDisplay {
 
 		int getSize();
 
+		@Nullable
 		String getTextAt(int index);
 
 		int getTextColor(int index);
@@ -122,7 +125,11 @@ public class TextListDisplay {
 
 	public void renderGuiForeground(GuiGraphicsExtractor guiGraphics) {
 		if (hover != -1) {
-			LPGuiGraphics.drawToolTip(guiGraphics, mousePosX - gui.getLeftPos(), mousePosY - gui.getTopPos(), Collections.singletonList(list.getTextAt(hover)), ChatFormatting.WHITE);
+			final String hovered = list.getTextAt(hover);
+			if (hovered != null) {
+				LPGuiGraphics.drawToolTip(guiGraphics, mousePosX - gui.getLeftPos(), mousePosY - gui.getTopPos(),
+						Collections.singletonList(hovered), ChatFormatting.WHITE);
+			}
 		}
 	}
 

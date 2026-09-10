@@ -16,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.pipes.upgrades.IPipeUpgrade;
 import network.rs485.logisticspipes.util.TextUtil;
 
@@ -47,6 +49,7 @@ public class ItemUpgrade extends LogisticsItem {
             "Upgrade " + resource + " not found in Item registry");
     }
 
+    @Nullable
     public IPipeUpgrade getUpgradeForItem(ItemStack itemStack, IPipeUpgrade currentUpgrade) {
         if (itemStack.isEmpty()) {
             return null;

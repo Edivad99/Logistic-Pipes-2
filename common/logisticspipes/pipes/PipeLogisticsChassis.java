@@ -744,6 +744,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@Override
+	@Nullable
 	public List<ItemIdentifierStack> getCraftedItems() {
 		List<ItemIdentifierStack> craftables = null;
 		for (int i = 0; i < getChassisSize(); i++) {

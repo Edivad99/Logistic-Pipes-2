@@ -37,6 +37,8 @@
 
 package network.rs485.debug.api;
 
+import org.jspecify.annotations.Nullable;
+
 public interface IObjectIdentification {
 
 	boolean toStringObject(Object o);
@@ -45,6 +47,7 @@ public interface IObjectIdentification {
 	 * @param o
 	 * @return null, if object isn't handled, otherwise the String value
 	 */
+	@Nullable
 	String handleObject(Object o);
 
 }

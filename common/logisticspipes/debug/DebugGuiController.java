@@ -199,6 +199,7 @@ public class DebugGuiController {
 		}
 
 		@Override
+		@Nullable
 		public String handleObject(Object o) {
 			if (o instanceof Level) {
 				return ((Level) o).dimension().identifier().getPath(); // was: getWorldName

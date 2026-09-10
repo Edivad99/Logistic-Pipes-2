@@ -1,5 +1,7 @@
 package logisticspipes.proxy.computers.objects;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.proxy.computers.interfaces.CCCommand;
 import logisticspipes.proxy.computers.interfaces.CCQueued;
 import logisticspipes.proxy.computers.interfaces.CCType;
@@ -22,6 +24,7 @@ public class CCItemIdentifierInventory {
 
 	@CCCommand(description = "Returns the ItemIdentifierStack in the given slot")
 	@CCQueued
+	@Nullable
 	public ItemIdentifierStack getItemIdentifierStack(Double slot) {
 		int s = slot.intValue();
 		if (s <= 0 || s > getContainerSize()) {

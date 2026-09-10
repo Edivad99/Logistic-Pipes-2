@@ -1,5 +1,7 @@
 package logisticspipes.utils;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -94,6 +96,7 @@ public class OneList<E> implements List<E> {
 			}
 
 			@Override
+			@Nullable
 			public E next() {
 				if (handled) {
 					return null;
@@ -108,6 +111,7 @@ public class OneList<E> implements List<E> {
 			}
 
 			@Override
+			@Nullable
 			public E previous() {
 				if (!handled) {
 					return null;

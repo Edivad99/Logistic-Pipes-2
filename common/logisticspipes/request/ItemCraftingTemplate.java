@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.ICraftItems;
 import logisticspipes.request.resources.IResource;
@@ -26,7 +28,7 @@ public class ItemCraftingTemplate implements IReqCraftingTemplate {
 	protected ItemIdentifierStack result;
 	protected ICraftItems crafter;
 
-	protected ArrayList<Pair<IResource, IAdditionalTargetInformation>> required = new ArrayList<>(9);
+	protected ArrayList<Pair<IResource, @Nullable IAdditionalTargetInformation>> required = new ArrayList<>(9);
 
 	protected ArrayList<ItemIdentifierStack> byproduct = new ArrayList<>(9);
 
@@ -38,7 +40,7 @@ public class ItemCraftingTemplate implements IReqCraftingTemplate {
 		this.priority = priority;
 	}
 
-	public void addRequirement(IResource requirement, IAdditionalTargetInformation info) {
+	public void addRequirement(IResource requirement, @Nullable IAdditionalTargetInformation info) {
 		required.add(new Pair<>(requirement, info));
 	}
 
@@ -119,12 +121,12 @@ public class ItemCraftingTemplate implements IReqCraftingTemplate {
 	}
 
 	@Override
-	public List<Pair<IResource, IAdditionalTargetInformation>> getComponents(int nCraftingSetsNeeded) {
-		List<Pair<IResource, IAdditionalTargetInformation>> stacks = new ArrayList<>(required.size());
+	public List<Pair<IResource, @Nullable IAdditionalTargetInformation>> getComponents(int nCraftingSetsNeeded) {
+		List<Pair<IResource, @Nullable IAdditionalTargetInformation>> stacks = new ArrayList<>(required.size());
 
 		// for each thing needed to satisfy this promise
-		for (Pair<IResource, IAdditionalTargetInformation> stack : required) {
-			Pair<IResource, IAdditionalTargetInformation> pair = new Pair<>(stack.getValue1()
+		for (Pair<IResource, @Nullable IAdditionalTargetInformation> stack : required) {
+			Pair<IResource, @Nullable IAdditionalTargetInformation> pair = new Pair<>(stack.getValue1()
 					.clone(nCraftingSetsNeeded), stack.getValue2());
 			stacks.add(pair);
 		}
