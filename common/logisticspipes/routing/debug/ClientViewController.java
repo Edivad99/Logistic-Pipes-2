@@ -22,7 +22,7 @@ import logisticspipes.routing.PipeRoutingConnectionType;
 
 public class ClientViewController implements IDebugHUDProvider {
 
-	private static ClientViewController instance;
+	private static @Nullable ClientViewController instance;
 
 	private ClientViewController() {}
 
@@ -32,8 +32,8 @@ public class ClientViewController implements IDebugHUDProvider {
 	/** The candidate list as the debug screen shows it, rebuilt on every step. */
 	private final List<Component> candidateLines = new ArrayList<>();
 
-	private List<IHeadUpDisplayRendererProvider> listHUD = new ArrayList<>();
-	private HashMap<BlockPos, DebugInformation> HUDPositions = new HashMap<>();
+	private final List<IHeadUpDisplayRendererProvider> listHUD = new ArrayList<>();
+	private final HashMap<BlockPos, DebugInformation> HUDPositions = new HashMap<>();
 
 	public static class DebugInformation {
 
@@ -41,9 +41,9 @@ public class ClientViewController implements IDebugHUDProvider {
 		public int newIndex = -1;
 		public List<Integer> positions = new ArrayList<>();
 		public List<RouteDebugInfo> routes = new ArrayList<>();
-		public Set<PipeRoutingConnectionType> closedSet;
-		public Map<PipeRoutingConnectionType, List<List<BlockPos>>> filters;
-		public Set<PipeRoutingConnectionType> nextFlags;
+		public @Nullable Set<PipeRoutingConnectionType> closedSet;
+		public @Nullable Map<PipeRoutingConnectionType, List<List<BlockPos>>> filters;
+		public @Nullable Set<PipeRoutingConnectionType> nextFlags;
 	}
 
 	public static ClientViewController instance() {
