@@ -51,7 +51,7 @@ public class ItemResource implements IResource {
 		return stack;
 	}
 
-	public IRequestItems getTarget() {
+	public @Nullable IRequestItems getTarget() {
 		return requester;
 	}
 

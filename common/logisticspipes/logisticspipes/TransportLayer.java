@@ -7,6 +7,8 @@
 
 package logisticspipes.logisticspipes;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 
 /**
@@ -18,7 +20,7 @@ public abstract class TransportLayer {
 
 	public abstract boolean stillWantItem(IRoutedItem item);
 
-	public abstract Direction itemArrived(IRoutedItem item, Direction denied);
+	public abstract @Nullable Direction itemArrived(IRoutedItem item, @Nullable Direction denied);
 
 	public void handleItem(IRoutedItem item) {}
 

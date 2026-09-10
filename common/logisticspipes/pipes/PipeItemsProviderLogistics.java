@@ -79,7 +79,7 @@ public class PipeItemsProviderLogistics extends CoreRoutedPipe implements IProvi
 	}
 
 	@Override
-	public LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination, IAdditionalTargetInformation info) {
+	public @Nullable LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination, @Nullable IAdditionalTargetInformation info) {
 		return providerModule.fullFill(promise, destination, info);
 	}
 

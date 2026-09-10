@@ -426,7 +426,7 @@ public class ModuleCrafter extends LogisticsModule
 	}
 
 	@Override
-	public ICraftingTemplate addCrafting(IResource toCraft) {
+	public @Nullable ICraftingTemplate addCrafting(IResource toCraft) {
 
 		List<ItemIdentifierStack> stack = getCraftedItems();
 		if (stack == null) {

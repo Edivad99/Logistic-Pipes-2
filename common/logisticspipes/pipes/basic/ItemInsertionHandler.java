@@ -10,6 +10,8 @@ import net.neoforged.neoforge.transfer.VoidingResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.ILPItemAcceptor;
 
 /**
@@ -39,9 +41,9 @@ public class ItemInsertionHandler extends VoidingResourceHandler<ItemResource> {
 	public static final List<ILPItemAcceptor> ACCEPTORS = new ArrayList<>();
 
 	private final LogisticsTileGenericPipe pipe;
-	private final Direction dir;
+	private final @Nullable Direction dir;
 
-	public ItemInsertionHandler(LogisticsTileGenericPipe pipe, Direction dir) {
+	public ItemInsertionHandler(LogisticsTileGenericPipe pipe, @Nullable Direction dir) {
 		super(ItemResource.EMPTY);
 		this.pipe = pipe;
 		this.dir = dir;

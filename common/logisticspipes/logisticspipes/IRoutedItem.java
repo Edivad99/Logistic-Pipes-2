@@ -14,6 +14,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.routing.IRouter;
 import logisticspipes.routing.ItemRoutingInformation;
@@ -35,6 +37,7 @@ public interface IRoutedItem {
 
 	int getDestination();
 
+	@Nullable
 	UUID getDestinationUUID();
 
 	void setDestination(int destination);
@@ -47,6 +50,7 @@ public interface IRoutedItem {
 
 	void setAdditionalTargetInformation(IAdditionalTargetInformation info);
 
+	@Nullable
 	IAdditionalTargetInformation getAdditionalTargetInformation();
 
 	void setDoNotBuffer(boolean doNotBuffer);
@@ -75,6 +79,7 @@ public interface IRoutedItem {
 
 	void setDistanceTracker(IDistanceTracker tracker);
 
+	@Nullable
 	IDistanceTracker getDistanceTracker();
 
 	ItemRoutingInformation getInfo();

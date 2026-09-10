@@ -84,8 +84,8 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 	public ItemIdentifierInventory resultInv = new ItemIdentifierInventory(1, "Crafting Result", 1);
 	public SimpleStackInventory toSortInv = new SimpleStackInventory(1, "Sorting Slot", 64);
 	private ResultContainer vanillaResult = new ResultContainer();
-	private RecipeHolder<CraftingRecipe> cache;
-	private ServerPlayer fake;
+	private @Nullable RecipeHolder<CraftingRecipe> cache;
+	private @Nullable ServerPlayer fake;
 	private int delay = 0;
 	private int tick = 0;
 	private int rotation;
@@ -593,7 +593,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 				}
 
 				@Override
-				public Direction itemArrived(IRoutedItem item, Direction denied) {
+				public @Nullable Direction itemArrived(IRoutedItem item, @Nullable Direction denied) {
 					return null;
 				}
 
@@ -607,7 +607,7 @@ public class PipeBlockRequestTable extends PipeItemsRequestLogistics implements 
 	}
 
 	@Override
-	public void handleOrderList(IResource stack, LinkedLogisticsOrderList orders) {
+	public void handleOrderList(@Nullable IResource stack, LinkedLogisticsOrderList orders) {
 		if (!getUpgradeManager().hasCraftingMonitoringUpgrade()) {
 			return;
 		}

@@ -41,7 +41,7 @@ import network.rs485.logisticspipes.connection.NeighborTileEntity;
 
 public abstract class FluidRoutedPipe extends CoreRoutedPipe {
 
-	private LogisticsFluidOrderManager orderFluidManager;
+	private @Nullable LogisticsFluidOrderManager orderFluidManager;
 
 	public FluidRoutedPipe(Item item) {
 		super(new PipeFluidTransportLogistics(), item);

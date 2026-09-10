@@ -2,6 +2,8 @@ package logisticspipes.logisticspipes;
 
 import net.minecraft.core.Direction;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.modules.LogisticsModule;
 import logisticspipes.pipes.PipeLogisticsChassis;
 import logisticspipes.utils.SinkReply;
@@ -16,7 +18,7 @@ public class ChassisTransportLayer extends TransportLayer {
 	}
 
 	@Override
-	public Direction itemArrived(IRoutedItem item, Direction denied) {
+	public @Nullable Direction itemArrived(IRoutedItem item, @Nullable Direction denied) {
 		if (item.getItemIdentifierStack() != null) {
 			chassisPipe.receivedItem(item.getItemIdentifierStack().getStackSize());
 		}

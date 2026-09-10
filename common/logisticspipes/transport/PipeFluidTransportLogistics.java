@@ -27,7 +27,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 	public LPFluidTank[] sideTanks = new LPFluidTank[Direction.values().length];
 	public LPFluidTank internalTank = new LPFluidTank(getInnerCapacity());
 
-	public FluidStack[] renderCache = new FluidStack[7];
+	public @Nullable FluidStack[] renderCache = new FluidStack[7];
 
 	public PipeFluidTransportLogistics() {
 		super(true);
@@ -43,7 +43,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 	 * reason for a wrapper is the pipe's own rule that fluid may not be pushed in while the pipe
 	 * refuses it. Everything else delegates.</p>
 	 */
-	public ResourceHandler<FluidResource> getFluidResourceHandler(Direction face) {
+	public @Nullable ResourceHandler<FluidResource> getFluidResourceHandler(Direction face) {
 		if (face.ordinal() >= sideTanks.length) {
 			return null;
 		}
@@ -73,7 +73,7 @@ public class PipeFluidTransportLogistics extends PipeTransportLogistics {
 		}
 	}
 
-	public FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
+	public @Nullable FluidStack drain(Direction from, int maxDrain, boolean doDrain) {
 		if (from.ordinal() < Direction.values().length) {
 			return sideTanks[from.ordinal()].drain(maxDrain, doDrain);
 		} else {

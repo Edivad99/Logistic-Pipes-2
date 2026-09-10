@@ -256,7 +256,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 		return LogisticsBlockGenericPipe.placePipe(pipe, level, blockPos, block, null);
 	}
 
-	public static boolean placePipe(CoreUnroutedPipe pipe, Level level, BlockPos blockPos, Block block, ITubeOrientation orientation) {
+	public static boolean placePipe(CoreUnroutedPipe pipe, Level level, BlockPos blockPos, Block block, @Nullable ITubeOrientation orientation) {
 		BlockState oldBlockState = level.getBlockState(blockPos);
 		boolean placed = level.setBlock(blockPos, block.defaultBlockState(), 3);
 
@@ -378,7 +378,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 	}
 
 	// getBlockFaceShape removed in 1.20.1; dead stub kept for reference
-	public Object /* BlockFaceShape */ getBlockFaceShape_DEAD(BlockGetter worldIn, BlockState state, BlockPos pos, Direction face) {
+	public @Nullable Object /* BlockFaceShape */ getBlockFaceShape_DEAD(BlockGetter worldIn, BlockState state, BlockPos pos, Direction face) {
 		return null; // BlockFaceShape.UNDEFINED — removed in 1.20.1
 	}
 
@@ -491,7 +491,7 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 	// @Override
 	// public HitResult collisionRayTrace(BlockState state, Level world, BlockPos pos, Vec3 start, Vec3 end) { ... }
 
-	public InternalRayTraceResult doRayTrace(Level level, BlockPos pos, Player player) {
+	public @Nullable InternalRayTraceResult doRayTrace(Level level, BlockPos pos, Player player) {
 		double reachDistance = player instanceof ServerPlayer
 				? player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE)
 				: 5;
@@ -535,9 +535,9 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 	@AllArgsConstructor
 	private static class Hit {
 
-		public HitResult rayTraceResult;
+		public @Nullable HitResult rayTraceResult;
 		public AABB box;
-		public Direction side;
+		public @Nullable Direction side;
 		public Part part;
 	}
 
@@ -658,10 +658,10 @@ public class LogisticsBlockGenericPipe extends Block implements EntityBlock {
 		}
 	}
 
-	private static final Direction[] DIR_VALUES;
+	private static final @Nullable Direction[] DIR_VALUES;
 
 	static {
-		DIR_VALUES = new Direction[Direction.values().length + 1];
+		DIR_VALUES = new @Nullable Direction[Direction.values().length + 1];
 		DIR_VALUES[0] = null;
 		System.arraycopy(Direction.values(), 0, DIR_VALUES, 1, Direction.values().length);
 	}

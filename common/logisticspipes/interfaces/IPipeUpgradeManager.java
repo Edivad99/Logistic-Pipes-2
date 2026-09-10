@@ -1,5 +1,7 @@
 package logisticspipes.interfaces;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 
 public interface IPipeUpgradeManager {
@@ -26,6 +28,6 @@ public interface IPipeUpgradeManager {
 
 	boolean hasCombinedSneakyUpgrade();
 
-	Direction[] getCombinedSneakyOrientation();
+	Direction @Nullable [] getCombinedSneakyOrientation();
 
 }

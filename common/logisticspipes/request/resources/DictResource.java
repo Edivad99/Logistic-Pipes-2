@@ -111,7 +111,7 @@ public class DictResource implements IResource {
 		return clone;
 	}
 
-	public IRequestItems getTarget() {
+	public @Nullable IRequestItems getTarget() {
 		return requester;
 	}
 

@@ -10,6 +10,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.pipes.basic.CoreMultiBlockPipe;
 import logisticspipes.pipes.basic.CoreUnroutedPipe;
 import logisticspipes.pipes.basic.LogisticsTileGenericPipe;
@@ -19,7 +21,7 @@ import logisticspipes.transport.LPTravelingItem.LPTravelingItemServer;
 
 public class PipeMultiBlockTransportLogistics extends PipeTransportLogistics {
 
-	private CoreMultiBlockPipe multiPipe;
+	private @Nullable CoreMultiBlockPipe multiPipe;
 
 	public PipeMultiBlockTransportLogistics() {
 		super(false);
@@ -41,7 +43,7 @@ public class PipeMultiBlockTransportLogistics extends PipeTransportLogistics {
 		return false;
 	}
 
-	public CoreMultiBlockPipe getMultiPipe() {
+	public @Nullable CoreMultiBlockPipe getMultiPipe() {
 		if (multiPipe == null) {
 			CoreUnroutedPipe uPipe = getPipe();
 			if (uPipe instanceof CoreMultiBlockPipe) {

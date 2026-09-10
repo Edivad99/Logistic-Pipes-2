@@ -8,6 +8,8 @@ package logisticspipes.logisticspipes;
 
 import net.minecraft.core.Direction;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.logisticspipes.IRoutedItem.TransportMode;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.proxy.SimpleServiceLocator;
@@ -30,7 +32,7 @@ public class RouteLayer {
 		this.pipe = pipe;
 	}
 
-	public Direction getOrientationForItem(IRoutedItem item, Direction blocked) {
+	public @Nullable Direction getOrientationForItem(IRoutedItem item, @Nullable Direction blocked) {
 
 		item.checkIDFromUUID();
 		//If a item has no destination, find one

@@ -182,7 +182,7 @@ class TestRequestLog(
         }
     }
 
-    override fun handleSucessfullRequestOf(item: IResource, parts: LinkedLogisticsOrderList) {
+    override fun handleSucessfullRequestOf(item: IResource, parts: LinkedLogisticsOrderList?) {
         if (mustSucceed) {
             requestFinished.complete(true)
         } else {

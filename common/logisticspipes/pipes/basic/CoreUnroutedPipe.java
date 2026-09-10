@@ -287,7 +287,7 @@ public abstract class CoreUnroutedPipe implements ILPCCTypeHolder {
 			}
 
 			@Override
-			public Direction[] getCombinedSneakyOrientation() {
+			public Direction @Nullable [] getCombinedSneakyOrientation() {
 				return null;
 			}
 		};

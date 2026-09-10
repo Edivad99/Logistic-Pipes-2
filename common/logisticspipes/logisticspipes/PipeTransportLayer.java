@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.pipes.basic.CoreRoutedPipe;
 import logisticspipes.routing.IRouter;
 import network.rs485.logisticspipes.connection.NeighborTileEntity;
@@ -28,7 +30,7 @@ public class PipeTransportLayer extends TransportLayer {
 	}
 
 	@Override
-	public Direction itemArrived(IRoutedItem item, Direction denied) {
+	public @Nullable Direction itemArrived(IRoutedItem item, @Nullable Direction denied) {
 		if (item.getItemIdentifierStack() != null) {
 			trackStatistics.receivedItem(item.getItemIdentifierStack().getStackSize());
 		}

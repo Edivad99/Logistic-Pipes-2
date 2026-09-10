@@ -527,7 +527,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@Override
-	public LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination, IAdditionalTargetInformation info) {
+	public @Nullable LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination, @Nullable IAdditionalTargetInformation info) {
 		if (!isEnabled()) {
 			return null;
 		}
@@ -706,7 +706,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@CCCommand(description = "Returns the LogisticsModule for the given slot number starting by 1")
-	public LogisticsModule getModuleInSlot(Double i) {
+	public @Nullable LogisticsModule getModuleInSlot(Double i) {
 		return getSubModule((int) (i - 1));
 	}
 
@@ -728,7 +728,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@Override
-	public ICraftingTemplate addCrafting(IResource toCraft) {
+	public @Nullable ICraftingTemplate addCrafting(IResource toCraft) {
 		for (int i = 0; i < getChassisSize(); i++) {
 			LogisticsModule x = getSubModule(i);
 

@@ -112,7 +112,7 @@ public class PipeItemsCraftingLogistics extends CoreRoutedPipe implements ICraft
 	}
 
 	@Override
-	public ICraftingTemplate addCrafting(IResource toCraft) {
+	public @Nullable ICraftingTemplate addCrafting(IResource toCraft) {
 
 		if (!isEnabled()) {
 			return null;
@@ -122,7 +122,7 @@ public class PipeItemsCraftingLogistics extends CoreRoutedPipe implements ICraft
 	}
 
 	@Override
-	public LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination, IAdditionalTargetInformation info) {
+	public @Nullable LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination, @Nullable IAdditionalTargetInformation info) {
 		return craftingModule.fullFill(promise, destination, info);
 	}
 

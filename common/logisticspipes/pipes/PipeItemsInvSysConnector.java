@@ -77,7 +77,7 @@ public class PipeItemsInvSysConnector extends CoreRoutedPipe implements IChannel
 	private HUDInvSysConnector HUD = new HUDInvSysConnector(this);
 	private UUID idBuffer = UUID.randomUUID();
 
-	private UUID connectedChannel;
+	private @Nullable UUID connectedChannel;
 
 	public PipeItemsInvSysConnector(Item item) {
 		super(new TransportInvConnection(), item);

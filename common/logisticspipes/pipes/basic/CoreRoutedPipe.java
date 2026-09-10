@@ -1404,7 +1404,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	@CCCommand(description = "Returns the Router UUID for the givvin router Id")
-	public String getRouterUUID(Double id) {
+	public @Nullable String getRouterUUID(Double id) {
 		IRouter router = SimpleServiceLocator.routerManager.getRouter(id.intValue());
 		if (router == null) {
 			return null;
@@ -1479,7 +1479,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	@CCCommand(description = "Returns the access to the pipe of the given router UUID")
 	@ModDependentMethod(modId = LPConstants.computerCraftModID)
 	@CCDirectCall
-	public Object getPipeForUUID(String sUuid) throws PermissionException {
+	public @Nullable Object getPipeForUUID(String sUuid) throws PermissionException {
 		if (!getUpgradeManager().hasCCRemoteControlUpgrade()) {
 			throw new PermissionException();
 		}
@@ -1494,7 +1494,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 
 	@CCCommand(description = "Returns the global LP object which is used to access general LP methods.", needPermission = false)
 	@CCDirectCall
-	public Object getLP() throws PermissionException {
+	public @Nullable Object getLP() throws PermissionException {
 		return null;//LogisticsPipes.getComputerLP();
 	}
 

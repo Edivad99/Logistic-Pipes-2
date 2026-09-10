@@ -18,6 +18,8 @@ import java.util.TreeSet;
 
 import lombok.Getter;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 import logisticspipes.interfaces.routing.ICraft;
 import logisticspipes.interfaces.routing.IFilter;
@@ -50,14 +52,16 @@ public class RequestTreeNode {
 	private List<IExtraPromise> byproducts = new ArrayList<>();
 	private SortedSet<ICraftingTemplate> usedCrafters = new TreeSet<>();
 	private Set<LogisticsOrderManager<?, ?>> usedExtrasFromManager = new HashSet<LogisticsOrderManager<?, ?>>();
-	private ICraftingTemplate lastCrafterTried = null;
+	private @Nullable ICraftingTemplate lastCrafterTried = null;
 	private int promiseAmount = 0;
 
-	protected RequestTreeNode(IResource requestType, RequestTreeNode parentNode, EnumSet<ActiveRequestType> requestFlags, IAdditionalTargetInformation info) {
+	protected RequestTreeNode(IResource requestType, @Nullable RequestTreeNode parentNode, EnumSet<ActiveRequestType> requestFlags,
+			@Nullable IAdditionalTargetInformation info) {
 		this(null, requestType, parentNode, requestFlags, info);
 	}
 
-	private RequestTreeNode(ICraftingTemplate template, IResource requestType, RequestTreeNode parentNode, EnumSet<ActiveRequestType> requestFlags, IAdditionalTargetInformation info) {
+	private RequestTreeNode(@Nullable ICraftingTemplate template, IResource requestType, @Nullable RequestTreeNode parentNode,
+			EnumSet<ActiveRequestType> requestFlags, @Nullable IAdditionalTargetInformation info) {
 		this.info = info;
 		this.parentNode = parentNode;
 		this.requestType = requestType;

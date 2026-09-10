@@ -40,9 +40,10 @@ public class RequestTree extends RequestTreeNode {
 	}
 
 	public static final EnumSet<ActiveRequestType> defaultRequestFlags = EnumSet.of(ActiveRequestType.Provide, ActiveRequestType.Craft);
-	private HashMap<FinalPair<IProvide, ItemIdentifier>, Integer> promisetotals;
+	private @Nullable HashMap<FinalPair<IProvide, ItemIdentifier>, Integer> promisetotals;
 
-	public RequestTree(IResource requestType, RequestTree parent, EnumSet<ActiveRequestType> requestFlags, @Nullable IAdditionalTargetInformation info) {
+	public RequestTree(IResource requestType, @Nullable RequestTree parent, EnumSet<ActiveRequestType> requestFlags,
+			@Nullable IAdditionalTargetInformation info) {
 		super(requestType, parent, requestFlags, info);
 	}
 
@@ -177,7 +178,8 @@ public class RequestTree extends RequestTreeNode {
 		}
 	}
 
-	public static int request(ItemIdentifierStack item, IRequestItems requester, RequestLog log, boolean acceptPartial, boolean simulateOnly, boolean logMissing, boolean logUsed, EnumSet<ActiveRequestType> requestFlags, @Nullable IAdditionalTargetInformation info) {
+	public static int request(ItemIdentifierStack item, IRequestItems requester, @Nullable RequestLog log, boolean acceptPartial, boolean simulateOnly,
+			boolean logMissing, boolean logUsed, EnumSet<ActiveRequestType> requestFlags, @Nullable IAdditionalTargetInformation info) {
 		ItemResource req = new ItemResource(item, requester);
 		RequestTree tree = new RequestTree(req, null, requestFlags, info);
 		if (!simulateOnly && (tree.isDone() || ((tree.getPromiseAmount() > 0) && acceptPartial))) {
@@ -215,11 +217,11 @@ public class RequestTree extends RequestTreeNode {
 		return RequestTree.request(item, requester, log, true, true, false, true, RequestTree.defaultRequestFlags, null);
 	}
 
-	public static int requestFluidPartial(FluidIdentifier liquid, int amount, IRequestFluid pipe, RequestLog log) {
+	public static int requestFluidPartial(FluidIdentifier liquid, int amount, IRequestFluid pipe, @Nullable RequestLog log) {
 		return RequestTree.requestFluid(liquid, amount, pipe, log, true);
 	}
 
-	public static boolean requestFluid(FluidIdentifier liquid, int amount, IRequestFluid pipe, RequestLog log) {
+	public static boolean requestFluid(FluidIdentifier liquid, int amount, IRequestFluid pipe, @Nullable RequestLog log) {
 		return RequestTree.requestFluid(liquid, amount, pipe, log, false) == amount;
 	}
 

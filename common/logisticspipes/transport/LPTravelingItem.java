@@ -399,7 +399,7 @@ public abstract class LPTravelingItem {
 		}
 
 		@Override
-		public UUID getDestinationUUID() {
+		public @Nullable UUID getDestinationUUID() {
 			return info.destinationUUID;
 		}
 
@@ -424,7 +424,7 @@ public abstract class LPTravelingItem {
 		}
 
 		@Override
-		public IDistanceTracker getDistanceTracker() {
+		public @Nullable IDistanceTracker getDistanceTracker() {
 			return info.tracker;
 		}
 
@@ -438,7 +438,7 @@ public abstract class LPTravelingItem {
 		}
 
 		@Override
-		public IAdditionalTargetInformation getAdditionalTargetInformation() {
+		public @Nullable IAdditionalTargetInformation getAdditionalTargetInformation() {
 			return info.targetInfo;
 		}
 

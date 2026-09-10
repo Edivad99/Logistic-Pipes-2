@@ -139,7 +139,7 @@ public class PipeTransportLogistics {
 		}
 	}
 
-	protected CoreUnroutedPipe getPipe() {
+	protected @Nullable CoreUnroutedPipe getPipe() {
 		return container.pipe;
 	}
 

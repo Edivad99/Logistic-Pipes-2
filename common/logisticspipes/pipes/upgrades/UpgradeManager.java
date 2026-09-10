@@ -16,6 +16,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.IPipeUpgradeManager;
 import logisticspipes.interfaces.IScreenOpenController;
 import logisticspipes.interfaces.ISlotUpgradeManager;
@@ -287,7 +289,7 @@ public class UpgradeManager
 	}
 
 	@Override
-	public Direction[] getCombinedSneakyOrientation() {
+	public Direction @Nullable [] getCombinedSneakyOrientation() {
 		return combinedSneakyOrientation;
 	}
 
