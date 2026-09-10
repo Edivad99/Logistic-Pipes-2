@@ -359,7 +359,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@Override
-	public void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemLost(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		if (!getLevel().isClientSide()) {
 			if (info instanceof ChassiTargetInformation) {
 				ChassiTargetInformation target = (ChassiTargetInformation) info;
@@ -774,7 +774,7 @@ public abstract class PipeLogisticsChassis extends CoreRoutedPipe
 	}
 
 	@Override
-	public ISlotUpgradeManager getUpgradeManager(ModulePositionType slot, int positionInt) {
+	public ISlotUpgradeManager getUpgradeManager(@Nullable ModulePositionType slot, int positionInt) {
 		if (slot != ModulePositionType.SLOT || positionInt >= getChassisSize()) {
 			if (LogisticsPipes.isDEBUG()) {
 				new UnsupportedOperationException("Position info aren't for a chassis pipe. (" + slot + "/" + positionInt + ")").printStackTrace();

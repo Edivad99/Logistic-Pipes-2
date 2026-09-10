@@ -147,7 +147,8 @@ public class RequestTree extends RequestTreeNode {
 
 	}
 
-	public static boolean request(List<ItemIdentifierStack> items, IRequestItems requester, RequestLog log, EnumSet<ActiveRequestType> requestFlags, @Nullable IAdditionalTargetInformation info) {
+	public static boolean request(List<ItemIdentifierStack> items, IRequestItems requester, @Nullable RequestLog log, EnumSet<ActiveRequestType> requestFlags,
+			@Nullable IAdditionalTargetInformation info) {
 		Map<IResource, Integer> messages = new HashMap<>();
 		RequestTree tree = new RequestTree(new ItemResource(new ItemIdentifierStack(ItemIdentifier.get(Item.BY_BLOCK.get(Blocks.STONE)), 0), requester), null, requestFlags, info);
 		boolean isDone = true;
@@ -202,7 +203,7 @@ public class RequestTree extends RequestTreeNode {
 		}
 	}
 
-	public static boolean request(ItemIdentifierStack item, IRequestItems requester, RequestLog log, @Nullable IAdditionalTargetInformation info) {
+	public static boolean request(ItemIdentifierStack item, IRequestItems requester, @Nullable RequestLog log, @Nullable IAdditionalTargetInformation info) {
 		return RequestTree.request(item, requester, log, false, false, true, false, RequestTree.defaultRequestFlags, info) == item.getStackSize();
 	}
 

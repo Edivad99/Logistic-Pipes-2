@@ -243,8 +243,8 @@ public class ModuleProvider extends LogisticsModule implements SneakyDirection, 
 	}
 
 	@Override
-	public LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination,
-			IAdditionalTargetInformation info) {
+	public @Nullable LogisticsOrder fullFill(LogisticsPromise promise, IRequestItems destination,
+			@Nullable IAdditionalTargetInformation info) {
 		final IPipeServiceProvider service = this.service;
 		if (service == null) return null;
 		service.spawnParticle(Particles.WHITE_SPARKLE, 2);
@@ -372,7 +372,7 @@ public class ModuleProvider extends LogisticsModule implements SneakyDirection, 
 		return list;
 	}
 
-	private void checkUpdate(Player player) {
+	private void checkUpdate(@Nullable Player player) {
 		if (localModeWatchers.size() == 0 && player == null) {
 			return;
 		}
@@ -465,7 +465,7 @@ public class ModuleProvider extends LogisticsModule implements SneakyDirection, 
 		buffer.writeNbt(moduleOutput.buildResult());
 	}
 
-	private IInventoryUtil getInventoryUtilWithMode(NeighborTileEntity<BlockEntity> neighbor) {
+	private @Nullable IInventoryUtil getInventoryUtilWithMode(NeighborTileEntity<BlockEntity> neighbor) {
 		return SimpleServiceLocator.inventoryUtilFactory
 				.getHidingInventoryUtil(neighbor.getTileEntity(), neighbor.getOurDirection(), providerMode.getValue());
 	}

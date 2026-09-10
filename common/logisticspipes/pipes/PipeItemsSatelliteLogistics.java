@@ -263,7 +263,7 @@ public class PipeItemsSatelliteLogistics extends CoreRoutedPipe implements IRequ
 	}
 
 	@Override
-	public void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemLost(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		lostItems.add(item);
 	}
 

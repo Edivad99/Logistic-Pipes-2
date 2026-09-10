@@ -428,7 +428,7 @@ public class ModuleActiveSupplier extends LogisticsModule
 	}
 
 	@Override
-	public void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemLost(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		final IPipeServiceProvider service = Objects.requireNonNull(this.service);
 		service.getDebug().log("Supplier: Registered Item Lost: " + item);
 		decreaseRequested(item);

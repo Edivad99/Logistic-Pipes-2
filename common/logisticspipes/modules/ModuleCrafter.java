@@ -183,7 +183,7 @@ public class ModuleCrafter extends LogisticsModule
 	 * assumes that the invProvider is also IRequest items.
 	 */
 	@Override
-	public void registerHandler(ILevelProvider world, IPipeServiceProvider service) {
+	public void registerHandler(@Nullable ILevelProvider world, @Nullable IPipeServiceProvider service) {
 		super.registerHandler(world, service);
 		invRequester = (IRequestItems) service;
 	}
@@ -275,7 +275,7 @@ public class ModuleCrafter extends LogisticsModule
 	}
 
 	@Override
-	public void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemLost(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		lostItems.add(new DelayedGeneric<>(new Pair<>(item, info), 5000));
 	}
 

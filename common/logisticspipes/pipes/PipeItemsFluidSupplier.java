@@ -295,7 +295,7 @@ public class PipeItemsFluidSupplier extends CoreRoutedPipe implements IRequestIt
 	}
 
 	@Override
-	public void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info) {
+	public void itemLost(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info) {
 		decreaseRequested(item);
 	}
 

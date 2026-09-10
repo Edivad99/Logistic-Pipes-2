@@ -1,5 +1,7 @@
 package logisticspipes.utils;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.IAdditionalTargetInformation;
 
 public final class SinkReply {
@@ -27,9 +29,10 @@ public final class SinkReply {
 	public final int energyUse;
 	public final int maxNumberOfItems;
 	public final BufferMode bufferMode;
-	public final IAdditionalTargetInformation addInfo;
+	public final @Nullable IAdditionalTargetInformation addInfo;
 
-	public SinkReply(FixedPriority fixedPriority, int customPriority, boolean isPassive, boolean isDefault, int energyUse, int maxNumberOfItems, IAdditionalTargetInformation addInfo) {
+	public SinkReply(FixedPriority fixedPriority, int customPriority, boolean isPassive, boolean isDefault, int energyUse, int maxNumberOfItems,
+			@Nullable IAdditionalTargetInformation addInfo) {
 		this.fixedPriority = fixedPriority;
 		this.customPriority = customPriority;
 		this.isPassive = isPassive;

@@ -44,13 +44,10 @@ import network.rs485.logisticspipes.property.UtilKt;
 public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeHolder, PropertyHolder {
 
 	private final Object[] ccTypeHolder = new Object[1];
-	@Nullable
-	protected ILevelProvider worldProvider;
-	@Nullable
-	protected IPipeServiceProvider service;
+	protected @Nullable ILevelProvider worldProvider;
+	protected @Nullable IPipeServiceProvider service;
 	@Getter
-    @Nullable
-    protected ModulePositionType slot;
+    protected @Nullable ModulePositionType slot;
 	@Getter
     protected int positionInt;
 	protected boolean initialized;
@@ -67,8 +64,8 @@ public abstract class LogisticsModule implements ValueIOSerializable, ILPCCTypeH
 	}
 
 	/**
-	 * Returns the name this module is registered in LP with, as used in
-	 * {@link ItemModule#registerModule} and saved in {@link LPItems#modules}.
+	 * Returns the name this module is registered in LP with, as used by
+	 * {@link ItemModule#of} and saved in {@link LPItems#modules}.
 	 */
 	public abstract String getLPName();
 

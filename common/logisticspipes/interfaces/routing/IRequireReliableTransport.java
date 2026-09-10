@@ -7,11 +7,13 @@
 
 package logisticspipes.interfaces.routing;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.utils.item.ItemIdentifierStack;
 
 public interface IRequireReliableTransport {
 
-	void itemLost(ItemIdentifierStack item, IAdditionalTargetInformation info);
+	void itemLost(ItemIdentifierStack item, @Nullable IAdditionalTargetInformation info);
 
 	void itemArrived(ItemIdentifierStack item, IAdditionalTargetInformation info);
 

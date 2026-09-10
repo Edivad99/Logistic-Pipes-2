@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.interfaces.routing.ICraftItems;
 import logisticspipes.interfaces.routing.IFilter;
 import logisticspipes.interfaces.routing.IProvideItems;
@@ -109,11 +111,13 @@ public class LogisticsManager implements ILogisticsManager {
 		return result;
 	}
 
-	public static SinkReply canSink(ItemStack stack, IRouter destination, IRouter sourceRouter, boolean excludeSource, ItemIdentifier item, SinkReply result, boolean activeRequest, boolean allowDefault) {
+	public static @Nullable SinkReply canSink(ItemStack stack, IRouter destination, @Nullable IRouter sourceRouter, boolean excludeSource, ItemIdentifier item,
+			@Nullable SinkReply result, boolean activeRequest, boolean allowDefault) {
 		return canSink(stack, destination, sourceRouter, excludeSource, item, result, activeRequest, allowDefault, true);
 	}
 
-	public static SinkReply canSink(ItemStack stack, IRouter destination, IRouter sourceRouter, boolean excludeSource, ItemIdentifier item, SinkReply result, boolean activeRequest, boolean allowDefault, boolean forcePassive) {
+	public static @Nullable SinkReply canSink(ItemStack stack, IRouter destination, @Nullable IRouter sourceRouter, boolean excludeSource, ItemIdentifier item,
+			@Nullable SinkReply result, boolean activeRequest, boolean allowDefault, boolean forcePassive) {
 
 		SinkReply reply;
 		LogisticsModule module = destination.getLogisticsModule();

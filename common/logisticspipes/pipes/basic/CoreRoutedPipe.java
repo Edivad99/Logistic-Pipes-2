@@ -268,7 +268,7 @@ public abstract class CoreRoutedPipe extends CoreUnroutedPipe
 	}
 
 	@Override
-	public ISlotUpgradeManager getUpgradeManager(ModulePositionType slot, int positionInt) {
+	public ISlotUpgradeManager getUpgradeManager(@Nullable ModulePositionType slot, int positionInt) {
 		return upgradeManager;
 	}
 

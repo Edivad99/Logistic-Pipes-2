@@ -42,7 +42,7 @@ public interface IPipeServiceProvider extends IRoutedPowerProvider, ISpawnPartic
 
 	void queueRoutedItem(IRoutedItem routedItem, Direction from);
 
-	ISlotUpgradeManager getUpgradeManager(LogisticsModule.ModulePositionType slot, int positionInt);
+	ISlotUpgradeManager getUpgradeManager(LogisticsModule.@Nullable ModulePositionType slot, int positionInt);
 
 	int countOnRoute(ItemIdentifier item);
 }
