@@ -43,7 +43,7 @@ public class CraftingPipeSign implements IPipeSign {
 	public CoreRoutedPipe pipe;
 	public Direction dir;
 
-	private Object fbo;
+	private @Nullable Object fbo;
     @Nullable
 	private ItemIdentifierStack oldRenderedStack = null;
 	private String oldSatelliteName = "";

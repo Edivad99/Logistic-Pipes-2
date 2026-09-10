@@ -153,7 +153,7 @@ public class ModuleCrafter extends LogisticsModule
 
 	public ClientSideSatelliteNames clientSideSatelliteNames = ClientSideSatelliteNames.EMPTY;
 
-	protected SinkReply sinkReply;
+	protected @Nullable SinkReply sinkReply;
 
 	@Nullable
 	private IRequestItems invRequester;

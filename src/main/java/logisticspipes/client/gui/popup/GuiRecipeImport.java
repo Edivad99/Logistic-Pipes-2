@@ -1,5 +1,7 @@
 package logisticspipes.client.gui.popup;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -243,7 +245,7 @@ public class GuiRecipeImport extends SubGuiScreen {
 
     public static class Candidates {
 
-        public List<ItemIdentifierStack> order;
+        public @Nullable List<ItemIdentifierStack> order;
         Set<ItemIdentifierStack> set;
         int pos = 0;
 

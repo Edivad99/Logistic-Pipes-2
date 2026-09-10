@@ -30,7 +30,7 @@ import network.rs485.debug.api.IObjectIdentification;
 
 public class DebugGuiController {
 
-	transient private static DebugGuiController instance;
+	transient private static @Nullable DebugGuiController instance;
 
 	private DebugGuiController() {}
 

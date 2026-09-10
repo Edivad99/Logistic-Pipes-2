@@ -94,22 +94,22 @@ public class LogisticsTileGenericPipe extends BlockEntity implements IPipeInform
 	public int statePacketId = 0;
 	public final PipeRenderState renderState;
 	public final CoreState coreState = new CoreState();
-	public Object OPENPERIPHERAL_IGNORE; //Tell OpenPeripheral to ignore this class
+	public @Nullable Object OPENPERIPHERAL_IGNORE; //Tell OpenPeripheral to ignore this class
 	public Set<BlockPos> subMultiBlock = new HashSet<>();
 	public boolean[] turtleConnect = new boolean[7];
 	@ModDependentField(modId = LPConstants.computerCraftModID)
-	public HashMap<Object, Direction> connections; // IComputerAccess — CC not ported
+	public @Nullable HashMap<Object, Direction> connections; // IComputerAccess — CC not ported
 	@ModDependentField(modId = LPConstants.computerCraftModID)
-	public Object currentPC; // IComputerAccess — CC not ported
+	public @Nullable Object currentPC; // IComputerAccess — CC not ported
 	@ModDependentField(modId = LPConstants.openComputersModID)
-	public Object node; // was: Node (OC removed from classpath)
+	public @Nullable Object node; // was: Node (OC removed from classpath)
 	public LogicController logicController = new LogicController();
 	public boolean[] pipeConnectionsBuffer = new boolean[6];
 	public boolean[] pipeBCConnectionsBuffer = new boolean[6];
 	public boolean[] pipeTDConnectionsBuffer = new boolean[6];
     @Nullable
 	public CoreUnroutedPipe pipe;
-	private LogisticsTileRenderController renderController;
+	private @Nullable LogisticsTileRenderController renderController;
 	private boolean sendInitPacket = true;
 	@Getter
 	private boolean initialized = false;

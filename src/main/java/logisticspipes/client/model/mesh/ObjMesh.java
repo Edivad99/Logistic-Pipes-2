@@ -54,7 +54,7 @@ public final class ObjMesh {
     /**
      * Lazily computed; benign race, the value is deterministic.
      */
-    private AABB cachedBounds;
+    private @Nullable AABB cachedBounds;
 
     /**
      * Takes ownership of the arrays — callers must not retain a reference. Use

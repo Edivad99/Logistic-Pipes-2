@@ -1,5 +1,7 @@
 package logisticspipes.pipes.signs;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +53,11 @@ public class ItemAmountPipeSign implements IPipeSign, ISimpleInventoryEventHandl
 
 	public ItemIdentifierInventory itemTypeInv = new ItemIdentifierInventory(1, "", 1);
 	public int amount = 100;
-	public CoreRoutedPipe pipe;
+	public @Nullable CoreRoutedPipe pipe;
 	public Direction dir;
 	private boolean hasUpdated = false;
 
-	private RenderTarget fbo;
+	private @Nullable RenderTarget fbo;
 
 	public ItemAmountPipeSign() {
 		itemTypeInv.addListener(this);

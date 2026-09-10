@@ -1,5 +1,7 @@
 package logisticspipes.transport;
 
+import org.jspecify.annotations.Nullable;
+
 import logisticspipes.pipes.PipeItemsSystemDestinationLogistics;
 import logisticspipes.pipes.PipeItemsSystemEntranceLogistics;
 import logisticspipes.pipes.basic.CoreRoutedPipe;
@@ -13,7 +15,7 @@ public class EntrencsTransport extends PipeTransportLogistics {
 		super(true);
 	}
 
-	public PipeItemsSystemEntranceLogistics pipe;
+	public @Nullable PipeItemsSystemEntranceLogistics pipe;
 
 	@Override
 	public RoutingResult resolveDestination(LPTravelingItemServer data) {
