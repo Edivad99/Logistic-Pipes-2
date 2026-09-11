@@ -18,6 +18,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import org.jspecify.annotations.Nullable;
 
 import logisticspipes.LPConstants;
 import logisticspipes.interfaces.routing.IChannelManager;
@@ -72,7 +73,7 @@ public class ChannelManager implements IChannelManager {
 
     @Override
     public ChannelInformation createNewChannel(String name, PlayerIdentifier owner,
-        ChannelInformation.AccessRights rights, UUID responsibleSecurityID) {
+        ChannelInformation.AccessRights rights, @Nullable UUID responsibleSecurityID) {
         ChannelInformation channel =
             new ChannelInformation(name, UUID.randomUUID(), owner, rights, responsibleSecurityID);
         savedData.channels.add(channel);

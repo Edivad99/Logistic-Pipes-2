@@ -45,6 +45,9 @@ public record SaveChannelMessage(Optional<UUID> channel, String name, AccessRigh
             SaveChannelMessage::new);
 
     public static void handle(SaveChannelMessage message, IPayloadContext context) {
+        if (message.name.isBlank()) {
+            return;
+        }
         final IChannelManager manager =
             SimpleServiceLocator.channelManagerProvider.getChannelManager(context.player().level());
         final UUID security = message.security.orElse(null);

@@ -71,7 +71,7 @@ public class GuiAddChannelPopup extends SubGuiScreen {
             TextUtil.translate(GUI_LANG_KEY + "save"));
         saveBtn.setPressListener(b -> {
             ClientPacketDistributor.sendToServer(new SaveChannelMessage(
-                channelToSave(), this.textInput.getValue(), selectedRights(),
+                channelToSave(), this.textInput.getValue().trim(), selectedRights(),
                 Optional.ofNullable(selectedSecurityStation())));
             exitGui();
         });
@@ -82,6 +82,8 @@ public class GuiAddChannelPopup extends SubGuiScreen {
                 right - guiLeft - 20, 15);
         }
         this.textInput.reposition(guiLeft + 10, guiTop + 34, right - guiLeft - 20, 15);
+        this.textInput.setResponder(name -> saveBtn.active = !name.isBlank());
+        saveBtn.active = !this.textInput.getValue().isBlank();
         addRenderableWidget(this.textInput);
 
         checkSecurity.active = responsibleSecurityID != null;

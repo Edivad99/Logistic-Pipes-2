@@ -12,6 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import logisticspipes.LPConstants;
 import logisticspipes.interfaces.IGUIChannelInformationReceiver;
 import logisticspipes.routing.channels.ChannelInformation;
+import logisticspipes.utils.gui.ISubGuiController;
 
 /**
  * One channel's details, for whichever screen is showing channels.
@@ -47,9 +48,12 @@ public record ChannelInformationMessage(ChannelInformation channel, boolean targ
     private static final class Client {
 
         static void handle(ChannelInformationMessage message, IPayloadContext context) {
-            final Screen screen = Minecraft.getInstance().screen;
-            if (screen instanceof IGUIChannelInformationReceiver receiver) {
-                receiver.handleChannelInformation(message.channel, message.targeted);
+            Screen node = Minecraft.getInstance().screen;
+            while (node != null) {
+                if (node instanceof IGUIChannelInformationReceiver receiver) {
+                    receiver.handleChannelInformation(message.channel, message.targeted);
+                }
+                node = node instanceof ISubGuiController controller ? controller.getSubGui() : null;
             }
         }
     }
